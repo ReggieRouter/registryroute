@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Registry Route — Underwriter Portal</title>
+<meta name="description" content="Centralized directory for Secretary of State routing and reinstatement portals.">
+<meta property="og:title" content="Registry Route | Find SOS by State">
+<meta property="og:description" content="Access Secretary of State routing and business reinstatement portals instantly.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://registryroute.com/assets/og-thumb.png"> 
+<meta name="twitter:card" content="summary_large_image">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -12,7 +20,7 @@
   --surf: #181a1f;
   --reinstate-bg: #1e2430;
   --highlight: #3b82f6; 
-  --sos-hover: #f87171; /* Soft Red */
+  --sos-hover: #f87171;
   --text: #e2e8f0;
   --muted: #64748b;
   --border: #2e333d;
@@ -28,7 +36,7 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
+  overflow: hidden; /* Prevent body scroll on desktop */
   display: flex;
   flex-direction: column;
 }
@@ -56,7 +64,9 @@ header {
   text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
   border-radius: 4px; transition: all 0.2s ease;
 }
-.toggle-btn.active { background: var(--highlight); color: #fff; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); }
+
+.toggle-btn#btn-sos.active { background: var(--highlight); color: #fff; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); }
+.toggle-btn#btn-reinstatement.active { background: var(--sos-hover); color: #fff; box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3); }
 
 .active-state-display {
   font-size: 24px; font-weight: 600; color: var(--highlight);
@@ -65,7 +75,7 @@ header {
   transition: opacity 0.2s ease; opacity: 0; pointer-events: auto;
 }
 
-/* MAP CONTAINER */
+/* DESKTOP MAP CONTAINER */
 .map-container {
   flex: 1; display: flex; justify-content: center; align-items: center;
   position: relative; width: 100%; height: 100%; padding-top: 20px;
@@ -74,34 +84,45 @@ header {
 
 /* STATE PATHS */
 .state-path {
-  fill: var(--surf); 
-  stroke: #1e2229; stroke-width: 1.5; stroke-linejoin: round; 
-  cursor: pointer;
-  transition: fill 0.3s ease, stroke 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  fill: var(--surf); stroke: #1e2229; stroke-width: 1.5; stroke-linejoin: round; 
+  cursor: pointer; transition: fill 0.3s ease, stroke 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* MODE-SPECIFIC HOVERS */
-#map-svg.mode-sos .state-hovered { 
-  fill: var(--sos-hover) !important;
-  stroke: #fff !important; stroke-width: 2 !important; 
-  transform: translateY(-3px);
-  filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.7)); 
-}
-#map-svg.mode-reinstatement .state-hovered { 
-  fill: var(--highlight) !important;
-  stroke: #fff !important; stroke-width: 2 !important; 
-  transform: translateY(-3px);
-  filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.7)); 
-}
+#map-svg.mode-sos .state-hovered { fill: var(--highlight) !important; stroke: #fff !important; stroke-width: 2 !important; transform: translateY(-3px); filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.7)); }
+#map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; stroke: #fff !important; stroke-width: 2 !important; transform: translateY(-3px); filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.7)); }
 
-/* MAP TEXT LABELS */
 .state-label {
   font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
   fill: var(--muted); text-anchor: middle; dominant-baseline: central;
-  cursor: pointer; pointer-events: auto; 
-  transition: all 0.2s ease;
+  cursor: pointer; pointer-events: auto; transition: all 0.2s ease;
 }
 .label-hovered { fill: #fff; font-size: 13px; font-weight: 700; transform: translateY(-3px); }
+
+/* MOBILE SEARCH UI (Hidden on Desktop) */
+.mobile-search-container {
+  display: none;
+}
+.search-input-wrapper {
+  position: sticky; top: 0; background: var(--bg);
+  padding: 0 0 15px 0; z-index: 5;
+}
+#state-search {
+  width: 100%; padding: 14px 16px; font-size: 16px; /* 16px prevents iOS auto-zoom */
+  border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surf); color: #fff; outline: none; transition: border-color 0.2s;
+}
+#state-search:focus { border-color: var(--highlight); }
+.search-results { display: flex; flex-direction: column; gap: 8px; }
+.state-card {
+  background: var(--surf); border: 1px solid var(--border);
+  padding: 16px; border-radius: 8px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.state-card:active { background: var(--border); }
+.state-card-name { font-weight: 600; color: #fff; font-size: 15px; }
+.state-card-abbr { color: var(--muted); font-size: 12px; font-weight: 600; }
 
 /* UNDERWRITER MODAL */
 .modal-overlay {
@@ -116,11 +137,13 @@ header {
   padding: 30px; border-radius: 8px; width: 450px; max-width: 90%;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   transform: translateY(20px); transition: transform 0.2s ease;
+  max-height: 90vh; overflow-y: auto;
 }
 .modal-overlay.active .modal-content { transform: translateY(0); }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .modal-title { font-size: 18px; font-weight: 700; color: #fff; }
-.close-btn { cursor: pointer; color: var(--muted); font-size: 20px; font-weight: bold; }
+.close-btn { cursor: pointer; color: var(--muted); font-size: 20px; font-weight: bold; padding: 5px; }
+.close-btn::after { content: "✕"; }
 .close-btn:hover { color: #fff; }
 
 .tag-container { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -130,16 +153,37 @@ header {
 .tag.bad { background: var(--bad-bg); color: var(--bad-text); border-color: rgba(239,68,68,0.3); }
 
 .modal-instructions { font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-line; margin-bottom: 25px; background: #0f1115; padding: 15px; border-radius: 6px; border: 1px solid var(--border); }
-.action-btn { display: block; width: 100%; text-align: center; padding: 12px; background: var(--highlight); color: #fff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+.action-btn { display: block; width: 100%; text-align: center; padding: 14px; background: var(--highlight); color: #fff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
 .action-btn:hover { background: #2563eb; }
 
 /* FOOTER */
 footer {
   position: absolute; bottom: 0; left: 0; width: 100%;
-  padding: 16px 40px; display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 16px 40px; display: flex; justify-content: space-between;
+  align-items: flex-end;
   font-size: 11px; color: var(--muted); z-index: 10; pointer-events: none;
 }
 .footer-right { pointer-events: auto; }
+
+/* 📱 RESPONSIVE MOBILE BREAKPOINT (Changed to 600px so tablets get the map) */
+@media (max-width: 600px) {
+  html, body {
+    height: auto; /* Fixes iframe squish by letting it grow */
+    overflow-y: auto; /* Unlocks scrolling */
+    display: block; /* Removes flex constraints */
+  }
+  header { position: relative; padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 20px; background: var(--bg); pointer-events: auto; }
+  .header-right { align-items: stretch; }
+  .toggle-wrapper { display: flex; width: 100%; }
+  .toggle-btn { flex: 1; text-align: center; padding: 10px 12px; }
+  .active-state-display { display: none; }
+  
+  .map-container { display: none !important; }
+  
+  .mobile-search-container { display: flex; flex-direction: column; padding: 0 20px 20px 20px; overflow: visible; }
+  
+  footer { position: relative; padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; background: var(--bg); pointer-events: auto; }
+}
 </style>
 </head>
 <body>
@@ -165,11 +209,18 @@ footer {
   </svg>
 </div>
 
+<div class="mobile-search-container" id="mobile-search-container">
+  <div class="search-input-wrapper">
+    <input type="text" id="state-search" placeholder="Search by state (e.g., TX or Texas)..." autocomplete="off">
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
 <div class="modal-overlay" id="modal">
   <div class="modal-content">
     <div class="modal-header">
       <div class="modal-title" id="modal-title">State Name</div>
-      <div class="close-btn" onclick="closeModal()">✕</div>
+      <div class="close-btn" onclick="closeModal()"></div>
     </div>
     <div class="tag-container" id="modal-tags"></div>
     <div class="modal-instructions" id="modal-instructions"></div>
@@ -195,7 +246,6 @@ updateTime();
 setInterval(updateTime, 60000);
 
 let currentMode = 'sos';
-
 const FIPS = {
   "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC",
   "12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY",
@@ -204,14 +254,11 @@ const FIPS = {
   "40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD","47":"TN","48":"TX","49":"UT",
   "50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"
 };
-
 const labelOffsets = {
   "VT": [-5, -10], "NH": [5, 5], "MA": [15, -2], "RI": [10, 8], 
   "CT": [5, 10], "NJ": [15, 0], "DE": [20, 2], "DC": [25, 18], 
   "MD": [-5, -8], "HI": [20, 0]
 };
-
-// Full merged data from both provided texts
 const STATES = {
   "AL":{"name":"Alabama","sos":"https://www.sos.alabama.gov/government-records/business-entity-records","timeframe":"1–2 Weeks","instructions":"1. File missing Business Privilege Tax returns with the Dept. of Revenue.\n2. Submit a Reinstatement package to the Secretary of State.","isOnline":true},
   "AK":{"name":"Alaska","sos":"https://www.commerce.alaska.gov/cbp/main/search/entities","timeframe":"1–3 Days","instructions":"1. Log into the Div. of Corporations portal.\n2. File all missing Biennial Reports online.\n3. Pay past-due fees.","isOnline":true},
@@ -266,12 +313,13 @@ const STATES = {
   "DC":{"name":"Dist. of Columbia","sos":"https://scout.dcra.dc.gov","timeframe":"1-3 Days","instructions":"1. Log into CorpOnline.\n2. File for Reinstatement and submit missing biennial reports.","isOnline":true}
 };
 
+// ----- CORE LOGIC & MAP -----
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('btn-sos').classList.toggle('active', mode === 'sos');
   document.getElementById('btn-reinstatement').classList.toggle('active', mode === 'reinstatement');
   
-  // Set the CSS class on the SVG to trigger the correct hover styles
+  // Desktop SVG map toggle
   document.getElementById('map-svg').setAttribute('class', 'mode-' + mode);
   updateMapVisuals();
 }
@@ -290,6 +338,34 @@ function closeModal() {
   document.getElementById('modal').classList.remove('active');
 }
 
+function handleClick(abbr) {
+  const s = STATES[abbr];
+  if (!s || !s.sos) return; 
+
+  if (currentMode === 'sos') {
+    window.open(s.sos, '_blank', 'noopener,noreferrer');
+  } else {
+    document.getElementById('modal-title').textContent = `${s.name} Reinstatement`;
+    
+    let timeClass = 'good';
+    if (s.timeframe.includes('Days')) timeClass = 'warn';
+    if (s.timeframe.includes('Weeks')) timeClass = 'bad';
+    
+    let methodClass = s.isOnline ? 'good' : 'bad';
+    let methodText = s.isOnline ? 'Online Portal' : 'Mail-In Required';
+    
+    document.getElementById('modal-tags').innerHTML = `
+      <div class="tag ${timeClass}"> ${s.timeframe}</div>
+      <div class="tag ${methodClass}">${s.isOnline ? '' : ''} ${methodText}</div>
+    `;
+    
+    document.getElementById('modal-instructions').textContent = s.instructions;
+    document.getElementById('modal-btn').href = s.sos;
+    
+    document.getElementById('modal').classList.add('active');
+  }
+}
+
 async function initMap() {
   try {
     const res = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json');
@@ -304,6 +380,10 @@ async function initMap() {
 
     function handleInteraction(abbr, isHovering) {
       if (!abbr) return;
+      // Failsafe: Clear all hovers first
+      d3.selectAll('.state-path').classed('state-hovered', false);
+      d3.selectAll('.state-label').classed('label-hovered', false);
+
       const s = STATES[abbr];
       if (isHovering) {
         d3.select('#path-' + abbr).raise().classed('state-hovered', true);
@@ -311,37 +391,7 @@ async function initMap() {
         headerStateName.textContent = s ? s.name : abbr;
         headerStateName.style.opacity = '1';
       } else {
-        d3.select('#path-' + abbr).classed('state-hovered', false);
-        d3.select('#label-' + abbr).classed('label-hovered', false);
         headerStateName.style.opacity = '0';
-      }
-    }
-
-    function handleClick(abbr) {
-      const s = STATES[abbr];
-      if (!s || !s.sos) return; 
-
-      if (currentMode === 'sos') {
-        window.open(s.sos, '_blank', 'noopener,noreferrer');
-      } else {
-        document.getElementById('modal-title').textContent = `${s.name} Reinstatement`;
-        
-        let timeClass = 'good';
-        if (s.timeframe.includes('Days')) timeClass = 'warn';
-        if (s.timeframe.includes('Weeks')) timeClass = 'bad';
-        
-        let methodClass = s.isOnline ? 'good' : 'bad';
-        let methodText = s.isOnline ? 'Online Portal' : 'Mail-In Required';
-
-        document.getElementById('modal-tags').innerHTML = `
-          <div class="tag ${timeClass}">⏱ ${s.timeframe}</div>
-          <div class="tag ${methodClass}">${s.isOnline ? '💻' : '✉️'} ${methodText}</div>
-        `;
-        
-        document.getElementById('modal-instructions').textContent = s.instructions;
-        document.getElementById('modal-btn').href = s.sos;
-        
-        document.getElementById('modal').classList.add('active');
       }
     }
 
@@ -354,7 +404,7 @@ async function initMap() {
       .on('mouseenter', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], true))
       .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false))
       .on('click', (event, d) => handleClick(FIPS[String(d.id).padStart(2, '0')]));
-
+      
     svgLabels.selectAll('text')
       .data(features)
       .enter().append('text')
@@ -378,12 +428,42 @@ async function initMap() {
       .on('click', (event, d) => handleClick(FIPS[String(d.id).padStart(2, '0')]));
 
     svgLabels.raise();
-    updateMapVisuals(); 
-
+    updateMapVisuals();
   } catch (e) { console.error("Map load failed", e); }
 }
 
+// ----- MOBILE LIST LOGIC -----
+function renderMobileList(filter = '') {
+  const container = document.getElementById('search-results');
+  container.innerHTML = '';
+  const query = filter.toLowerCase();
+  
+  // Sort alphabetically by state name
+  const sortedAbbrs = Object.keys(STATES).sort((a, b) => STATES[a].name.localeCompare(STATES[b].name));
+  
+  sortedAbbrs.forEach(abbr => {
+    const s = STATES[abbr];
+    if (s.name.toLowerCase().includes(query) || abbr.toLowerCase().includes(query)) {
+      const el = document.createElement('div');
+      el.className = 'state-card';
+      el.innerHTML = `
+        <div class="state-card-name">${s.name}</div>
+        <div class="state-card-abbr">${abbr}</div>
+      `;
+      // We route the click through the exact same logic the map uses
+      el.onclick = () => handleClick(abbr);
+      container.appendChild(el);
+    }
+  });
+}
+
+document.getElementById('state-search').addEventListener('input', (e) => {
+  renderMobileList(e.target.value);
+});
+
+// Initialize both map and mobile list
 initMap();
+renderMobileList();
 </script>
 </body>
 </html>
