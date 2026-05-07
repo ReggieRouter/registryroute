@@ -24,8 +24,8 @@
 <meta name="twitter:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
 <meta name="twitter:image" content="https://registryroute.com/twitter-card.png">
 
-<link rel="icon" type="image/x-icon" href="favicon.ico?v=3">
-<link rel="apple-touch-icon" href="favicon-apple-touch.png?v=3">
+<link rel="icon" type="image/x-icon" href="favicon.ico?v=20260507_1920">
+<link rel="apple-touch-icon" href="favicon-apple-touch.png?v=20260507_1920">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
 :root {
   --bg: #0f1115;
   --surf: #181a1f;
-  --reinstate-bg: #1e2430;
+  --state-fill: #334155; /* Mid-tone grey for map */
   --highlight: #3b82f6; 
   --sos-hover: #f87171;
   --text: #e2e8f0;
@@ -54,7 +54,7 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
-  overflow: hidden; 
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -62,7 +62,7 @@ html, body {
 /* TOP HEADER & TOGGLE */
 header {
   width: 100%;
-  padding: 32px 40px 16px 40px; 
+  padding: 32px 40px 16px 40px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start; 
@@ -92,8 +92,7 @@ header {
 .active-state-display {
   font-size: 20px; font-weight: 600; color: var(--highlight);
   text-transform: uppercase; letter-spacing: 1px;
-  min-height: 24px; text-align: right;
-  transition: opacity 0.2s ease; opacity: 0;
+  min-height: 24px; text-align: right; transition: opacity 0.2s ease; opacity: 0;
 }
 
 /* DESKTOP MAP CONTAINER */
@@ -108,7 +107,7 @@ header {
 
 /* STATE PATHS */
 .state-path {
-  fill: var(--surf); stroke: #1e2229; stroke-width: 1.5; stroke-linejoin: round; 
+  fill: var(--state-fill); stroke: var(--bg); stroke-width: 1.5; stroke-linejoin: round; 
   cursor: pointer; transition: fill 0.2s ease, stroke 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -117,7 +116,7 @@ header {
 
 .state-label {
   font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
-  fill: #64748b; text-anchor: middle; dominant-baseline: central;
+  fill: var(--text); text-anchor: middle; dominant-baseline: central;
   cursor: pointer; pointer-events: auto; transition: all 0.2s ease;
 }
 .label-hovered { fill: #fff; font-weight: 700; transform: translateY(-2px); }
@@ -243,11 +242,11 @@ footer {
   <div class="footer-left" style="max-width: 600px;">
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
   </div>
-  <div class="footer-right">BUILD: 05-07-2026_14:03:EDT</div>
+  <div class="footer-right">BUILD: 05-07-2026_19:20:EDT</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260507v3"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260507v3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260507_1920"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260507_1920"></script>
 <script>
 let currentMode = 'sos';
 const FIPS = {
@@ -264,6 +263,7 @@ const labelOffsets = {
   "MD": [-5, -8], "HI": [20, 0]
 };
 
+// Simplified Data Obj for brevity. Keeps original flow.
 const STATES = {
   "AL":{"name":"Alabama","sos":"https://www.sos.alabama.gov/government-records/business-entity-records","timeframe":"1–2 Weeks","instructions":"1. File missing Business Privilege Tax returns with the Dept. of Revenue.\n2. Submit a Reinstatement package to the Secretary of State.","isOnline":true},
   "AK":{"name":"Alaska","sos":"https://www.commerce.alaska.gov/cbp/main/search/entities","timeframe":"1–3 Days","instructions":"1. Log into the Div. of Corporations portal.\n2. File all missing Biennial Reports online.\n3. Pay past-due fees.","isOnline":true},
@@ -323,13 +323,11 @@ function setMode(mode) {
   document.getElementById('btn-sos').classList.toggle('active', mode === 'sos');
   document.getElementById('btn-reinstatement').classList.toggle('active', mode === 'reinstatement');
   document.getElementById('map-svg').setAttribute('class', 'mode-' + mode);
-  updateMapVisuals();
-}
-
-function updateMapVisuals() {
-  d3.selectAll('.state-path').each(function() {
-    d3.select(this).style('fill', currentMode === 'sos' ? 'var(--surf)' : 'var(--reinstate-bg)');
-  });
+  
+  const hDisplay = document.getElementById('header-state-name');
+  if (hDisplay.style.opacity === '1') {
+      hDisplay.style.color = mode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
+  }
 }
 
 function closeModal() {
@@ -351,12 +349,10 @@ function handleClick(abbr) {
     
     let methodClass = s.isOnline ? 'good' : 'bad';
     let methodText = s.isOnline ? 'Online Portal' : 'Mail-In Required';
-    
     document.getElementById('modal-tags').innerHTML = `
       <div class="tag ${timeClass}"> ${s.timeframe}</div>
       <div class="tag ${methodClass}">${methodText}</div>
     `;
-    
     document.getElementById('modal-instructions').textContent = s.instructions;
     document.getElementById('modal-btn').href = s.sos;
     
@@ -375,7 +371,7 @@ async function initMap() {
     const svgLabels = d3.select('#labels-g');
     const headerStateName = document.getElementById('header-state-name');
     const features = topojson.feature(us, us.objects.states).features;
-
+    
     function handleInteraction(abbr, isHovering) {
       if (!abbr) return;
       d3.selectAll('.state-path').classed('state-hovered', false);
@@ -386,6 +382,7 @@ async function initMap() {
         d3.select('#path-' + abbr).raise().classed('state-hovered', true);
         d3.select('#label-' + abbr).raise().classed('label-hovered', true);
         headerStateName.textContent = s ? s.name : abbr;
+        headerStateName.style.color = currentMode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
         headerStateName.style.opacity = '1';
       } else {
         headerStateName.style.opacity = '0';
@@ -425,7 +422,6 @@ async function initMap() {
       .on('click', (event, d) => handleClick(FIPS[String(d.id).padStart(2, '0')]));
 
     svgLabels.raise();
-    updateMapVisuals();
   } catch (e) { console.error("Map load failed", e); }
 }
 
@@ -435,7 +431,6 @@ function renderMobileList(filter = '') {
   const query = filter.toLowerCase();
   
   const sortedAbbrs = Object.keys(STATES).sort((a, b) => STATES[a].name.localeCompare(STATES[b].name));
-  
   sortedAbbrs.forEach(abbr => {
     const s = STATES[abbr];
     if (s.name.toLowerCase().includes(query) || abbr.toLowerCase().includes(query)) {
