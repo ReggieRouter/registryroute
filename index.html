@@ -10,11 +10,22 @@
 
 <title>Registry Route | B2B SOS Portal Directory</title>
 <meta name="description" content="High-speed Secretary of State routing and business reinstatement directory for alternative lenders and ISOs.">
-<meta name="keywords" content="Secretary of State directory, SOS routing, business reinstatement, SMB loan broker tools, B2B SaaS, alternative lending compliance, entity verification">
-<meta property="og:title" content="Registry Route | Fast SOS Routing">
-<meta property="og:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
+<meta name="keywords" content="Secretary of State directory, SOS routing, business reinstatement, SMB loan broker tools, B2B SaaS, alternative lending compliance">
+
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://registryroute.com/">
+<meta property="og:title" content="Registry Route | Fast SOS Routing">
+<meta property="og:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
+<meta property="og:image" content="https://registryroute.com/og-image.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://registryroute.com/">
+<meta name="twitter:title" content="Registry Route | Fast SOS Routing">
+<meta name="twitter:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
+<meta name="twitter:image" content="https://registryroute.com/twitter-card.png">
+
+<link rel="icon" type="image/x-icon" href="favicon.ico?v=3">
+<link rel="apple-touch-icon" href="favicon-apple-touch.png?v=3">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,17 +62,15 @@ html, body {
 /* TOP HEADER & TOGGLE */
 header {
   width: 100%;
-  padding: 32px 40px 16px 40px; /* Increased top padding, integrated into flex flow */
+  padding: 32px 40px 16px 40px; 
   display: flex;
   justify-content: space-between;
   align-items: flex-start; 
-  flex-shrink: 0; /* Prevents header from squishing */
+  flex-shrink: 0; 
 }
 .brand-block { display: flex; flex-direction: column; }
-/* Softer white, better spacing */
 .brand-title { font-size: 28px; font-weight: 700; color: #f8fafc; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 6px; }
 .brand-subtitle { font-size: 14px; font-weight: 400; color: var(--muted); }
-/* Swapped to electric blue to match toggle */
 .brand-highlight { color: var(--highlight); font-weight: 600; margin-right: 4px; }
 
 .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
@@ -89,11 +98,11 @@ header {
 
 /* DESKTOP MAP CONTAINER */
 .map-container {
-  flex: 1; /* Takes all remaining vertical space */
+  flex: 1; 
   display: flex; justify-content: center; align-items: center;
   position: relative; width: 100%; 
-  padding: 10px 40px; /* Gives map breathing room */
-  min-height: 0; /* Critical for flex child scaling */
+  padding: 10px 40px; 
+  min-height: 0; 
 }
 #map-svg { width: 100%; height: 100%; max-width: 1200px; max-height: 800px; }
 
@@ -234,11 +243,11 @@ footer {
   <div class="footer-left" style="max-width: 600px;">
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
   </div>
-  <div class="footer-right">BUILD: 05-07-2026_13:56:EDT</div>
+  <div class="footer-right">BUILD: 05-07-2026_14:03:EDT</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260507v2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260507v2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260507v3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260507v3"></script>
 <script>
 let currentMode = 'sos';
 const FIPS = {
