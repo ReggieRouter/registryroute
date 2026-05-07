@@ -17,7 +17,7 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="apple-touch-icon" href="favicon-apple-touch.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 :root {
@@ -40,7 +40,7 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   overflow: hidden; /* Prevent body scroll on desktop */
   display: flex;
   flex-direction: column;
@@ -53,9 +53,10 @@ header {
   justify-content: space-between;
   align-items: flex-start; z-index: 10; pointer-events: none;
 }
-.brand-block { display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
-.brand-title { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-.brand-subtitle { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.brand-block { display: flex; flex-direction: column; pointer-events: auto; }
+.brand-title { font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1.1; }
+.brand-subtitle { font-size: 15px; font-weight: 400; color: #a1a1aa; margin-top: 4px; }
+.brand-red { color: var(--bad-text); font-weight: 600; margin-right: 4px; }
 
 .header-right { display: flex; flex-direction: column; align-items: flex-end; pointer-events: auto; gap: 12px; }
 
@@ -98,7 +99,7 @@ header {
 #map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; stroke: #fff !important; stroke-width: 2 !important; transform: translateY(-3px); filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.7)); }
 
 .state-label {
-  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+  font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
   fill: var(--muted); text-anchor: middle; dominant-baseline: central;
   cursor: pointer; pointer-events: auto; transition: all 0.2s ease;
 }
@@ -115,7 +116,7 @@ header {
 #state-search {
   width: 100%; padding: 14px 16px; font-size: 16px; /* 16px prevents iOS auto-zoom */
   border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surf); color: #fff; outline: none; transition: border-color 0.2s;
+  background: var(--surf); color: #fff; outline: none; font-family: 'Poppins', sans-serif; transition: border-color 0.2s;
 }
 #state-search:focus { border-color: var(--highlight); }
 .search-results { display: flex; flex-direction: column; gap: 8px; }
@@ -178,6 +179,7 @@ footer {
     display: block; /* Removes flex constraints */
   }
   header { position: relative; padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 20px; background: var(--bg); pointer-events: auto; }
+  .brand-title { font-size: 32px; } /* Scales down slightly for mobile */
   .header-right { align-items: stretch; }
   .toggle-wrapper { display: flex; width: 100%; }
   .toggle-btn { flex: 1; text-align: center; padding: 10px 12px; }
@@ -196,7 +198,7 @@ footer {
 <header>
   <div class="brand-block">
     <div class="brand-title">Registry Route</div>
-    <div class="brand-subtitle">Secretary of State Portal Directory</div>
+    <div class="brand-subtitle"><span class="brand-red">Accurate. Fast. Verified.</span> Secretary of State Portal Directory</div>
   </div>
   <div class="header-right">
     <div class="toggle-wrapper">
