@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T15G3SS8HL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T15G3SS8HL');
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -24,8 +33,8 @@
 <meta name="twitter:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
 <meta name="twitter:image" content="https://registryroute.com/twitter-card.png">
 
-<link rel="icon" type="image/x-icon" href="favicon.ico?v=20260507_1920">
-<link rel="apple-touch-icon" href="favicon-apple-touch.png?v=20260507_1920">
+<link rel="icon" type="image/x-icon" href="favicon.ico?v=20260511_2145">
+<link rel="apple-touch-icon" href="favicon-apple-touch.png?v=20260511_2145">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +45,7 @@
 :root {
   --bg: #0f1115;
   --surf: #181a1f;
-  --state-fill: #334155; /* Mid-tone grey for map */
+  --state-fill: #334155; 
   --highlight: #3b82f6; 
   --sos-hover: #f87171;
   --text: #e2e8f0;
@@ -48,6 +57,7 @@
   --warn-bg: rgba(245, 158, 11, 0.15);
   --bad-text: #ef4444;
   --bad-bg: rgba(239, 68, 68, 0.15);
+  font-feature-settings: "cv05", "cv11", "ss01"; 
 }
 html, body {
   height: 100%;
@@ -242,11 +252,11 @@ footer {
   <div class="footer-left" style="max-width: 600px;">
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
   </div>
-  <div class="footer-right">BUILD: 05-07-2026_19:20:EDT</div>
+  <div class="footer-right">BUILD: 05-11-2026_21:45:EDT</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260507_1920"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260507_1920"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260511_2145"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260511_2145"></script>
 <script>
 let currentMode = 'sos';
 const FIPS = {
@@ -260,7 +270,7 @@ const FIPS = {
 const labelOffsets = {
   "VT": [-5, -10], "NH": [5, 5], "MA": [15, -2], "RI": [10, 8], 
   "CT": [5, 10], "NJ": [15, 0], "DE": [20, 2], "DC": [25, 18], 
-  "MD": [-5, -8], "HI": [20, 0]
+  "MD": [-5, -8], "HI": [0, 10], "FL": [10, 0]
 };
 
 // Simplified Data Obj for brevity. Keeps original flow.
@@ -328,6 +338,9 @@ function setMode(mode) {
   if (hDisplay.style.opacity === '1') {
       hDisplay.style.color = mode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
   }
+  
+  // Re-render mobile list so labels update instantly when toggled
+  renderMobileList(document.getElementById('state-search').value);
 }
 
 function closeModal() {
@@ -436,8 +449,17 @@ function renderMobileList(filter = '') {
     if (s.name.toLowerCase().includes(query) || abbr.toLowerCase().includes(query)) {
       const el = document.createElement('div');
       el.className = 'state-card';
+      
+      const modeLabel = currentMode === 'sos' ? '➜ View SOS' : '➜ Reinstatement';
+      const indicatorColor = currentMode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
+
       el.innerHTML = `
-        <div class="state-card-name">${s.name}</div>
+        <div class="brand-block">
+          <div class="state-card-name">${s.name}</div>
+          <div style="color: ${indicatorColor}; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-top: 4px;">
+            ${modeLabel}
+          </div>
+        </div>
         <div class="state-card-abbr">${abbr}</div>
       `;
       el.onclick = () => handleClick(abbr);
