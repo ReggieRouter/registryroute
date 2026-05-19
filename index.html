@@ -110,18 +110,26 @@ header {
 .brand-subtitle { 
   font-family: 'Georgia', serif; 
   font-size: 13px; 
+  font-weight: 600;
   letter-spacing: 0.25em; 
-  color: rgba(96,180,255,0.55); 
+  color: #93c5fd; 
   text-transform: uppercase; 
   margin-bottom: 8px; 
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+.brand-subtitle .highlight-secure {
+  color: var(--sos-hover);
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.3);
 }
 .brand-tagline { 
   font-family: 'Georgia', serif; 
   font-size: 12px; 
+  font-weight: 600;
   letter-spacing: 0.18em; 
-  color: rgba(140,200,255,0.4); 
+  color: #e2e8f0; 
   margin-top: 6px; 
   text-transform: uppercase; 
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
 }
 
 .active-state-display {
@@ -163,13 +171,6 @@ header {
 
 .toggle-btn#btn-sos.active { background: var(--highlight); color: #fff; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); }
 .toggle-btn#btn-reinstatement.active { background: var(--sos-hover); color: #fff; box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3); }
-
-.active-state-display {
-  font-size: 20px; font-weight: 600; color: var(--highlight);
-  text-transform: uppercase; letter-spacing: 1px;
-  min-height: 24px; text-align: right; transition: opacity 0.2s ease; opacity: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
 
 /* DESKTOP MAP CONTAINER */
 .map-container {
@@ -284,12 +285,11 @@ footer {
 </head>
 <body>
 
-<!-- WEBGL BACKGROUND -->
 <canvas id="c"></canvas>
 
 <header>
   <div class="brand-block">
-    <div class="brand-subtitle">Accurate. Fast. Verified. Secure.</div>
+    <div class="brand-subtitle">Accurate. Fast. Verified. <span class="highlight-secure">Secure.</span></div>
     <div class="brand-title">Registry Route</div>
     <div class="brand-tagline">Secretary of State Routing</div>
     <div class="active-state-display" id="header-state-name"></div>
