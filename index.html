@@ -38,7 +38,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -99,11 +99,11 @@ header {
 .brand-block { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
 
 .brand-title { 
-  font-family: 'Playfair Display', serif; 
-  font-size: 76px; 
-  font-weight: 700; 
+  font-family: 'Inter', sans-serif; 
+  font-size: 56px; 
+  font-weight: 800; 
   color: #ffffff; 
-  letter-spacing: -0.02em; 
+  letter-spacing: -0.03em; 
   line-height: 1.1; 
   margin-bottom: 8px; 
   text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
@@ -116,7 +116,7 @@ header {
   letter-spacing: 0.35em; 
   color: #8b96a5; 
   text-transform: uppercase; 
-  margin-bottom: 16px; 
+  margin-bottom: 12px; 
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
@@ -276,7 +276,7 @@ footer {
 @media (max-width: 600px) {
   html, body { height: auto; overflow-y: auto; display: block; }
   header { padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
-  .brand-title { font-size: 42px; }
+  .brand-title { font-size: 36px; } /* Scaled down proportionally for mobile */
   .brand-subtitle { font-size: 10px; letter-spacing: 0.2em; }
   .brand-tagline { font-size: 11px; letter-spacing: 0.15em; }
   .header-right { align-items: stretch; }
