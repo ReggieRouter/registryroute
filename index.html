@@ -98,6 +98,43 @@ header {
 }
 .brand-block { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
 
+.brand-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 48px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.brand-cobrand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cobrand-by {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #8b96a5;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.lendpaper-logo {
+  height: 26px; 
+  width: auto;
+  display: block;
+}
+
 .brand-title { 
   font-family: 'Inter', sans-serif; 
   font-size: 56px; 
@@ -105,7 +142,7 @@ header {
   color: #ffffff; 
   letter-spacing: -0.03em; 
   line-height: 1.1; 
-  margin-bottom: 8px; 
+  margin-bottom: 0; 
   text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
 }
 
@@ -276,7 +313,7 @@ footer {
 @media (max-width: 600px) {
   html, body { height: auto; overflow-y: auto; display: block; }
   header { padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
-  .brand-title { font-size: 36px; } /* Scaled down proportionally for mobile */
+  .brand-title { font-size: 36px; } 
   .brand-subtitle { font-size: 10px; letter-spacing: 0.2em; }
   .brand-tagline { font-size: 11px; letter-spacing: 0.15em; }
   .header-right { align-items: stretch; }
@@ -286,6 +323,13 @@ footer {
   .map-container { display: none !important; }
   .mobile-search-container { display: flex; flex-direction: column; padding: 0 20px 20px 20px; overflow: visible; }
   footer { padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+  
+  /* NEW MOBILE COBRANDING STYLES */
+  .brand-title-wrapper { flex-direction: column; gap: 12px; }
+  .brand-divider { width: 48px; height: 1px; }
+  .brand-cobrand { align-items: center; }
+  .cobrand-by { align-self: center; }
+  .lendpaper-logo { height: 20px; }
 }
 </style>
 </head>
@@ -296,7 +340,18 @@ footer {
 <header>
   <div class="brand-block">
     <div class="brand-subtitle">ACCURATE &middot; FAST &middot; VERIFIED &middot; <span class="highlight-secure">SECURE.</span></div>
-    <div class="brand-title">Registry Route</div>
+    
+    <div class="brand-title-wrapper">
+      <div class="brand-title">Registry Route</div>
+      <div class="brand-divider"></div>
+      <div class="brand-cobrand">
+        <span class="cobrand-by">BY</span>
+        <a href="https://lendpaper.com" target="_blank" rel="noopener noreferrer">
+          <img src="logo-wordmark-light.svg" alt="LendPaper" class="lendpaper-logo">
+        </a>
+      </div>
+    </div>
+
     <div class="brand-tagline">Secretary of State Routing</div>
     <div class="active-state-display" id="header-state-name"></div>
   </div>
