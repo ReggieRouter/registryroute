@@ -499,7 +499,7 @@ function frame(ts){
   lastTime = ts;
   hover += (targetHover - hover) * (targetHover > hover ? 0.06 : 0.025);
 
-  gl.uniform2f(uRes, W, H);
+  gl.uniform2f(uRes, canvas.width, canvas.height);
   gl.uniform1f(uTime, ts * 0.001);
   gl.uniform2f(uMouse, mx, my);
   gl.uniform1f(uHover, hover);
