@@ -60,7 +60,7 @@
   font-feature-settings: "cv05", "cv11", "ss01"; 
 }
 html {
-  background: #020408; 
+  background: #020408; /* Dark base to prevent white flash on load */
 }
 html, body {
   height: 100%;
@@ -81,92 +81,36 @@ html, body {
   height: 100vh;
   z-index: -10;
   display: block;
-  background: #020408; 
+  background: #020408; /* Dark base color */
 }
 
 /* TOP HEADER & TOGGLE */
 header {
   width: 100%;
-  padding: 40px 40px 20px 40px;
+  padding: 60px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; 
   text-align: center;
   flex-shrink: 0; 
   z-index: 10;
   pointer-events: none;
 }
 .brand-block { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-
-.brand-title-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 8px;
+.brand-top-line {
+  font-size: 11px; font-weight: 500; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 5px; margin-bottom: 16px;
+  opacity: 0.8;
 }
-
-.brand-divider {
-  width: 1px;
-  height: 48px;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.brand-cobrand {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.cobrand-by {
-  font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: #8b96a5;
-  letter-spacing: 0.15em;
-  margin-bottom: 4px;
-  line-height: 1;
-}
-
-.lendpaper-logo {
-  height: 26px; 
-  width: auto;
-  display: block;
-}
-
 .brand-title { 
   font-family: 'Libre Baskerville', serif;
   font-size: 64px; font-weight: 700; color: #fff; 
   letter-spacing: -1px; line-height: 1;
   text-shadow: 0 10px 30px rgba(0,0,0,0.5); 
 }
-
 .brand-subtitle { 
-  font-family: 'Inter', sans-serif; 
-  font-size: 13px; 
-  font-weight: 500;
-  letter-spacing: 0.35em; 
-  color: #8b96a5; 
-  text-transform: uppercase; 
-  margin-bottom: 12px; 
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
-
-.brand-subtitle .highlight-secure {
-  color: #db6b6b; 
-  text-shadow: 0 0 8px rgba(219, 107, 107, 0.2);
-}
-
-.brand-tagline { 
-  font-family: 'Inter', sans-serif; 
-  font-size: 14px; 
-  font-weight: 600;
-  letter-spacing: 0.3em; 
-  color: #8b96a5; 
-  margin-top: 4px; 
-  text-transform: uppercase; 
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  font-size: 13px; font-weight: 600; color: #64748b; 
+  text-transform: uppercase; letter-spacing: 3px; margin-top: 12px;
 }
 
 .active-state-display {
@@ -177,15 +121,34 @@ header {
   text-shadow: 0 0 20px rgba(94, 234, 212, 0.3);
 }
 
+.lendpaper-cobrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.lendpaper-cobrand img {
+  height: 14px;
+  opacity: 0.6;
+}
+.lendpaper-cobrand:hover {
+  opacity: 1;
+}
+
 .header-right { 
-  position: fixed;
-  bottom: 80px; 
+  position: absolute;
+  top: 24px;
   right: 40px;
   display: flex; 
   flex-direction: column; 
   align-items: flex-end; 
   gap: 12px;
   z-index: 20;
+  pointer-events: auto;
 }
 
 /* THE TOGGLE */
@@ -209,14 +172,14 @@ header {
   display: flex; justify-content: center; align-items: center;
   position: relative; width: 100%; 
   padding: 0 40px; 
-  margin-top: -40px; 
+  margin-top: -40px; /* Shift map up to reduce bottom crowding */
   min-height: 0; 
 }
 #map-svg { width: 100%; height: 100%; max-width: 1200px; max-height: 800px; }
 
 /* STATE PATHS */
 .state-path {
-  fill: #1e293b; 
+  fill: #1e293b; /* Opaque solid color */
   stroke: rgba(255, 255, 255, 0.15); 
   stroke-width: 1.5; 
   stroke-linejoin: round; 
@@ -302,47 +265,34 @@ footer {
 /* MOBILE BREAKPOINT */
 @media (max-width: 600px) {
   html, body { height: auto; overflow-y: auto; display: block; }
-  header { padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
-  .brand-title { font-size: 36px; } 
-  .brand-subtitle { font-size: 10px; letter-spacing: 0.2em; }
-  .brand-tagline { font-size: 11px; letter-spacing: 0.15em; }
-  .header-right { align-items: stretch; }
+  header { padding: 40px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .brand-top-line { font-size: 9px; letter-spacing: 3px; margin-bottom: 8px; }
+  .brand-title { font-size: 32px; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+  .brand-subtitle { font-size: 11px; letter-spacing: 2px; margin-top: 4px; }
+  .header-right { position: relative; top: 0; right: 0; align-items: stretch; width: 100%; padding: 0 20px; }
   .toggle-wrapper { display: flex; width: 100%; }
   .toggle-btn { flex: 1; text-align: center; padding: 10px; }
   .active-state-display { display: none; }
   .map-container { display: none !important; }
   .mobile-search-container { display: flex; flex-direction: column; padding: 0 20px 20px 20px; overflow: visible; }
   footer { padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
-  
-  /* NEW MOBILE COBRANDING STYLES */
-  .brand-title-wrapper { flex-direction: column; gap: 12px; }
-  .brand-divider { width: 48px; height: 1px; }
-  .brand-cobrand { align-items: center; }
-  .cobrand-by { align-self: center; }
-  .lendpaper-logo { height: 20px; }
 }
 </style>
 </head>
 <body>
 
+<!-- WEBGL BACKGROUND -->
 <canvas id="c"></canvas>
 
 <header>
   <div class="brand-block">
-    <div class="brand-subtitle">ACCURATE &middot; FAST &middot; VERIFIED &middot; <span class="highlight-secure">SECURE.</span></div>
-    
-    <div class="brand-title-wrapper">
-      <div class="brand-title">Registry Route</div>
-      <div class="brand-divider"></div>
-      <div class="brand-cobrand">
-        <span class="cobrand-by">BY</span>
-        <a href="https://lendpaper.com" target="_blank" rel="noopener noreferrer">
-          <img src="logo-wordmark-dark.svg" alt="LendPaper" class="lendpaper-logo">
-        </a>
-      </div>
-    </div>
-
-    <div class="brand-tagline">Secretary of State Routing</div>
+    <div class="brand-top-line">ACCURATE &middot; FAST &middot; VERIFIED &middot; <span style="color: #f87171;">SECURE.</span></div>
+    <div class="brand-title">Registry Route</div>
+    <div class="brand-subtitle">SECRETARY OF STATE ROUTING</div>
+    <a href="https://lendpaper.com" target="_blank" rel="noopener noreferrer" class="lendpaper-cobrand">
+      <img src="/assets/logo/lendpaper-logo.svg" alt="LendPaper" />
+      <span>A LendPaper Company</span>
+    </a>
     <div class="active-state-display" id="header-state-name"></div>
   </div>
 </header>
@@ -384,7 +334,7 @@ footer {
   <div class="footer-left" style="max-width: 600px;">
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
   </div>
-  <div class="footer-right">BUILD: 05-19-2026_21:00:EDT</div>
+  <div class="footer-right">BUILD: 05-11-2026_21:45:EDT (Sandbox)</div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260511_2145"></script>
@@ -488,8 +438,7 @@ footer {
   // Run loop at ~15 FPS to be light on CPU while maintaining smooth motion
   setInterval(drawFavicon, 66);
 })();
-</script>
-<script>
+
 // --- WEBGL OCEAN BG SCRIPT ---
 (function(){
 const canvas = document.getElementById('c');
