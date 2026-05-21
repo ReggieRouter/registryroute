@@ -38,7 +38,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
 
 <style>
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -136,14 +136,10 @@ header {
 }
 
 .brand-title { 
-  font-family: 'Inter', sans-serif; 
-  font-size: 56px; 
-  font-weight: 800; 
-  color: #ffffff; 
-  letter-spacing: -0.03em; 
-  line-height: 1.1; 
-  margin-bottom: 0; 
-  text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+  font-family: 'Libre Baskerville', serif;
+  font-size: 64px; font-weight: 700; color: #fff; 
+  letter-spacing: -1px; line-height: 1;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5); 
 }
 
 .brand-subtitle { 
@@ -174,17 +170,11 @@ header {
 }
 
 .active-state-display {
-  font-size: 20px; 
-  font-weight: 600; 
-  color: #fff;
-  text-transform: uppercase; 
-  letter-spacing: 2px;
-  min-height: 24px; 
-  text-align: center; 
-  transition: opacity 0.2s ease; 
-  opacity: 0;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.4);
-  margin-top: 12px;
+  font-size: 20px; font-weight: 700; color: #5eead4;
+  text-transform: uppercase; letter-spacing: 5px;
+  min-height: 30px; text-align: center; margin-top: 16px;
+  transition: all 0.3s ease; opacity: 0; pointer-events: auto;
+  text-shadow: 0 0 20px rgba(94, 234, 212, 0.3);
 }
 
 .header-right { 
@@ -400,6 +390,106 @@ footer {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js?v=20260511_2145"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js?v=20260511_2145"></script>
 <script>
+// --- DYNAMIC FLOWY FAVICON SCRIPT ---
+(function() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+  
+  let frame = 0;
+  function drawFavicon() {
+    ctx.clearRect(0, 0, 32, 32);
+    
+    // Circular clip path for premium round look
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(16, 16, 15, 0, Math.PI * 2);
+    ctx.clip();
+    
+    // Base dark background
+    ctx.fillStyle = '#080c14';
+    ctx.fillRect(0, 0, 32, 32);
+    
+    const time = frame * 0.04;
+    
+    // Wave 1: Flowing Deep Blue
+    const h1 = (frame * 0.5 + 210) % 360;
+    ctx.fillStyle = `hsla(${h1}, 80%, 40%, 0.7)`;
+    ctx.beginPath();
+    ctx.moveTo(0, 32);
+    for (let x = 0; x <= 32; x++) {
+      const y = 16 + Math.sin(x * 0.15 + time) * 5;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(32, 32);
+    ctx.fill();
+    
+    // Wave 2: Flowing Teal
+    const h2 = (frame * 0.6 + 160) % 360;
+    ctx.fillStyle = `hsla(${h2}, 85%, 45%, 0.55)`;
+    ctx.beginPath();
+    ctx.moveTo(0, 32);
+    for (let x = 0; x <= 32; x++) {
+      const y = 18 + Math.cos(x * 0.12 - time * 0.8) * 4;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(32, 32);
+    ctx.fill();
+
+    // Wave 3: Flowing Coral Accent
+    const h3 = (frame * 0.4 + 345) % 360;
+    ctx.fillStyle = `hsla(${h3}, 90%, 55%, 0.4)`;
+    ctx.beginPath();
+    ctx.moveTo(0, 32);
+    for (let x = 0; x <= 32; x++) {
+      const y = 15 + Math.sin(x * 0.2 + time * 1.3) * 3;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(32, 32);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    // Sleek glowing border ring
+    const borderHue = (frame * 0.5 + 210) % 360;
+    ctx.strokeStyle = `hsla(${borderHue}, 85%, 65%, 0.85)`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(16, 16, 14.25, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    // White serif monogram 'R' representing Registry Route
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 15px "Libre Baskerville", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetX = 0.5;
+    ctx.shadowOffsetY = 1;
+    ctx.fillText('R', 16, 15.5);
+    
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    
+    link.href = canvas.toDataURL('image/png');
+    frame++;
+  }
+  
+  // Run loop at ~15 FPS to be light on CPU while maintaining smooth motion
+  setInterval(drawFavicon, 66);
+})();
+</script>
+<script>
 // --- WEBGL OCEAN BG SCRIPT ---
 (function(){
 const canvas = document.getElementById('c');
@@ -456,7 +546,7 @@ void main(){
 
   vec2 mouse = u_mouse * aspect;
   float dist = length(st - mouse);
-  float swell = u_hover * pow(smoothstep(0.6, 0.0, dist), 2.0) * 1.2;
+  float swell = u_hover * smoothstep(0.9, 0.0, dist) * 2.8;
 
   float t = u_time * 0.22;
   float t2 = u_time * 0.13;
@@ -478,8 +568,7 @@ void main(){
 
   float depth = uv.y;
   float waveBlend = wave1*0.5 + wave2*0.3 + wave3*0.2;
-  float interaction = swell * 0.1;
-  float shifted = waveBlend * 0.4 + f * 0.3 + depth * 0.1 + interaction;
+  float shifted = waveBlend * (0.4 + swell * 0.12) + f * 0.3 + depth * 0.1;
 
   vec3 deep    = vec3(0.02, 0.05, 0.13);
   vec3 mid     = vec3(0.04, 0.12, 0.26);
@@ -491,9 +580,9 @@ void main(){
   col = mix(col, mid,     smoothstep(0.0, 0.35, shifted));
   col = mix(col, surface, smoothstep(0.25, 0.55, shifted));
   col = mix(col, crest,   smoothstep(0.48, 0.72, shifted));
-  col = mix(col, foam,    smoothstep(0.68, 1.0, shifted) * (0.18 + swell * 0.1));
+  col = mix(col, foam,    smoothstep(0.68, 1.0, shifted) * (0.18 + swell * 0.14));
 
-  float spec = pow(max(0., shifted - 0.74), 3.2) * (0.6 + swell * 0.3);
+  float spec = pow(max(0., shifted - 0.74), 3.2) * (0.6 + swell * 0.4);
   col += vec3(0.7, 0.88, 1.0) * spec;
 
   float vignette = 1. - smoothstep(0.3, 1.0, length((uv - 0.5) * vec2(1.0, 1.6)));
@@ -560,7 +649,7 @@ function frame(ts){
   lastTime = ts;
   hover += (targetHover - hover) * (targetHover > hover ? 0.06 : 0.025);
 
-  gl.uniform2f(uRes, canvas.width, canvas.height);
+  gl.uniform2f(uRes, W, H);
   gl.uniform1f(uTime, ts * 0.001);
   gl.uniform2f(uMouse, mx, my);
   gl.uniform1f(uHover, hover);
