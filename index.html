@@ -418,17 +418,33 @@ footer {
   function drawFavicon() {
     ctx.clearRect(0, 0, 32, 32);
     
-    // Base gradient matching WebGL deep ocean colors (Full 32x32 Square for maximum size!)
+    // Create premium rounded square clipping path (Full 32x32 square with 6px corner radius)
+    ctx.save();
+    ctx.beginPath();
+    const r = 6;
+    ctx.moveTo(r, 0);
+    ctx.lineTo(32 - r, 0);
+    ctx.quadraticCurveTo(32, 0, 32, r);
+    ctx.lineTo(32, 32 - r);
+    ctx.quadraticCurveTo(32, 32, 32 - r, 32);
+    ctx.lineTo(r, 32);
+    ctx.quadraticCurveTo(0, 32, 0, 32 - r);
+    ctx.lineTo(0, r);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.clip();
+    
+    // Base gradient matching lighter WebGL deep ocean colors
     const grad = ctx.createLinearGradient(0, 0, 0, 32);
-    grad.addColorStop(0, '#020408');
-    grad.addColorStop(1, '#050d21');
+    grad.addColorStop(0, '#031430');
+    grad.addColorStop(1, '#082554');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 32, 32);
     
     const time = frame * 0.025; // Soothing, slow wave speed matching WebGL shader flow
     
-    // Wave 1: Flowing Deep Blue (WebGL Mid/Deep Ocean)
-    ctx.fillStyle = 'rgba(8, 29, 63, 0.85)';
+    // Wave 1: Flowing Deep Blue (Lighter/More Vibrant)
+    ctx.fillStyle = 'rgba(16, 52, 108, 0.9)';
     ctx.beginPath();
     ctx.moveTo(0, 32);
     for (let x = 0; x <= 32; x++) {
@@ -438,8 +454,8 @@ footer {
     ctx.lineTo(32, 32);
     ctx.fill();
     
-    // Wave 2: Flowing Rich Blue (WebGL Surface Wave)
-    ctx.fillStyle = 'rgba(16, 53, 108, 0.7)';
+    // Wave 2: Flowing Rich Blue (Lighter/More Vibrant)
+    ctx.fillStyle = 'rgba(32, 88, 158, 0.8)';
     ctx.beginPath();
     ctx.moveTo(0, 32);
     for (let x = 0; x <= 32; x++) {
@@ -449,8 +465,8 @@ footer {
     ctx.lineTo(32, 32);
     ctx.fill();
 
-    // Wave 3: Flowing Light Blue Foam Accent (WebGL Crest Wave)
-    ctx.fillStyle = 'rgba(30, 86, 148, 0.45)';
+    // Wave 3: Flowing Light Blue Foam Accent (Brilliant/Lighter)
+    ctx.fillStyle = 'rgba(88, 168, 240, 0.65)';
     ctx.beginPath();
     ctx.moveTo(0, 32);
     for (let x = 0; x <= 32; x++) {
@@ -460,10 +476,17 @@ footer {
     ctx.lineTo(32, 32);
     ctx.fill();
     
-    // Draw Crisp White 'R' Monogram (styled identically to LendPaper's geometric style)
+    ctx.restore(); // End rounded square clipping
+    
+    // Draw Crisp White 'R' Monogram floating on top of the waves
     ctx.save();
+    
+    // Smooth, soothing bobbing/floating micro-animation
+    const bob = Math.sin(frame * 0.08) * 0.9;
+    ctx.translate(0, bob);
+    
     // Drop shadow for optimal readability on top of active waves
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
     ctx.shadowBlur = 3;
     ctx.shadowOffsetX = 0.5;
     ctx.shadowOffsetY = 1;
