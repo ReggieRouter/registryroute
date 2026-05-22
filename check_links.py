@@ -4,6 +4,7 @@ import json
 import urllib3
 import requests
 from requests.exceptions import RequestException
+from urllib.parse import urlparse
 
 # Suppress standard SSL warnings when verify=False is used as a fallback
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -15,9 +16,26 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
+
+def check_base_domain(url):
+    try:
+        parsed = urlparse(url)
+        if not parsed.scheme or not parsed.netloc:
+            return False, None
+        base_url = f"{parsed.scheme}://{parsed.netloc}/"
+        response = requests.get(base_url, headers=HEADERS, timeout=8, allow_redirects=True, verify=False)
+        # Any response below 500 (even a 403 or 404 on the home page) means the server is online
+        if response.status_code < 500:
+            return True, base_url
+    except Exception:
+        pass
+    return False, None
+
 def check_url(state_code, state_name, url):
     if not url:
         return False, "Missing URL"
+    
+    status_msg = ""
     
     # Try with SSL verification first
     try:
@@ -27,7 +45,7 @@ def check_url(state_code, state_name, url):
         elif response.status_code in [403, 405, 429]:
             return True, f"OK (Blocked: {response.status_code})"
         else:
-            return False, f"HTTP Error {response.status_code}"
+            status_msg = f"HTTP Error {response.status_code}"
     except requests.exceptions.SSLError:
         # Fallback to verify=False if it's just an SSL/TLS cert issue
         try:
@@ -37,11 +55,18 @@ def check_url(state_code, state_name, url):
             elif response.status_code in [403, 405, 429]:
                 return True, f"OK (Blocked: SSL Warn, {response.status_code})"
             else:
-                return False, f"HTTP Error {response.status_code} (Insecure)"
+                status_msg = f"HTTP Error {response.status_code} (Insecure)"
         except RequestException as e:
-            return False, f"SSL Error & Connection Failed: {type(e).__name__}"
+            status_msg = f"SSL Error & Connection Failed: {type(e).__name__}"
     except RequestException as e:
-        return False, f"Connection Failed: {type(e).__name__}"
+        status_msg = f"Connection Failed: {type(e).__name__}"
+
+    # If the deep-link has failed, check if the base portal is active
+    is_base_ok, base_url = check_base_domain(url)
+    if is_base_ok:
+        return False, f"{status_msg} (Portal changed? Base Domain {base_url} is active)"
+    
+    return False, status_msg
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
