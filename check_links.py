@@ -24,6 +24,8 @@ def check_url(state_code, state_name, url):
         response = requests.get(url, headers=HEADERS, timeout=15, allow_redirects=True)
         if response.status_code < 400:
             return True, f"OK ({response.status_code})"
+        elif response.status_code in [403, 405, 429]:
+            return True, f"OK (Blocked: {response.status_code})"
         else:
             return False, f"HTTP Error {response.status_code}"
     except requests.exceptions.SSLError:
@@ -32,6 +34,8 @@ def check_url(state_code, state_name, url):
             response = requests.get(url, headers=HEADERS, timeout=15, allow_redirects=True, verify=False)
             if response.status_code < 400:
                 return True, f"OK (SSL Warn, {response.status_code})"
+            elif response.status_code in [403, 405, 429]:
+                return True, f"OK (Blocked: SSL Warn, {response.status_code})"
             else:
                 return False, f"HTTP Error {response.status_code} (Insecure)"
         except RequestException as e:
