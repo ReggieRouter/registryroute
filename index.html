@@ -13,11 +13,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<!-- Caching optimized for production performance and SEO -->
+<!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<meta http-equiv="Expires" content="0"> -->
 
-<title>Registry Route | B2B SOS Portal Directory (Sandbox)</title>
+<title>Registry Route | B2B SOS Portal Directory</title>
 <meta name="description" content="High-speed Secretary of State routing and business reinstatement directory for alternative lenders and ISOs.">
 <meta name="keywords" content="Secretary of State directory, SOS routing, business reinstatement, SMB loan broker tools, B2B SaaS, alternative lending compliance">
 
@@ -32,6 +33,36 @@
 <meta name="twitter:title" content="Registry Route | Fast SOS Routing">
 <meta name="twitter:description" content="Centralized B2B directory for Secretary of State routing and reinstatement portals.">
 <meta name="twitter:image" content="https://registryroute.com/twitter-card.png">
+
+<!-- Schema.org JSON-LD Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Registry Route",
+  "url": "https://registryroute.com/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "All",
+  "description": "High-speed Secretary of State routing and business reinstatement directory for alternative lenders and ISOs. Co-branded by LendPaper.",
+  "creator": {
+    "@type": "Organization",
+    "name": "LendPaper",
+    "url": "https://lendpaper.com/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0.00",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Secretary of State routing for all 50 US states and DC",
+    "Business entity search directory",
+    "Corporate reinstatement timelines and instructions",
+    "Interactive US mapping interface",
+    "Mobile-friendly search directory"
+  ]
+}
+</script>
 
 <link rel="icon" type="image/x-icon" href="favicon.ico?v=20260511_2145">
 <link rel="apple-touch-icon" href="favicon-apple-touch.png?v=20260511_2145">
@@ -342,7 +373,7 @@ footer {
     <div class="brand-subtitle">ACCURATE &middot; FAST &middot; VERIFIED &middot; <span class="highlight-secure">SECURE.</span></div>
     
     <div class="brand-title-wrapper">
-      <div class="brand-title">Registry Route</div>
+      <h1 class="brand-title">Registry Route</h1>
       <div class="brand-divider"></div>
       <div class="brand-cobrand">
         <span class="cobrand-by">BY</span>
@@ -352,17 +383,17 @@ footer {
       </div>
     </div>
 
-    <div class="brand-tagline">Secretary of State Routing</div>
+    <h2 class="brand-tagline">Secretary of State Routing</h2>
     <div class="active-state-display" id="header-state-name"></div>
   </div>
 </header>
 
-<div class="map-container" id="map-container">
+<main class="map-container" id="map-container">
   <svg id="map-svg" class="mode-sos" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet">
     <g id="states-g"></g>
     <g id="labels-g"></g>
   </svg>
-</div>
+</main>
 
 <div class="header-right">
   <div class="toggle-wrapper">
@@ -371,17 +402,17 @@ footer {
   </div>
 </div>
 
-<div class="mobile-search-container" id="mobile-search-container">
+<section class="mobile-search-container" id="mobile-search-container" aria-label="State Search Directory">
   <div class="search-input-wrapper">
     <input type="text" id="state-search" placeholder="Type a state (e.g., TX or Texas)..." autocomplete="off">
   </div>
   <div id="search-results" class="search-results"></div>
-</div>
+</section>
 
 <div class="modal-overlay" id="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <div class="modal-title" id="modal-title">State Name</div>
+      <h3 class="modal-title" id="modal-title">State Name</h3>
       <div class="close-btn" onclick="closeModal()"></div>
     </div>
     <div class="tag-container" id="modal-tags"></div>
