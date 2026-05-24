@@ -292,6 +292,7 @@ header {
   display: flex; justify-content: space-between; align-items: center;
   transition: background 0.1s;
   backdrop-filter: blur(8px);
+  text-decoration: none;
 }
 .state-card:active { background: var(--border); }
 .state-card-name { font-weight: 600; color: #fff; font-size: 14px; }
@@ -362,6 +363,59 @@ footer {
   .cobrand-by { align-self: center; }
   .lendpaper-logo { height: 20px; }
 }
+
+/* SEO DIRECTORY SECTION */
+.seo-directory-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px 20px 40px;
+  z-index: 20;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.seo-details {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  backdrop-filter: blur(8px);
+}
+.seo-summary {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.seo-summary:hover {
+  color: #fff;
+}
+.seo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.seo-link {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  display: block;
+  padding: 4px 0;
+  transition: color 0.15s;
+}
+.seo-link:hover {
+  color: var(--highlight);
+}
+@media (max-width: 600px) {
+  .seo-directory-section {
+    padding: 0 20px 20px 20px;
+  }
+}
 </style>
 </head>
 <body>
@@ -420,6 +474,14 @@ footer {
     <a href="#" target="_blank" class="action-btn" id="modal-btn">Access State Portal</a>
   </div>
 </div>
+
+<!-- SEO Directory Section -->
+<section class="seo-directory-section" aria-label="Secretary of State Directory Index">
+  <details class="seo-details">
+    <summary class="seo-summary">Browse States Directory & Reinstatement Index</summary>
+    <div class="seo-grid" id="seo-grid-links"></div>
+  </details>
+</section>
 
 <footer>
   <div class="footer-left" style="max-width: 600px;">
@@ -774,6 +836,65 @@ async function loadStatesData() {
 }
 
 
+// --- URL QUERY PARAMS FOR SEO AND SHAREABILITY ---
+function updateURL(abbr, mode) {
+  const url = new URL(window.location);
+  if (abbr) {
+    url.searchParams.set('state', abbr);
+  } else {
+    url.searchParams.delete('state');
+  }
+  if (mode) {
+    url.searchParams.set('mode', mode);
+  } else {
+    url.searchParams.delete('mode');
+  }
+  window.history.replaceState({}, '', url);
+}
+
+function getActiveStateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('state');
+}
+
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const state = params.get('state');
+  const mode = params.get('mode');
+  if (mode) {
+    setMode(mode);
+  }
+  if (state) {
+    const s = STATES[state.toUpperCase()];
+    if (s) {
+      setTimeout(() => {
+        handleClick(state.toUpperCase());
+      }, 300);
+    }
+  }
+}
+
+function populateSEODirectory() {
+  const container = document.getElementById('seo-grid-links');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  const sortedAbbrs = Object.keys(STATES).sort((a, b) => STATES[a].name.localeCompare(STATES[b].name));
+  sortedAbbrs.forEach(abbr => {
+    const s = STATES[abbr];
+    const a = document.createElement('a');
+    a.className = 'seo-link';
+    a.href = `?state=${abbr}&mode=sos`;
+    a.textContent = `${s.name} Secretary of State`;
+    a.onclick = (e) => {
+      e.preventDefault();
+      setMode('sos');
+      handleClick(abbr);
+    };
+    container.appendChild(a);
+  });
+}
+
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('btn-sos').classList.toggle('active', mode === 'sos');
@@ -785,19 +906,30 @@ function setMode(mode) {
       hDisplay.style.color = mode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
   }
   
+  updateURL(getActiveStateFromURL(), mode);
   renderMobileList(document.getElementById('state-search').value);
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
+  updateURL(null, currentMode);
 }
 
 function handleClick(abbr) {
   const s = STATES[abbr];
   if (!s || !s.sos) return; 
 
+  updateURL(abbr, currentMode);
+
   if (currentMode === 'sos') {
-    window.open(s.sos, '_blank', 'noopener,noreferrer');
+    document.getElementById('modal-title').textContent = `${s.name} SOS Routing`;
+    document.getElementById('modal-tags').innerHTML = `
+      <div class="tag good">Official Portal</div>
+      <div class="tag good">Live Registry</div>
+    `;
+    document.getElementById('modal-instructions').textContent = `Click the button below to open the official ${s.name} Secretary of State corporate registry page. Search for the business name or entity ID to retrieve filings.`;
+    document.getElementById('modal-btn').href = s.sos;
+    document.getElementById('modal').classList.add('active');
   } else {
     document.getElementById('modal-title').textContent = `${s.name} Reinstatement`;
     
@@ -847,19 +979,34 @@ async function initMap() {
       }
     }
 
-    svgStates.selectAll('path')
+    svgStates.selectAll('a')
       .data(features)
-      .enter().append('path')
+      .enter().append('a')
+      .attr('href', d => `?state=${FIPS[String(d.id).padStart(2, '0')]}&mode=${currentMode}`)
+      .on('click', (event, d) => {
+        if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
+          event.preventDefault();
+        }
+        handleClick(FIPS[String(d.id).padStart(2, '0')]);
+      })
+      .append('path')
       .attr('class', 'state-path')
       .attr('d', path)
       .attr('id', d => 'path-' + FIPS[String(d.id).padStart(2, '0')])
       .on('mouseenter', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], true))
-      .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false))
-      .on('click', (event, d) => handleClick(FIPS[String(d.id).padStart(2, '0')]));
+      .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false));
       
-    svgLabels.selectAll('text')
+    svgLabels.selectAll('a')
       .data(features)
-      .enter().append('text')
+      .enter().append('a')
+      .attr('href', d => `?state=${FIPS[String(d.id).padStart(2, '0')]}&mode=${currentMode}`)
+      .on('click', (event, d) => {
+        if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
+          event.preventDefault();
+        }
+        handleClick(FIPS[String(d.id).padStart(2, '0')]);
+      })
+      .append('text')
       .attr('class', 'state-label')
       .attr('id', d => 'label-' + FIPS[String(d.id).padStart(2, '0')])
       .text(d => FIPS[String(d.id).padStart(2, '0')])
@@ -876,8 +1023,7 @@ async function initMap() {
         return center[1] ? center[1] + offset : -1000;
       })
       .on('mouseenter', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], true))
-      .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false))
-      .on('click', (event, d) => handleClick(FIPS[String(d.id).padStart(2, '0')]));
+      .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false));
 
     svgLabels.raise();
   } catch (e) { console.error("Map load failed", e); }
@@ -893,7 +1039,7 @@ function renderMobileList(filter = '') {
   sortedAbbrs.forEach(abbr => {
     const s = STATES[abbr];
     if (s.name.toLowerCase().includes(query) || abbr.toLowerCase().includes(query)) {
-      const el = document.createElement('div');
+      const el = document.createElement('a');
       el.className = 'state-card';
       
       const modeLabel = currentMode === 'sos' ? '➜ View SOS' : '➜ Reinstatement';
@@ -908,7 +1054,13 @@ function renderMobileList(filter = '') {
         </div>
         <div class="state-card-abbr">${abbr}</div>
       `;
-      el.onclick = () => handleClick(abbr);
+      el.href = `?state=${abbr}&mode=${currentMode}`;
+      el.onclick = (e) => {
+        if (e.button === 0 && !e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+        }
+        handleClick(abbr);
+      };
       container.appendChild(el);
     }
   });
@@ -919,6 +1071,19 @@ if (searchInput) {
   searchInput.addEventListener('input', (e) => {
     renderMobileList(e.target.value);
   });
+}
+
+async function loadStatesData() {
+  try {
+    const res = await fetch('./states.json');
+    STATES = await res.json();
+    initMap();
+    renderMobileList();
+    populateSEODirectory();
+    checkDeepLink();
+  } catch (e) {
+    console.error("Failed to load states config", e);
+  }
 }
 
 loadStatesData();
