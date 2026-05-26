@@ -1,1 +1,3 @@
-/* /index.html 200
+/states.json  /states.json  200
+/*.json       /:splat       200
+/*            /index.html   200
