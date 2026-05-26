@@ -892,7 +892,8 @@ const SLUG_TO_ABBR = {};
 Object.entries(STATE_SLUGS).forEach(([abbr, slug]) => { SLUG_TO_ABBR[slug] = abbr; });
 
 function stateHref(abbr, mode) {
-  const slug = STATE_SLUGS[abbr] || abbr.toLowerCase();
+  const slug = STATE_SLUGS[abbr];
+  if (!slug) return '#';
   return '/' + slug + '/' + (mode === 'reinstatement' ? 'reinstatement' : 'secretary-of-state') + '/';
 }
 
