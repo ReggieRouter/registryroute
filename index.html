@@ -12,6 +12,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/">
 
 <!-- Caching optimized for production performance and SEO -->
 <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -205,14 +206,14 @@ header {
 }
 
 .active-state-display {
-  font-size: 20px; 
-  font-weight: 600; 
-  color: #fff;
-  text-transform: uppercase; 
-  letter-spacing: 2px;
-  min-height: 24px; 
-  text-align: center; 
-  transition: opacity 0.2s ease; 
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--highlight);
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  min-height: 24px;
+  text-align: center;
+  transition: opacity 0.2s ease;
   opacity: 0;
   text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.4);
   margin-top: 12px;
@@ -243,27 +244,28 @@ header {
 
 /* DESKTOP MAP CONTAINER */
 .map-container {
-  flex: 1; 
+  flex: 1;
   display: flex; justify-content: center; align-items: center;
-  position: relative; width: 100%; 
-  padding: 0 40px; 
-  margin-top: -40px; 
-  min-height: 0; 
+  position: relative; width: 100%;
+  padding: 0 20px;
+  margin-top: -40px;
+  min-height: 0;
 }
-#map-svg { width: 100%; height: 100%; max-width: 1200px; max-height: 800px; }
+#map-svg { width: 100%; height: 100%; max-width: 1380px; max-height: 920px; }
 
 /* STATE PATHS */
 .state-path {
-  fill: #1e293b; 
-  stroke: rgba(255, 255, 255, 0.15); 
-  stroke-width: 1.5; 
-  stroke-linejoin: round; 
-  cursor: pointer; 
-  transition: fill 0.2s ease, stroke 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  fill: #1e293b;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+  cursor: pointer;
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-#map-svg.mode-sos .state-hovered { fill: var(--highlight) !important; stroke: #fff !important; stroke-width: 2 !important; transform: translateY(-2px); }
-#map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; stroke: #fff !important; stroke-width: 2 !important; transform: translateY(-2px); }
+#map-svg.mode-sos .state-hovered { fill: var(--highlight) !important; stroke: rgba(255,255,255,0.9) !important; stroke-width: 3 !important; paint-order: stroke fill; transform: translateY(-2px); }
+#map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; stroke: rgba(255,255,255,0.9) !important; stroke-width: 3 !important; paint-order: stroke fill; transform: translateY(-2px); }
 
 .state-label {
   font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
@@ -327,6 +329,83 @@ header {
 .action-btn { display: block; width: 100%; text-align: center; padding: 12px; background: var(--highlight); color: #fff; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; transition: background 0.15s; }
 .action-btn:hover { background: #2563eb; }
 
+/* MODAL FRAMING AND TIMESTAMP */
+.modal-framing {
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 6px;
+  font-style: italic;
+  font-weight: 500;
+  display: none;
+  background: rgba(248, 113, 113, 0.07);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  color: #fca5a5;
+}
+.modal-framing.active {
+  display: block;
+}
+.modal-footer-timestamp {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 14px;
+  display: none;
+  opacity: 0.8;
+}
+
+/* DIRECTORY BAR */
+.directory-bar {
+  width: 100%;
+  padding: 7px 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+}
+.directory-bar-details {
+  flex: 1;
+  min-width: 0;
+}
+.directory-bar-summary {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(139, 150, 165, 0.38);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  list-style: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.directory-bar-summary::-webkit-details-marker { display: none; }
+.directory-bar-summary:hover { color: rgba(139, 150, 165, 0.6); }
+.directory-bar-divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(139, 150, 165, 0.2);
+  flex-shrink: 0;
+  margin: 0 20px;
+}
+.directory-bar-link {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(139, 150, 165, 0.38);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+.directory-bar-link:hover { color: rgba(248, 113, 113, 0.65); }
+
 /* FOOTER */
 footer {
   width: 100%;
@@ -366,65 +445,24 @@ footer {
   .lendpaper-logo { height: 20px; }
 }
 
-/* SEO DIRECTORY SECTION */
-.seo-directory-section {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px 20px 40px;
-  z-index: 20;
-  flex-shrink: 0;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-}
-.seo-details {
-  flex: 1;
-  background: var(--surf);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 12px 16px;
-  backdrop-filter: blur(8px);
-}
-.seo-summary {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-}
-.seo-summary:hover {
-  color: #fff;
-}
 .seo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 0 4px 0;
 }
 .seo-link {
-  color: var(--text);
+  color: rgba(139, 150, 165, 0.5);
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
   display: block;
-  padding: 4px 0;
+  padding: 2px 0;
   transition: color 0.15s;
 }
-.seo-link:hover {
-  color: var(--highlight);
-}
+.seo-link:hover { color: var(--highlight); }
 @media (max-width: 600px) {
-  .seo-directory-section {
-    padding: 0 20px 20px 20px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
+  .directory-bar { display: none; }
 }
 </style>
 </head>
@@ -473,30 +511,29 @@ footer {
       <div class="close-btn" onclick="closeModal()"></div>
     </div>
     <div class="tag-container" id="modal-tags"></div>
+    <div class="modal-framing" id="modal-framing"></div>
     <div class="modal-instructions" id="modal-instructions"></div>
     <a href="#" target="_blank" class="action-btn" id="modal-btn">Access State Portal</a>
+    <div class="modal-footer-timestamp" id="modal-footer-timestamp"></div>
   </div>
 </div>
 
-<!-- SEO Directory Section -->
-<section class="seo-directory-section" aria-label="Secretary of State Directory Index">
-  <details class="seo-details">
-    <summary class="seo-summary">Browse States Directory & Reinstatement Index</summary>
+<!-- Directory Bar -->
+<div class="directory-bar" aria-label="Secretary of State Directory Index">
+  <details class="directory-bar-details">
+    <summary class="directory-bar-summary">&#9654; Browse States Directory &amp; Reinstatement Index</summary>
     <div class="seo-grid" id="seo-grid-links"></div>
   </details>
-  <div class="header-right">
-    <div class="toggle-wrapper">
-      <div class="toggle-btn active" id="btn-sos" onclick="setMode('sos')">SOS Routing</div>
-      <div class="toggle-btn" id="btn-reinstatement" onclick="setMode('reinstatement')">Reinstatement</div>
-    </div>
-  </div>
-</section>
+  <div class="directory-bar-divider"></div>
+  <a href="#" id="mode-toggle-link" class="directory-bar-link">Reinstatement Guide &#8594;</a>
+</div>
 
 <footer>
-  <div class="footer-left" style="max-width: 600px;">
+  <div class="footer-left" style="max-width: 620px;">
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
+    <p style="margin-top:5px;opacity:0.65;">Registry Route is an open B2B routing directory powered by <a href="https://lendpaper.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">LendPaper</a> &mdash; simplifying digital underwriting and commercial data ingestion. &nbsp;&middot;&nbsp; <a href="/about" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">About Registry Route</a></p>
   </div>
-  <div class="footer-right">BUILD: 05-19-2026_21:00:EDT</div>
+  <div class="footer-right">BUILD: 05-25-2026_14:00:EDT</div>
 </footer>
 
 <script>
@@ -833,53 +870,51 @@ const labelOffsets = {
 };
 
 let STATES = {};
-async function loadStatesData() {
-  try {
-    const res = await fetch('./states.json');
-    STATES = await res.json();
-    initMap();
-    renderMobileList();
-  } catch (e) {
-    console.error("Failed to load states config", e);
-  }
+
+// Slug ↔ abbreviation tables for semantic URL routing
+const STATE_SLUGS = {
+  AK:"alaska",      AL:"alabama",       AR:"arkansas",    AZ:"arizona",
+  CA:"california",  CO:"colorado",      CT:"connecticut",
+  DC:"district-of-columbia",            DE:"delaware",
+  FL:"florida",     GA:"georgia",       HI:"hawaii",
+  IA:"iowa",        ID:"idaho",         IL:"illinois",    IN:"indiana",
+  KS:"kansas",      KY:"kentucky",      LA:"louisiana",
+  MA:"massachusetts",MD:"maryland",     ME:"maine",
+  MI:"michigan",    MN:"minnesota",     MO:"missouri",    MS:"mississippi",  MT:"montana",
+  NC:"north-carolina",ND:"north-dakota",NE:"nebraska",
+  NH:"new-hampshire",NJ:"new-jersey",   NM:"new-mexico",  NV:"nevada",       NY:"new-york",
+  OH:"ohio",        OK:"oklahoma",      OR:"oregon",      PA:"pennsylvania", RI:"rhode-island",
+  SC:"south-carolina",SD:"south-dakota",TN:"tennessee",   TX:"texas",
+  UT:"utah",        VA:"virginia",      VT:"vermont",     WA:"washington",
+  WI:"wisconsin",   WV:"west-virginia", WY:"wyoming"
+};
+const SLUG_TO_ABBR = {};
+Object.entries(STATE_SLUGS).forEach(([abbr, slug]) => { SLUG_TO_ABBR[slug] = abbr; });
+
+function stateHref(abbr, mode) {
+  const slug = STATE_SLUGS[abbr] || abbr.toLowerCase();
+  return '/' + slug + '/' + (mode === 'reinstatement' ? 'reinstatement' : 'secretary-of-state') + '/';
 }
 
-
-// --- URL QUERY PARAMS FOR SEO AND SHAREABILITY ---
+// --- SEMANTIC URL ROUTING ---
 function updateURL(abbr, mode) {
-  const url = new URL(window.location);
-  if (abbr) {
-    url.searchParams.set('state', abbr);
-  } else {
-    url.searchParams.delete('state');
-  }
-  if (mode) {
-    url.searchParams.set('mode', mode);
-  } else {
-    url.searchParams.delete('mode');
-  }
-  window.history.replaceState({}, '', url);
+  const path = abbr && STATES[abbr] ? stateHref(abbr, mode) : '/';
+  window.history.replaceState({}, '', path);
 }
 
 function getActiveStateFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('state');
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  return parts.length ? (SLUG_TO_ABBR[parts[0]] || null) : null;
 }
 
 function checkDeepLink() {
-  const params = new URLSearchParams(window.location.search);
-  const state = params.get('state');
-  const mode = params.get('mode');
-  if (mode) {
-    setMode(mode);
-  }
-  if (state) {
-    const s = STATES[state.toUpperCase()];
-    if (s) {
-      setTimeout(() => {
-        handleClick(state.toUpperCase());
-      }, 300);
-    }
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  if (!parts.length) return;
+  const abbr = SLUG_TO_ABBR[parts[0]];
+  const mode = parts[1] === 'reinstatement' ? 'reinstatement' : 'sos';
+  setMode(mode);
+  if (abbr && STATES[abbr]) {
+    setTimeout(() => handleClick(abbr), 300);
   }
 }
 
@@ -893,7 +928,7 @@ function populateSEODirectory() {
     const s = STATES[abbr];
     const a = document.createElement('a');
     a.className = 'seo-link';
-    a.href = `?state=${abbr}&mode=sos`;
+    a.href = stateHref(abbr, 'sos');
     a.textContent = `${s.name} Secretary of State`;
     a.onclick = (e) => {
       e.preventDefault();
@@ -904,17 +939,46 @@ function populateSEODirectory() {
   });
 }
 
+const REINSTATEMENT_LINKS = {
+  AL: "https://www.sos.alabama.gov/sites/default/files/2022-09/DomesticLLCReinstatement.pdf",
+  AK: "https://www.commerce.alaska.gov/web/cbpl/Corporations/ReinstateDissolvedEntity",
+  AR: "https://www.dfa.arkansas.gov/office/taxes/excise-tax-administration/tax-clearance-or-certificate-of-tax-standing/",
+  CO: "https://dmv.colorado.gov/sites/dmv/files/documents/DR%202870_e_wo.pdf",
+  CT: "https://business.ct.gov/knowledge-base/articles/reinstatement",
+  FL: "https://dos.fl.gov/sunbiz/manage-business/efile/reinstatement",
+  IL: "https://www.ilsos.gov/departments/business-services/reinstatement/corpreinstatement.html",
+  NJ: "https://www.nj.gov/treasury/revenue/reinstate.shtml",
+  NY: "https://www.tax.ny.gov/bus/doingbus/tr194_1.htm",
+  OH: "https://www.ohiosos.gov/assets/525b.pdf",
+  TX: "https://www.sos.state.tx.us/corp/forms/instructions/811-boc-instructions.pdf",
+  WY: "https://wyobiz.wyo.gov/Business/Reinstatement.aspx"
+};
+
 function setMode(mode) {
   currentMode = mode;
-  document.getElementById('btn-sos').classList.toggle('active', mode === 'sos');
-  document.getElementById('btn-reinstatement').classList.toggle('active', mode === 'reinstatement');
   document.getElementById('map-svg').setAttribute('class', 'mode-' + mode);
-  
-  const hDisplay = document.getElementById('header-state-name');
-  if (hDisplay.style.opacity === '1') {
-      hDisplay.style.color = mode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
+
+  const link = document.getElementById('mode-toggle-link');
+  if (link) {
+    link.textContent = mode === 'sos' ? 'Reinstatement Guide →' : '← SOS Routing Portal';
+    link.style.color = '';  // clear any stale inline override — let CSS control
   }
-  
+
+  // Keep SVG anchor hrefs current for right-click / open-in-new-tab crawlability
+  if (typeof d3 !== 'undefined') {
+    d3.selectAll('#states-g a').attr('href', function(d) {
+      return stateHref(FIPS[String(d.id).padStart(2, '0')], mode);
+    });
+    d3.selectAll('#labels-g a').attr('href', function(d) {
+      return stateHref(FIPS[String(d.id).padStart(2, '0')], mode);
+    });
+  }
+
+  const hDisplay = document.getElementById('header-state-name');
+  if (hDisplay && hDisplay.style.opacity === '1') {
+    hDisplay.style.color = mode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
+  }
+
   updateURL(getActiveStateFromURL(), mode);
   renderMobileList(document.getElementById('state-search').value);
 }
@@ -930,14 +994,29 @@ function handleClick(abbr) {
 
   updateURL(abbr, currentMode);
 
+  const framingEl = document.getElementById('modal-framing');
+  const btn = document.getElementById('modal-btn');
+  const timestampEl = document.getElementById('modal-footer-timestamp');
+
   if (currentMode === 'sos') {
     document.getElementById('modal-title').textContent = `${s.name} SOS Routing`;
     document.getElementById('modal-tags').innerHTML = `
       <div class="tag good">Official Portal</div>
       <div class="tag good">Live Registry</div>
     `;
+    if (framingEl) {
+      framingEl.style.display = 'none';
+      framingEl.classList.remove('active');
+    }
     document.getElementById('modal-instructions').textContent = `Click the button below to open the official ${s.name} Secretary of State corporate registry page. Search for the business name or entity ID to retrieve filings.`;
-    document.getElementById('modal-btn').href = s.sos;
+    
+    if (btn) {
+      btn.style.display = 'block';
+      btn.href = s.sos;
+    }
+    if (timestampEl) {
+      timestampEl.style.display = 'none';
+    }
     document.getElementById('modal').classList.add('active');
   } else {
     document.getElementById('modal-title').textContent = `${s.name} Reinstatement`;
@@ -952,8 +1031,33 @@ function handleClick(abbr) {
       <div class="tag ${timeClass}"> ${s.timeframe}</div>
       <div class="tag ${methodClass}">${methodText}</div>
     `;
+    
+    if (framingEl) {
+      framingEl.textContent = "A business that's not in good standing can often be reinstated quckly — potentially reviving a deal you'd otherwise decline or lose.";
+      framingEl.style.display = 'block';
+      framingEl.classList.add('active');
+    }
+    
     document.getElementById('modal-instructions').textContent = s.instructions;
-    document.getElementById('modal-btn').href = s.sos;
+    
+    const verifiedLink = REINSTATEMENT_LINKS[abbr];
+    if (btn) {
+      if (verifiedLink) {
+        btn.style.display = 'block';
+        btn.href = verifiedLink;
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+    
+    if (timestampEl) {
+      if (verifiedLink) {
+        timestampEl.textContent = "Portal link verified May 2026";
+        timestampEl.style.display = 'block';
+      } else {
+        timestampEl.style.display = 'none';
+      }
+    }
     
     document.getElementById('modal').classList.add('active');
   }
@@ -991,7 +1095,7 @@ async function initMap() {
     svgStates.selectAll('a')
       .data(features)
       .enter().append('a')
-      .attr('href', d => `?state=${FIPS[String(d.id).padStart(2, '0')]}&mode=${currentMode}`)
+      .attr('href', d => stateHref(FIPS[String(d.id).padStart(2, '0')], currentMode))
       .on('click', (event, d) => {
         if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
           event.preventDefault();
@@ -1008,7 +1112,7 @@ async function initMap() {
     svgLabels.selectAll('a')
       .data(features)
       .enter().append('a')
-      .attr('href', d => `?state=${FIPS[String(d.id).padStart(2, '0')]}&mode=${currentMode}`)
+      .attr('href', d => stateHref(FIPS[String(d.id).padStart(2, '0')], currentMode))
       .on('click', (event, d) => {
         if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
           event.preventDefault();
@@ -1063,7 +1167,7 @@ function renderMobileList(filter = '') {
         </div>
         <div class="state-card-abbr">${abbr}</div>
       `;
-      el.href = `?state=${abbr}&mode=${currentMode}`;
+      el.href = stateHref(abbr, currentMode);
       el.onclick = (e) => {
         if (e.button === 0 && !e.ctrlKey && !e.metaKey) {
           e.preventDefault();
@@ -1079,6 +1183,14 @@ const searchInput = document.getElementById('state-search');
 if (searchInput) {
   searchInput.addEventListener('input', (e) => {
     renderMobileList(e.target.value);
+  });
+}
+
+const modeToggleLink = document.getElementById('mode-toggle-link');
+if (modeToggleLink) {
+  modeToggleLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMode(currentMode === 'sos' ? 'reinstatement' : 'sos');
   });
 }
 
