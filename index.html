@@ -219,9 +219,6 @@ header {
 }
 
 .header-right { 
-  position: fixed;
-  bottom: 80px; 
-  right: 40px;
   display: flex; 
   flex-direction: column; 
   align-items: flex-end; 
@@ -348,7 +345,12 @@ footer {
   .brand-title { font-size: 36px; } 
   .brand-subtitle { font-size: 10px; letter-spacing: 0.2em; }
   .brand-tagline { font-size: 11px; letter-spacing: 0.15em; }
-  .header-right { align-items: stretch; }
+  .header-right { 
+    align-items: stretch; 
+    position: static;
+    width: 100%;
+    order: -1;
+  }
   .toggle-wrapper { display: flex; width: 100%; }
   .toggle-btn { flex: 1; text-align: center; padding: 10px; }
   .active-state-display { display: none; }
@@ -373,8 +375,13 @@ footer {
   z-index: 20;
   flex-shrink: 0;
   box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
 }
 .seo-details {
+  flex: 1;
   background: var(--surf);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -414,6 +421,9 @@ footer {
 @media (max-width: 600px) {
   .seo-directory-section {
     padding: 0 20px 20px 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
   }
 }
 </style>
@@ -449,13 +459,6 @@ footer {
   </svg>
 </main>
 
-<div class="header-right">
-  <div class="toggle-wrapper">
-    <div class="toggle-btn active" id="btn-sos" onclick="setMode('sos')">SOS Routing</div>
-    <div class="toggle-btn" id="btn-reinstatement" onclick="setMode('reinstatement')">Reinstatement</div>
-  </div>
-</div>
-
 <section class="mobile-search-container" id="mobile-search-container" aria-label="State Search Directory">
   <div class="search-input-wrapper">
     <input type="text" id="state-search" placeholder="Type a state (e.g., TX or Texas)..." autocomplete="off">
@@ -481,6 +484,12 @@ footer {
     <summary class="seo-summary">Browse States Directory & Reinstatement Index</summary>
     <div class="seo-grid" id="seo-grid-links"></div>
   </details>
+  <div class="header-right">
+    <div class="toggle-wrapper">
+      <div class="toggle-btn active" id="btn-sos" onclick="setMode('sos')">SOS Routing</div>
+      <div class="toggle-btn" id="btn-reinstatement" onclick="setMode('reinstatement')">Reinstatement</div>
+    </div>
+  </div>
 </section>
 
 <footer>
