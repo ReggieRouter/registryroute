@@ -253,19 +253,44 @@ header {
 }
 #map-svg { width: 100%; height: 100%; max-width: 1380px; max-height: 920px; }
 
-/* STATE PATHS */
+/* STATE PATHS — fills only, NO stroke. Stroke on fill paths is center-aligned
+   and bleeds into neighboring states regardless of paint-order. All border
+   rendering lives in #borders-g which sits above all fills in DOM order. */
 .state-path {
   fill: #1e293b;
-  stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-  paint-order: stroke fill;
+  stroke: none;
   cursor: pointer;
-  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+  transition: fill 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-#map-svg.mode-sos .state-hovered { fill: var(--highlight) !important; stroke: rgba(255,255,255,0.9) !important; stroke-width: 3 !important; paint-order: stroke fill; }
-#map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; stroke: rgba(255,255,255,0.9) !important; stroke-width: 3 !important; paint-order: stroke fill; }
+#map-svg.mode-sos .state-hovered { fill: var(--highlight) !important; transform: translateY(-2px); }
+#map-svg.mode-reinstatement .state-hovered { fill: var(--sos-hover) !important; transform: translateY(-2px); }
+
+/* Border layer — stroke-only paths rendered above all fills so no fill can
+   clip a border segment at a shared state edge. */
+.state-border {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* Hover overlay — single path in #hover-g, above both fills and borders.
+   Always fully visible; no neighbor can cover it.
+   IMPORTANT: NO transform here. This path must sit at the same geographic
+   coordinates as .state-border paths (which also have no transform). Any
+   translateY on this element shifts the stroke off the border paths, causing
+   a double-line effect on horizontal edges and bold/thin variation around the
+   hovered state. The fill lift (.state-hovered translateY) is intentional and
+   separate — the stroke stays pinned at the actual boundary. */
+.state-hover-stroke {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
 
 .state-label {
   font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
@@ -493,6 +518,8 @@ footer {
 <main class="map-container" id="map-container">
   <svg id="map-svg" class="mode-sos" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet">
     <g id="states-g"></g>
+    <g id="borders-g"></g>
+    <g id="hover-g"></g>
     <g id="labels-g"></g>
   </svg>
 </main>
@@ -533,7 +560,7 @@ footer {
     Registry Route is a B2B routing directory for commercial lenders and brokers. Not a government agency or legal advisor. We do not provide legal or compliance advice. Verify entity status directly with respective state authorities.
     <p style="margin-top:5px;opacity:0.65;">Registry Route is an open B2B routing directory powered by <a href="https://lendpaper.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">LendPaper</a> &mdash; simplifying digital underwriting and commercial data ingestion. &nbsp;&middot;&nbsp; <a href="/about" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">About Registry Route</a></p>
   </div>
-  <div class="footer-right">BUILD: 05-25-2026_14:00:EDT</div>
+  <div class="footer-right">BUILD: 05-26-2026_14:00:EDT</div>
 </footer>
 
 <script>
@@ -914,7 +941,7 @@ function checkDeepLink() {
   const abbr = SLUG_TO_ABBR[parts[0]];
   const mode = parts[1] === 'reinstatement' ? 'reinstatement' : 'sos';
   setMode(mode);
-  if (abbr && STATES[abbr]) {
+  if (abbr && STATES[abbr] && mode === 'reinstatement') {
     setTimeout(() => handleClick(abbr), 300);
   }
 }
@@ -991,57 +1018,37 @@ function closeModal() {
 
 function handleClick(abbr) {
   const s = STATES[abbr];
-  if (!s || !s.sos) return; 
-
-  updateURL(abbr, currentMode);
-
-  const framingEl = document.getElementById('modal-framing');
-  const btn = document.getElementById('modal-btn');
-  const timestampEl = document.getElementById('modal-footer-timestamp');
+  if (!s || !s.sos) return;
 
   if (currentMode === 'sos') {
-    document.getElementById('modal-title').textContent = `${s.name} SOS Routing`;
-    document.getElementById('modal-tags').innerHTML = `
-      <div class="tag good">Official Portal</div>
-      <div class="tag good">Live Registry</div>
-    `;
-    if (framingEl) {
-      framingEl.style.display = 'none';
-      framingEl.classList.remove('active');
-    }
-    document.getElementById('modal-instructions').textContent = `Click the button below to open the official ${s.name} Secretary of State corporate registry page. Search for the business name or entity ID to retrieve filings.`;
-    
-    if (btn) {
-      btn.style.display = 'block';
-      btn.href = s.sos;
-    }
-    if (timestampEl) {
-      timestampEl.style.display = 'none';
-    }
-    document.getElementById('modal').classList.add('active');
+    window.open(s.sos, '_blank', 'noopener,noreferrer');
   } else {
+    updateURL(abbr, currentMode);
+
     document.getElementById('modal-title').textContent = `${s.name} Reinstatement`;
-    
+
     let timeClass = 'good';
     if (s.timeframe.includes('Days')) timeClass = 'warn';
     if (s.timeframe.includes('Weeks')) timeClass = 'bad';
-    
+
     let methodClass = s.isOnline ? 'good' : 'bad';
     let methodText = s.isOnline ? 'Online Portal' : 'Mail-In Required';
     document.getElementById('modal-tags').innerHTML = `
       <div class="tag ${timeClass}"> ${s.timeframe}</div>
       <div class="tag ${methodClass}">${methodText}</div>
     `;
-    
+
+    const framingEl = document.getElementById('modal-framing');
     if (framingEl) {
       framingEl.textContent = "A business that's not in good standing can often be reinstated quckly — potentially reviving a deal you'd otherwise decline or lose.";
       framingEl.style.display = 'block';
       framingEl.classList.add('active');
     }
-    
+
     document.getElementById('modal-instructions').textContent = s.instructions;
-    
+
     const verifiedLink = REINSTATEMENT_LINKS[abbr];
+    const btn = document.getElementById('modal-btn');
     if (btn) {
       if (verifiedLink) {
         btn.style.display = 'block';
@@ -1050,7 +1057,8 @@ function handleClick(abbr) {
         btn.style.display = 'none';
       }
     }
-    
+
+    const timestampEl = document.getElementById('modal-footer-timestamp');
     if (timestampEl) {
       if (verifiedLink) {
         timestampEl.textContent = "Portal link verified May 2026";
@@ -1059,7 +1067,7 @@ function handleClick(abbr) {
         timestampEl.style.display = 'none';
       }
     }
-    
+
     document.getElementById('modal').classList.add('active');
   }
 }
@@ -1071,20 +1079,43 @@ async function initMap() {
     const projection = d3.geoAlbersUsa().scale(1200).translate([480, 300]);
     const path = d3.geoPath().projection(projection);
     
-    const svgStates = d3.select('#states-g');
-    const svgLabels = d3.select('#labels-g');
+    const svgStates  = d3.select('#states-g');
+    const svgBorders = d3.select('#borders-g');
+    const svgHover   = d3.select('#hover-g');
+    const svgLabels  = d3.select('#labels-g');
     const headerStateName = document.getElementById('header-state-name');
     const features = topojson.feature(us, us.objects.states).features;
-    
+
+    // Quick code→feature lookup for the hover overlay
+    const featureByCode = {};
+    features.forEach(f => {
+      const code = FIPS[String(f.id).padStart(2, '0')];
+      if (code) featureByCode[code] = f;
+    });
+
     function handleInteraction(abbr, isHovering) {
       if (!abbr) return;
       d3.selectAll('.state-path').classed('state-hovered', false);
       d3.selectAll('.state-label').classed('label-hovered', false);
+      svgHover.selectAll('*').remove();
 
       const s = STATES[abbr];
       if (isHovering) {
-        d3.select('#path-' + abbr).raise().classed('state-hovered', true);
+        // Fill class on the path (no .raise() needed — fills have no stroke bleed)
+        d3.select('#path-' + abbr).classed('state-hovered', true);
         d3.select('#label-' + abbr).raise().classed('label-hovered', true);
+
+        // Stroke overlay in #hover-g — above borders and fills; can never be clipped.
+        // Do NOT add a transform attribute here. .state-hover-stroke CSS must also
+        // have no transform — see the comment there. translateY on this path causes
+        // the stroke to float off .state-border paths, producing bold/thin variation.
+        const feat = featureByCode[abbr];
+        if (feat) {
+          svgHover.append('path')
+            .attr('class', 'state-hover-stroke')
+            .attr('d', path(feat));
+        }
+
         headerStateName.textContent = s ? s.name : abbr;
         headerStateName.style.color = currentMode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
         headerStateName.style.opacity = '1';
@@ -1109,7 +1140,14 @@ async function initMap() {
       .attr('id', d => 'path-' + FIPS[String(d.id).padStart(2, '0')])
       .on('mouseenter', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], true))
       .on('mouseleave', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], false));
-      
+
+    // Layer 2: border paths — stroke only, rendered above all fills
+    svgBorders.selectAll('path')
+      .data(features)
+      .enter().append('path')
+      .attr('class', 'state-border')
+      .attr('d', path);
+
     svgLabels.selectAll('a')
       .data(features)
       .enter().append('a')
