@@ -299,29 +299,6 @@ header {
 }
 .label-hovered { fill: #fff; font-weight: 700; }
 
-/* DESKTOP MAP OVERLAY SEARCH */
-#desktop-company-search-wrapper {
-  position: absolute;
-  top: 24px;
-  left: 40px;
-  z-index: 20;
-}
-#desktop-company-search {
-  background: rgba(15, 17, 21, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  padding: 9px 14px;
-  width: 300px;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-#desktop-company-search::placeholder { color: var(--muted); }
-#desktop-company-search:focus { border-color: var(--highlight); box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
 
 /* MOBILE SEARCH UI */
 .mobile-search-container { display: none; }
@@ -555,9 +532,6 @@ footer {
 </header>
 
 <main class="map-container" id="map-container">
-  <div id="desktop-company-search-wrapper">
-    <input type="text" id="desktop-company-search" placeholder="Company name or EIN..." autocomplete="off">
-  </div>
   <svg id="map-svg" class="mode-sos" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet">
     <g id="states-g"></g>
     <g id="borders-g"></g>
