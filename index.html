@@ -302,6 +302,21 @@ header {
 /* MOBILE SEARCH UI */
 .mobile-search-container { display: none; }
 .search-input-wrapper { position: sticky; top: 0; background: transparent; padding: 0 0 15px 0; z-index: 5; }
+#company-search-wrapper { padding: 0 0 10px 0; }
+#company-search {
+  width: 100%;
+  background: rgba(15, 17, 21, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 9px 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+#company-search::placeholder { color: var(--muted); }
+#company-search:focus { border-color: var(--highlight); }
 #state-search {
   width: 100%; padding: 14px 16px; font-size: 16px; 
   border-radius: 6px; border: 1px solid var(--border);
@@ -526,6 +541,9 @@ footer {
 
 <section class="mobile-search-container" id="mobile-search-container" aria-label="State Search Directory">
   <div class="search-input-wrapper">
+    <div id="company-search-wrapper">
+      <input type="text" id="company-search" placeholder="Company name or EIN — pre-fills search on supported states" autocomplete="off">
+    </div>
     <input type="text" id="state-search" placeholder="Type a state (e.g., TX or Texas)..." autocomplete="off">
   </div>
   <div id="search-results" class="search-results"></div>
@@ -986,6 +1004,8 @@ const REINSTATEMENT_LINKS = {
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('map-svg').setAttribute('class', 'mode-' + mode);
+  const csw = document.getElementById('company-search-wrapper');
+  if (csw) csw.style.display = mode === 'sos' ? 'block' : 'none';
 
   const link = document.getElementById('mode-toggle-link');
   if (link) {
@@ -1022,7 +1042,11 @@ function handleClick(abbr) {
   if (!s || !s.sos) return;
 
   if (currentMode === 'sos') {
-    window.open(s.sos, '_blank', 'noopener,noreferrer');
+    const query = (document.getElementById('company-search')?.value || '').trim();
+    const url = (query && s.searchTemplate)
+      ? s.searchTemplate.replace('{query}', encodeURIComponent(query))
+      : s.sos;
+    window.open(url, '_blank', 'noopener,noreferrer');
   } else {
     updateURL(abbr, currentMode);
 
@@ -1197,10 +1221,13 @@ function renderMobileList(filter = '') {
       
       const modeLabel = currentMode === 'sos' ? '➜ View SOS' : '➜ Reinstatement';
       const indicatorColor = currentMode === 'sos' ? 'var(--highlight)' : 'var(--sos-hover)';
+      const prefillBadge = (currentMode === 'sos' && s.searchViability === 1)
+        ? `<span style="color:#22c55e;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-left:6px;">⚡ Pre-fill</span>`
+        : '';
 
       el.innerHTML = `
         <div class="brand-block">
-          <div class="state-card-name">${s.name}</div>
+          <div class="state-card-name" style="display:flex;align-items:center;">${s.name}${prefillBadge}</div>
           <div style="color: ${indicatorColor}; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-top: 4px;">
             ${modeLabel}
           </div>

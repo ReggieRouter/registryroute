@@ -2,358 +2,664 @@
   "AL": {
     "name": "Alabama",
     "sos": "https://arc-sos.state.al.us/CGI/corpname.mbr/input",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. File missing Business Privilege Tax returns with the Dept. of Revenue.\n2. Submit a Reinstatement package to the Secretary of State.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "AK": {
     "name": "Alaska",
     "sos": "https://www.commerce.alaska.gov/cbp/main/search/entities",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the Div. of Corporations portal.\n2. File all missing Biennial Reports online.\n3. Pay past-due fees.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "AZ": {
     "name": "Arizona",
-    "sos": "https://apps.azsos.gov/apps/tntp/se.html",
-    "timeframe": "3\u20135 Days",
-    "instructions": "1. Log into the eCorp portal.\n2. File an Application for Reinstatement.\n3. Submit missing Annual Reports (Corporations only).",
-    "isOnline": true
+    "sos": "https://arizonabusinesscenter.azcc.gov/homepage",
+    "timeframe": "3–5 Days",
+    "instructions": "1. Log into the Arizona Business Center at ACC.\n2. File an Application for Reinstatement.\n3. Submit missing Annual Reports (Corporations only).",
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "AR": {
     "name": "Arkansas",
     "sos": "https://www.sos.arkansas.gov/corps/search_all.php",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the SOS portal.\n2. File and pay all past-due Annual Franchise Taxes online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "CA": {
     "name": "California",
     "sos": "https://bizfileonline.sos.ca.gov/search/business",
-    "timeframe": "4\u20138 Weeks",
+    "timeframe": "4–8 Weeks",
     "instructions": "1. Identify if suspended by SOS (missing Statement of Info) or FTB (unpaid taxes).\n2. Pay back taxes/penalties to FTB and get a Certificate of Revivor.\n3. File missing Statements of Information with the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": "API subscription required (pricing unpublished)",
+    "captcha": true,
+    "authRequired": false,
+    "officialApi": "https://calicodev.sos.ca.gov/"
   },
   "CO": {
     "name": "Colorado",
     "sos": "https://www.sos.state.co.us/biz/BusinessEntityCriteriaExt.do",
     "timeframe": "Instant",
     "instructions": "1. Search for your entity on the SOS site.\n2. Click 'File a form,' then select 'Cure Delinquency.'\n3. Pay the fee online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "CT": {
     "name": "Connecticut",
     "sos": "https://service.ct.gov/business/s/onlinebusinesssearch?language=en_US",
     "timeframe": "Instant",
     "instructions": "1. Log into business.ct.gov.\n2. File a Reinstatement form and submit all missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": "https://business.ct.gov/knowledge-base/articles/sots/api"
   },
   "DE": {
     "name": "Delaware",
     "sos": "https://icis.corp.delaware.gov/ecorp/entitysearch/namesearch.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Calculate past-due franchise taxes or alternative entity taxes.\n2. File a Certificate of Revival with the Div. of Corporations and pay all balances.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": "$10 status check; $20 detailed filing info",
+    "captcha": true,
+    "authRequired": false,
+    "officialApi": null
   },
   "FL": {
     "name": "Florida",
-    "sos": "https://dos.myflorida.com/sunbiz/search/",
-    "timeframe": "2\u20133 Days",
+    "sos": "https://search.sunbiz.org/Inquiry/CorporationSearch/ByName",
+    "timeframe": "2–3 Days",
     "instructions": "1. Go to Sunbiz.org.\n2. Submit a Reinstatement application online.\n3. Pay all past-due Annual Report fees.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 1,
+    "searchTemplate": "https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm={query}",
+    "searchCost": null,
+    "captcha": false,
+    "authRequired": false,
+    "officialApi": null
   },
   "GA": {
     "name": "Georgia",
     "sos": "https://ecorp.sos.ga.gov/businesssearch",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Log into the eCorp portal.\n2. Submit an Application for Reinstatement.\n3. Pay all back Annual Registration fees.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "HI": {
     "name": "Hawaii",
     "sos": "https://hbe.ehawaii.gov/documents/search.html",
-    "timeframe": "3\u20135 Days",
+    "timeframe": "3–5 Days",
     "instructions": "1. Log into the DCCA portal.\n2. File missing Annual Reports.\n3. Submit a Reinstatement application.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "ID": {
     "name": "Idaho",
     "sos": "https://sosbiz.idaho.gov/search/business",
     "timeframe": "Instant",
     "instructions": "1. Log into SOSbiz.\n2. File all missing Annual Reports online to automatically restore standing.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": false,
+    "authRequired": false,
+    "officialApi": null
   },
   "IL": {
     "name": "Illinois",
-    "sos": "https://www.ilsos.gov/corporatellc/",
-    "timeframe": "2\u20134 Weeks",
+    "sos": "https://apps.ilsos.gov/businessentitysearch/",
+    "timeframe": "2–4 Weeks",
     "instructions": "1. Pay all franchise taxes/penalties to the Dept. of Revenue to get a Letter of Tax Clearance.\n2. Submit the Clearance and an Application for Reinstatement to the SOS.",
-    "isOnline": false
+    "isOnline": false,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "IN": {
     "name": "Indiana",
     "sos": "https://bsd.sos.in.gov/publicbusinesssearch",
     "timeframe": "Instant",
     "instructions": "1. Log into INBiz.\n2. File an Application for Reinstatement and submit missing Biennial Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "IA": {
     "name": "Iowa",
     "sos": "https://sos.iowa.gov/search/business/search.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into Fast Track Filing.\n2. File missing Biennial Reports.\n3. Submit an Application for Reinstatement.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": "API: $2,400–$10,400/yr subscription",
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": "https://api.sos.iowa.gov/"
   },
   "KS": {
     "name": "Kansas",
     "sos": "https://www.sos.ks.gov/eforms/BusinessEntity/Search.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. File all missing Information Reports online.\n2. Submit a Reinstatement form to the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "KY": {
     "name": "Kentucky",
     "sos": "https://sosbes.sos.ky.gov/BusSearchNProfile/search.aspx",
     "timeframe": "Instant",
     "instructions": "1. Log into the FastTrack portal.\n2. File a Reinstatement application and submit missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "LA": {
     "name": "Louisiana",
     "sos": "https://coraweb.sos.la.gov/CommercialSearch/CommercialSearch.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into geauxBIZ.\n2. File an Application for Reinstatement and submit missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": "Commercial API: $500/yr",
+    "captcha": true,
+    "authRequired": false,
+    "officialApi": "https://commercialapi.sos.la.gov"
   },
   "ME": {
     "name": "Maine",
     "sos": "https://apps3.web.maine.gov/nei-sos-icrs/ICRS?MainPage=x",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Complete an Application for Excuse/Reinstatement.\n2. Mail it to the SOS with all past-due Annual Report fees.",
-    "isOnline": false
+    "isOnline": false,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MD": {
     "name": "Maryland",
     "sos": "https://egov.maryland.gov/businessexpress/entitysearch",
-    "timeframe": "1\u20133 Weeks",
+    "timeframe": "1–3 Weeks",
     "instructions": "1. File all missing Annual Reports/Personal Property Returns with SDAT.\n2. File Articles of Revival.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MA": {
     "name": "Massachusetts",
     "sos": "https://corp.sec.state.ma.us/CorpWeb/CorpSearch/CorpSearch.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the SOC portal.\n2. File all missing Annual Reports online and pay associated fees.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MI": {
     "name": "Michigan",
     "sos": "https://mibusinessregistry.lara.state.mi.us/search/business",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the LARA portal.\n2. File a Certificate of Restoration of Good Standing.\n3. Submit all missing Annual Statements.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MN": {
     "name": "Minnesota",
     "sos": "https://mblsportal.sos.state.mn.us/Business/Search",
     "timeframe": "Instant",
     "instructions": "1. Log into the SOS portal.\n2. File a current-year Annual Renewal online to restore active status.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MS": {
     "name": "Mississippi",
     "sos": "https://corp.sos.ms.gov/corp/portal/c/page/corpBusinessIdSearch/portal.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the SOS portal.\n2. File a Reinstatement form.\n3. Submit missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MO": {
     "name": "Missouri",
-    "sos": "https://www.sos.mo.gov/BusinessEntity/soskb/csearch.asp",
-    "timeframe": "1\u20133 Days",
+    "sos": "https://bsd.sos.mo.gov/BusinessEntity/BESearch.aspx?SearchType=0",
+    "timeframe": "1–3 Days",
     "instructions": "1. File all missing Annual Registration Reports online.\n2. Submit an Application for Rescission of Dissolution.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "MT": {
     "name": "Montana",
-    "sos": "https://biz.sosmt.gov/search",
+    "sos": "https://biz.sosmt.gov/search/business",
     "timeframe": "Instant",
     "instructions": "1. Log into the ePass portal.\n2. File an Application for Reinstatement.\n3. Submit missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NE": {
     "name": "Nebraska",
     "sos": "https://www.nebraska.gov/sos/corp/corpsearch.cgi",
-    "timeframe": "3\u20135 Days",
+    "timeframe": "3–5 Days",
     "instructions": "1. Complete an Application for Reinstatement.\n2. Mail it to the SOS along with missing Biennial Report fees.",
-    "isOnline": false
+    "isOnline": false,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": true,
+    "authRequired": false,
+    "officialApi": null
   },
   "NV": {
     "name": "Nevada",
     "sos": "https://esos.nv.gov/EntitySearch/OnlineEntitySearch",
     "timeframe": "Instant",
     "instructions": "1. Log into SilverFlume.\n2. File missing Annual Lists.\n3. Pay State Business License fees plus late penalties online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NH": {
     "name": "New Hampshire",
     "sos": "https://quickstart.sos.nh.gov/online/BusinessInquire",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into QuickStart.\n2. File a Reinstatement form and submit missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NJ": {
     "name": "New Jersey",
     "sos": "https://www.njportal.com/DOR/BusinessNameSearch",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Obtain a Tax Clearance Certificate from the Div. of Taxation.\n2. File for Reinstatement with the Div. of Revenue.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NM": {
     "name": "New Mexico",
-    "sos": "https://secretaryofstate.com/new-mexico/",
-    "timeframe": "1\u20135 Days",
+    "sos": "https://enterprise.sos.nm.gov/search",
+    "timeframe": "1–5 Days",
     "instructions": "1. Log into the SOS portal.\n2. File an Application for Reinstatement and pay missing report fees.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NY": {
     "name": "New York",
     "sos": "https://apps.dos.ny.gov/publicInquiry/",
-    "timeframe": "2\u20134 Weeks",
+    "timeframe": "2–4 Weeks",
     "instructions": "1. Pay outstanding franchise taxes to the Dept. of Taxation to get 'Consent to Reinstatement.'\n2. File missing Biennial Statements with the Dept. of State.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "NC": {
     "name": "North Carolina",
     "sos": "https://www.sosnc.gov/online_services/search/by_title/_Business_Registration",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Submit an Application for Reinstatement.\n2. File all missing Annual Reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "ND": {
     "name": "North Dakota",
     "sos": "https://firststop.sos.nd.gov/search/business",
     "timeframe": "Instant",
     "instructions": "1. Log into FirstStop.\n2. File a Reinstatement application and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "OH": {
     "name": "Ohio",
     "sos": "https://businesssearch.ohiosos.gov",
-    "timeframe": "1\u20133 Weeks",
+    "timeframe": "1–3 Weeks",
     "instructions": "1. Obtain Tax Clearance from the Dept. of Taxation.\n2. File a Reinstatement (Form 525) with the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "OK": {
     "name": "Oklahoma",
     "sos": "https://www.sos.ok.gov/corp/corpInquiryFind.aspx",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Get tax clearance from the Tax Commission (Corps only).\n2. File missing Annual Certificates (LLCs) or a Reinstatement form.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "OR": {
     "name": "Oregon",
     "sos": "https://sos.oregon.gov/business/pages/find.aspx",
     "timeframe": "Instant",
     "instructions": "1. Log into the SOS portal.\n2. File a Reinstatement form and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": true,
+    "authRequired": false,
+    "officialApi": null
   },
   "PA": {
     "name": "Pennsylvania",
     "sos": "https://file.dos.pa.gov/search/business",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Obtain Tax Clearance from the Dept. of Revenue.\n2. File an Application for Reinstatement with the Dept. of State.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": "Bulk data: $0.25/name",
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "RI": {
     "name": "Rhode Island",
     "sos": "https://business.sos.ri.gov/CorpWeb/CorpSearch/CorpSearch.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Obtain a Letter of Good Standing from the Div. of Taxation.\n2. File a Reinstatement application with the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "SC": {
     "name": "South Carolina",
     "sos": "https://businessfilings.sc.gov/businessfiling/entity/search",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Submit missing tax returns to the Dept. of Revenue to get tax clearance.\n2. File an Application for Reinstatement with the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "SD": {
     "name": "South Dakota",
     "sos": "https://sosenterprise.sd.gov/BusinessServices/Business/FilingSearch.aspx",
     "timeframe": "Instant",
     "instructions": "1. Log into the SOS portal.\n2. File a Reinstatement form and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "TN": {
     "name": "Tennessee",
     "sos": "https://tncab.tnsos.gov/business-entity-search",
     "timeframe": "Instant",
     "instructions": "1. Log into the tnbear portal.\n2. File a Reinstatement form and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "TX": {
     "name": "Texas",
     "sos": "https://comptroller.texas.gov/taxes/franchise/account-status/search",
-    "timeframe": "3\u20134 Weeks",
+    "timeframe": "3–4 Weeks",
     "instructions": "1. File past-due franchise tax reports with the Comptroller.\n2. Request a Tax Clearance Letter (Form 05-391).\n3. Submit the Clearance Letter and Reinstatement Form to the SOS.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": "$1.00 per search (SOSDirect account required)",
+    "captcha": false,
+    "authRequired": true,
+    "officialApi": null
   },
   "UT": {
     "name": "Utah",
     "sos": "https://businessregistration.utah.gov/EntitySearch/OnlineEntitySearch",
     "timeframe": "Instant",
     "instructions": "1. Log into the SOS portal.\n2. File an Application for Reinstatement and missing Annual Renewals online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "VT": {
     "name": "Vermont",
-    "sos": "https://bizfilings.vermont.gov/business/businesssearch?_gl=1*e4z1rz*_ga*ODI0NTgwODgyLjE3Nzk0MTMzNTk.*_ga_V9WQH77KLW*czE3Nzk0MTMzNTkkbzEkZzAkdDE3Nzk0MTMzNjkkajUwJGwwJGgw",
+    "sos": "https://bizfilings.vermont.gov/online/BusinessInquire/BusinessSearch",
     "timeframe": "Instant",
     "instructions": "1. Log into the SOS portal.\n2. File a Reinstatement application and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "VA": {
     "name": "Virginia",
     "sos": "https://cis.scc.virginia.gov",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Request a Reinstatement packet directly from the SCC.\n2. Mail the completed packet along with missing Annual Report fees.",
-    "isOnline": false
+    "isOnline": false,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "WA": {
     "name": "Washington",
-    "sos": "https://www.sos.wa.gov/corps/search.aspx",
+    "sos": "https://ccfs.sos.wa.gov/ng-app/view/businesssearch/searchBusiness.html",
     "timeframe": "Instant",
     "instructions": "1. Log into the CCFS portal.\n2. File a Reinstatement application and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 1,
+    "searchTemplate": "https://www.sos.wa.gov/corps/search_results.aspx?name={query}&name_type=starts_with",
+    "searchCost": null,
+    "captcha": false,
+    "authRequired": false,
+    "officialApi": "https://www.sos.wa.gov/corps/search_results.aspx"
   },
   "WV": {
     "name": "West Virginia",
     "sos": "https://apps.wv.gov/sos/businessentitysearch/",
-    "timeframe": "1\u20132 Weeks",
+    "timeframe": "1–2 Weeks",
     "instructions": "1. Get Tax Clearance from the State Tax Dept., Workforce WV, and Unemployment.\n2. File a Reinstatement with the SOS (One Stop).",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "WI": {
     "name": "Wisconsin",
     "sos": "https://apps.dfi.wi.gov/apps/corpsearch/Advanced.aspx",
-    "timeframe": "1\u20133 Days",
+    "timeframe": "1–3 Days",
     "instructions": "1. Log into the DFI portal.\n2. File a Reinstatement form and missing Annual Reports online.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 1,
+    "searchTemplate": "https://apps.dfi.wi.gov/apps/CorpSearch/Results.aspx?type=Simple&q={query}",
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "WY": {
     "name": "Wyoming",
     "sos": "https://wyobiz.wyo.gov/Business/FilingSearch.aspx",
-    "timeframe": "3\u20135 Days",
+    "timeframe": "3–5 Days",
     "instructions": "1. Print the Reinstatement form from the SOS website.\n2. Mail it in with all missing Annual Report fees.",
-    "isOnline": false
+    "isOnline": false,
+    "searchViability": 2,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": null,
+    "authRequired": false,
+    "officialApi": null
   },
   "DC": {
     "name": "Dist. of Columbia",
     "sos": "https://corponline.dlcp.dc.gov/homepage/business-search",
     "timeframe": "1-3 Days",
     "instructions": "1. Log into CorpOnline.\n2. File for Reinstatement and submit missing biennial reports.",
-    "isOnline": true
+    "isOnline": true,
+    "searchViability": 3,
+    "searchTemplate": null,
+    "searchCost": null,
+    "captcha": true,
+    "authRequired": true,
+    "officialApi": null
   }
 }
