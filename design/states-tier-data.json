@@ -1,0 +1,202 @@
+[
+  {
+    "fips": "06",
+    "state": "CA",
+    "sos": "https://bizfileonline.sos.ca.gov/search/business",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": false,
+    "notes": "Tecuity bizfile SPA; search runs via POST /api/Records/businesssearch (JSON body), no querystring prefill. Entire host behind Imperva Incapsula (curl gets bot-wall). Official keyed GET API exists: calico.sos.ca.gov/cbc/v1/api/BusinessEntityKeywordSearch?search-term={q} (free Ocp-Apim-Subscription-Key via calicodev.sos.ca.gov) — future scraper path, not a user deep link."
+  },
+  {
+    "fips": "48",
+    "state": "TX",
+    "sos": "https://comptroller.texas.gov/taxes/franchise/account-status/search",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": true,
+    "notes": "Comptroller Taxable Entity Search (real SOS search = paid SOSDirect). Page JS reads no URL params, so no user-facing deep link. BUT unauthenticated GET JSON API fetch-verified: comptroller.texas.gov/data-search/franchise-tax?name={q} returns name/taxpayerId/zip (no status or agent in search payload; broad queries get HTTP 413). Old mycpa.cpa.state.tx.us/coa/ now 302s to this page."
+  },
+  {
+    "fips": "12",
+    "state": "FL",
+    "sos": "https://search.sunbiz.org/Inquiry/CorporationSearch/ByName",
+    "sosVerified": true,
+    "searchTemplate": "https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm={query}",
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": true,
+    "notes": "Only pre-fill-capable state of the 20. states.json landing URL dos.myflorida.com/sunbiz/search/ 301s to dos.fl.gov/sunbiz/search/ — update it. Template GET executes server-side (Google indexes live SearchResults pages at this exact pattern) but search.sunbiz.org serves a Cloudflare JS challenge to bots, so direct fetch confirmation failed. Results are server-rendered HTML with name, document number, status inline."
+  },
+  {
+    "fips": "36",
+    "state": "NY",
+    "sos": "https://apps.dos.ny.gov/publicInquiry/",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "unconfirmed",
+    "canSurfaceInlineCandidate": true,
+    "notes": "apps.dos.ny.gov resets non-browser TCP/TLS connections (curl + WebFetch both blocked) — liveness confirmed via dos.ny.gov official redirect + fresh search-engine index. Form-driven .NET app; no GET deep-link pattern documented; indexed result URLs carry no query params. Results grid reportedly shows DOS ID, status, type, filing date inline (third-party docs; unverified)."
+  },
+  {
+    "fips": "42",
+    "state": "PA",
+    "sos": "https://file.dos.pa.gov/search/business",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": false,
+    "notes": "Same Tecuity bizfile SPA platform as CA: POST /api/Records/businesssearch, no querystring prefill documented. Whole host behind Cloudflare managed challenge (403 to curl + WebFetch); URL currency confirmed via pa.gov official Record Searches page linking to it. Results render client-side from the POST JSON API."
+  },
+  {
+    "fips": "17",
+    "state": "IL",
+    "sos": "https://apps.ilsos.gov/businessentitysearch/",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": true,
+    "notes": "states.json URL ilsos.gov/corporatellc/ still resolves but via double 302 to apps.ilsos.gov/businessentitysearch/ — update it. Search is POST-only (archived form source read: method=post, command=entitySearch, searchValue field); no GET search capture exists. WAF kills non-browser connections so live negative untestable. Results are server-rendered JSP tables (name, file number, status). IL law prohibits bulk extraction. Entity DETAIL pages are GET-deep-linkable (CorporateLlcController?command=mms&fileNbr={n})."
+  },
+  {
+    "fips": "39",
+    "state": "OH",
+    "sos": "https://businesssearch.ohiosos.gov",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": false,
+    "notes": "Code-verified negative: app's router JS matches the ?= querystring ONLY against businessDetails/ — so ?=ACME does NOT pre-execute a search; ?=businessDetails/{entityNumber} is a details-only deep link. Results come client-side from GET JSON calls to businesssearchapi.ohiosos.gov behind the same Cloudflare zone (strictest CF of the batch — defeated rendering proxy)."
+  },
+  {
+    "fips": "13",
+    "state": "GA",
+    "sos": "https://ecorp.sos.ga.gov/BusinessSearch",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": true,
+    "notes": "Code-verified from a Jan-2026 archived copy: page has NO form element; Search button JS builds {SearchType, SearchValue, SearchCriteria} and POSTs via $.submitForm('/BusinessSearch') — never GET. Cloudflare-challenged to bots. Results render server-side into a table (name, control number, type, status, office address). Detail deep link once id known: /BusinessSearch/BusinessInformation?businessId={id}&businessType={type}."
+  },
+  {
+    "fips": "37",
+    "state": "NC",
+    "sos": "https://www.sosnc.gov/online_services/search/by_title/_Business_Registration",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": true,
+    "notes": "Code-verified negative: form POSTs to /online_services/search/Business_Registration_Results with an ASP.NET anti-forgery __RequestVerificationToken, so a GET deep link can't pass validation (archived bare GET of results URL = 302 back to form). Fields: CorpSearchType, Words, SearchCriteria. Results are a server-rendered table (legal name, SOSID, status, entity type). Cloudflare-challenged to bots."
+  },
+  {
+    "fips": "26",
+    "state": "MI",
+    "sos": "https://mibusinessregistry.lara.state.mi.us/search/business",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": false,
+    "notes": "MiBusiness Registry portal (live since 2025-06-23, replaced COFS) — live-rendered 2026-06-12. Six deep-link variants tested live (?search=, ?q=, ?searchTerm=, ?name=, /business:ACME, /business/ACME): all render the empty form, none pre-executes. JS SPA; results from internal XHR API behind Cloudflare."
+  },
+  {
+    "fips": "34",
+    "state": "NJ",
+    "sos": "https://www.njportal.com/DOR/BusinessNameSearch/Search/BusinessName",
+    "sosVerified": false,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": true,
+    "notes": "states.json URL is STALE: njportal.com/DOR/BusinessNameSearch now 302s to my.nj.gov state login; the anonymous search lives one path deeper at /Search/BusinessName. GET ?BusinessName=ACME fetch-verified ignored (empty form); search is POST + anti-forgery token. Token+cookie POST replay succeeded: server-rendered results table with Business Name, Entity Id, City, Type, Incorporated Date (no status/agent). No bot-blocking."
+  },
+  {
+    "fips": "51",
+    "state": "VA",
+    "sos": "https://cis.scc.virginia.gov/EntitySearch/Index",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": false,
+    "notes": "SCC CIS live (root 302s to cookie-consent interstitial, same site). Mechanism read from served JS: Search runs reCAPTCHA v3, POSTs token to /GoogleCaptchaHelper/VerifyReCaptcha, then $.submitForm with anti-forgery token; name input has no name= attribute so even raw GET impossible. Results server-rendered but captcha gates every search — not automatable. Detail pattern /EntitySearch/BusinessInformation?businessId={id} (documented, unfetched)."
+  },
+  {
+    "fips": "53",
+    "state": "WA",
+    "sos": "https://ccfs.sos.wa.gov/#/BusinessSearch",
+    "sosVerified": false,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": false,
+    "notes": "states.json URL is STALE: sos.wa.gov/corps/search.aspx redirects to ccfs.sos.wa.gov (CCFS). Angular SPA; criteria live in component state, hash fragment never reaches server — no deep link. SPA calls POST ccfs-api.prod.sos.wa.gov/api/BusinessSearch/GetBusinessSearchList (historically returned UBI/status/agent inline) but the API now answers direct calls with a 'System verification in progress' anti-bot gate."
+  },
+  {
+    "fips": "04",
+    "state": "AZ",
+    "sos": "https://arizonabusinesscenter.azcc.gov/businesssearch",
+    "sosVerified": false,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": false,
+    "notes": "states.json URL is STALE AND WRONG SYSTEM: apps.azsos.gov tntp is the SOS trade-name search (now 403); AZ business entities are searched at the Corporation Commission. eCorp was decommissioned 2026-01-02; replacement Arizona Business Center launched 2026-01-12 (ecorp.azcc.gov/EntitySearch/Index 301s there). Angular bundle inspected: navigation uses router state + captcha token, not query params; ?businessname=ACME ignored. Search API api-azbusinessconnectonline.azcc.gov/api/businesssearch/get returns 401 without token."
+  },
+  {
+    "fips": "47",
+    "state": "TN",
+    "sos": "https://tncab.tnsos.gov/business-entity-search",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": false,
+    "notes": "TNCaB is live and canonical (sos.tn.gov links only here; old tnbear.tn.gov times out from public internet). ?Name=ACME fetch-verified ignored — param echoed into grid sort links but not bound, no results pre-executed. Search is a Kendo grid AJAX POST (ExecuteSearchProc2) with server-encrypted params; replays return []. Grid config exposes Control No., Name, Status, Formed In — but only client-rendered. Cloudflare + recaptcha endpoint present."
+  },
+  {
+    "fips": "25",
+    "state": "MA",
+    "sos": "https://corp.sec.state.ma.us/CorpWeb/CorpSearch/CorpSearch.aspx",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "pattern-documented",
+    "canSurfaceInlineCandidate": true,
+    "notes": "URL unchanged, HEAD 200. Classic ASP.NET WebForms (__VIEWSTATE) — effectively POST-only, no documented GET deep link; body unfetchable because Imperva Incapsula JS challenge intercepts GETs, so the negative rests on headers + third-party docs. Results are a server-rendered table (entity name, ID number, address) once past Incapsula."
+  },
+  {
+    "fips": "18",
+    "state": "IN",
+    "sos": "https://bsd.sos.in.gov/publicbusinesssearch",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": true,
+    "notes": "URL unchanged but load balancer intermittently returns soft 404s — retry before declaring dead. Page JS fetch-verified: Search builds a BusinessSearch object and POSTs via $.submitForm('/publicbusinesssearch'), and calls Validaterecapchaap() — reCAPTCHA required. No querystring path. Post-search results grid is server-rendered and rich (Business ID, name, entity type, principal address, registered agent, status) but captcha-gated."
+  },
+  {
+    "fips": "29",
+    "state": "MO",
+    "sos": "https://bsd.sos.mo.gov/BusinessEntity/BESearch.aspx?SearchType=0",
+    "sosVerified": false,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": true,
+    "notes": "states.json URL is STALE: sos.mo.gov/BusinessEntity/soskb/csearch.asp 302s to bsd.sos.mo.gov/BusinessEntity/BESearch.aspx?SearchType=0 (alias bsd.sos.mo.gov/search). New page is WebForms + Telerik RadGrid, VIEWSTATE POST; only GET param is SearchType (mode selector 0-3), which cannot carry the query. Results grid is server-rendered with Business Name, Charter No., Type, Status, Created, Registered Agent — richest inline data of the 20, and NO captcha or bot-block observed."
+  },
+  {
+    "fips": "24",
+    "state": "MD",
+    "sos": "https://egov.maryland.gov/BusinessExpress/EntitySearch",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "fetch-verified",
+    "canSurfaceInlineCandidate": true,
+    "notes": "Baseline resolves (lowercase path → canonical). GET leads fetch-verified negative: EntitySearch/Search?businessName=ACME and ?searchAction=Search&BusinessName=ACME both return the byte-identical empty form. Real form POSTs with anti-forgery token; a fully correct POST replay was rejected server-side with 'Unable to verify captcha'. Results render server-side on success (name, Department ID, status) — captcha-gated in practice."
+  },
+  {
+    "fips": "08",
+    "state": "CO",
+    "sos": "https://www.sos.state.co.us/biz/BusinessEntityCriteriaExt.do",
+    "sosVerified": true,
+    "searchTemplate": null,
+    "templateConfirmed": "unconfirmed",
+    "canSurfaceInlineCandidate": true,
+    "notes": "URL still official per live index, but every request (curl + WebFetch) to /biz/* gets Cloudflare hard 403 — the BusinessEntityResults.do?searchName=ACME GET lead could NOT be tested; Struts app historically POSTs. Liveness inferred, deep-link unconfirmed. Practical inline-data path fetch-verified instead: Socrata open-data API data.colorado.gov/resource/4ykn-tg5h.json?$where=starts_with(upper(entityname),'{Q}') returns entityid, entityname, entitystatus, entitytype, addresses, registered agent — current data."
+  }
+]
