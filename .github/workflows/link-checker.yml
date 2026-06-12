@@ -1,9 +1,10 @@
-name: Weekly State SOS Link Checker
+name: Daily State SOS Link Checker
 
 on:
   schedule:
-    # Run every Monday at midnight UTC (8 PM EST Sunday / 5 PM PST Sunday)
-    - cron: '0 0 * * 1'
+    # Run daily at midnight UTC. Checker is LLM-free (requests + hash diff),
+    # so daily cadence costs no tokens.
+    - cron: '0 0 * * *'
   workflow_dispatch:
     # Allow manual triggering from the GitHub Actions tab
 
