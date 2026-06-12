@@ -1,0 +1,6 @@
+# Local Netlify folder
+.netlify
+
+# Local-only archive (historical snapshots, large media) — never publish
+_local-archive/
+.DS_Store
