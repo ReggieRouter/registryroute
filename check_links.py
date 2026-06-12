@@ -31,17 +31,39 @@ def check_base_domain(url):
         pass
     return False, None
 
+# Final-URL paths/hosts that mean the user landed on a sign-in wall, not a search.
+# A login page returns 200, so status checks alone never catch this (see LEN-348:
+# NJ's old URL "passed" while redirecting every visitor to my.nj.gov login).
+LOGIN_RE = __import__("re").compile(r"login|log-in|signin|sign-in|/sso|/auth(?:[/?]|$)|logon|account/signin", __import__("re").IGNORECASE)
+
+def redirect_verdict(requested_url, response):
+    """Inspect the followed redirect chain. Returns (ok, note)."""
+    final = response.url
+    if not response.history or final == requested_url:
+        return True, ""
+    parsed_final = urlparse(final)
+    if LOGIN_RE.search(parsed_final.path) or LOGIN_RE.search(parsed_final.netloc):
+        return False, f"Redirects to a login wall: {final}"
+    req_root = ".".join(urlparse(requested_url).netloc.split(".")[-2:])
+    fin_root = ".".join(parsed_final.netloc.split(".")[-2:])
+    if req_root != fin_root:
+        return True, f" [note: redirects off-domain to {final} — confirm intentional]"
+    return True, ""
+
 def check_url(state_code, state_name, url):
     if not url:
         return False, "Missing URL"
-    
+
     status_msg = ""
-    
+
     # Try with SSL verification first
     try:
         response = requests.get(url, headers=HEADERS, timeout=15, allow_redirects=True)
         if response.status_code < 400:
-            return True, f"OK ({response.status_code})"
+            ok, note = redirect_verdict(url, response)
+            if not ok:
+                return False, note
+            return True, f"OK ({response.status_code}){note}"
         elif response.status_code in [403, 405, 429]:
             return True, f"OK (Blocked: {response.status_code})"
         else:
