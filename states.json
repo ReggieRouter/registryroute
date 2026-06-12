@@ -27,7 +27,7 @@
   },
   "AZ": {
     "name": "Arizona",
-    "sos": "https://arizonabusinesscenter.azcc.gov/homepage",
+    "sos": "https://arizonabusinesscenter.azcc.gov/businesssearch",
     "timeframe": "3–5 Days",
     "instructions": "1. Log into the Arizona Business Center at ACC.\n2. File an Application for Reinstatement.\n3. Submit missing Annual Reports (Corporations only).",
     "isOnline": true,
@@ -378,7 +378,7 @@
   },
   "NJ": {
     "name": "New Jersey",
-    "sos": "https://www.njportal.com/DOR/BusinessNameSearch",
+    "sos": "https://www.njportal.com/DOR/BusinessNameSearch/Search/BusinessName",
     "timeframe": "1–3 Days",
     "instructions": "1. Obtain a Tax Clearance Certificate from the Div. of Taxation.\n2. File for Reinstatement with the Div. of Revenue.",
     "isOnline": true,
@@ -599,7 +599,7 @@
   },
   "WA": {
     "name": "Washington",
-    "sos": "https://ccfs.sos.wa.gov/ng-app/view/businesssearch/searchBusiness.html",
+    "sos": "https://ccfs.sos.wa.gov/#/BusinessSearch",
     "timeframe": "Instant",
     "instructions": "1. Log into the CCFS portal.\n2. File a Reinstatement application and missing Annual Reports online.",
     "isOnline": true,
