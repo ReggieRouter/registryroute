@@ -490,6 +490,67 @@ footer {
   .directory-bar { display: none; }
 }
 </style>
+
+<!-- LEN-301 SOS redesign — scoped to map + key + popover only -->
+<style id="rr-sos-redesign">
+:root{ --rr-instant:#5BA386; --rr-prefill:#8F7CC2; --rr-site:#3b82f6; }
+/* hover/selected reveal the tier color — the only time states differ (SOS mode only) */
+#map-svg.mode-sos .state-hovered.t-instant,#map-svg.mode-sos .state-selected.t-instant{fill:var(--rr-instant)!important}
+#map-svg.mode-sos .state-hovered.t-prefill,#map-svg.mode-sos .state-selected.t-prefill{fill:var(--rr-prefill)!important}
+#map-svg.mode-sos .state-hovered.t-site,#map-svg.mode-sos .state-selected.t-site{fill:var(--rr-site)!important}
+.state-sel-stroke{fill:none;stroke:rgba(255,255,255,.9);stroke-width:3;stroke-linejoin:round;pointer-events:none}
+
+/* pinned-company strip */
+.rr-cohead{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;min-height:30px}
+.rr-cohead .rr-lead{font-size:13px;color:var(--muted)}
+.rr-pin{display:inline-flex;align-items:center;gap:9px;background:rgba(91,163,134,.18);border:1px solid #5BA38677;border-radius:999px;padding:6px 9px 6px 14px;font-size:14px;font-weight:600;color:#b8e2cf}
+.rr-pin .rr-tag{font-size:9px;letter-spacing:.08em;color:#b8e2cf;border:1px solid #5BA38677;border-radius:4px;padding:1px 5px}
+.rr-pin .rr-x{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;color:#b8e2cf;font-size:11px;cursor:pointer}
+.rr-pin .rr-x:hover{background:#ffffff22;color:#fff}
+.rr-cohead .rr-change{background:none;border:0;color:var(--muted);font-size:11px;letter-spacing:.06em;cursor:pointer;text-decoration:underline}
+.rr-cohead .rr-change:hover{color:var(--text)}
+
+/* tier key */
+.rr-key{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:6px auto 0;max-width:900px;padding:0 20px}
+.rr-key b{color:var(--text);font-weight:600}
+.rr-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:0}
+.rr-dot-instant{background:var(--rr-instant)}.rr-dot-prefill{background:var(--rr-prefill)}.rr-dot-site{background:var(--rr-site)}
+body.rr-reinstatement .rr-cohead,body.rr-reinstatement .rr-key{display:none}
+@media (max-width:600px){ .rr-cohead,.rr-key{display:none} }
+
+/* anchored popover */
+.rr-pop{position:absolute;width:300px;background:#101624;border:1px solid #2a3349;border-radius:14px;box-shadow:0 18px 50px #000a;z-index:30;font-size:13px;text-align:left}
+.rr-pop header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.rr-pop header .rr-st{font-weight:700;font-size:14px;flex:1;color:var(--text)}
+.rr-badge{font-size:9px;letter-spacing:.1em;font-weight:700;border-radius:5px;padding:3px 6px}
+.rr-badge.instant{color:#b8e2cf;background:#5BA38629}.rr-badge.prefill{color:#c7baea;background:#8F7CC229}.rr-badge.site{color:#9DC1FF;background:#3b82f622}
+.rr-pop .rr-close{background:none;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 4px;line-height:1}
+.rr-pop .rr-close:hover{color:var(--text)}
+.rr-pop .rr-body{padding:13px 14px}
+.rr-pop p{color:#c3ccdb;line-height:1.45;margin:0}
+.rr-coentry{margin-top:11px}
+.rr-coentry .k{font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.rr-coentry input{width:100%;background:#0c1120;border:1px solid var(--border);border-radius:9px;color:var(--text);font:inherit;font-size:13px;padding:10px 12px;outline:none}
+.rr-coentry input:focus{border-color:var(--rr-instant)}
+.rr-coentry .sub{font-size:10.5px;color:var(--muted);margin-top:6px}
+.rr-prefill-chip{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.06em;color:#c7baea;border:1px solid #8F7CC255;border-radius:5px;padding:2px 7px}
+.rr-qbox{margin-top:10px;background:#0c1120;border:1px solid var(--border);border-radius:9px;padding:9px 11px}
+.rr-qbox .k{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.rr-qbox .v{font-weight:600;margin-top:3px;color:var(--text)}
+.rr-cta{display:block;width:100%;margin-top:12px;background:#2563EB;border:0;border-radius:9px;color:#fff;font:inherit;font-weight:700;font-size:13px;padding:11px;cursor:pointer;text-align:center;text-decoration:none}
+.rr-cta:hover{background:#3B82F6}
+.rr-fine{margin-top:8px;font-size:10.5px;color:var(--muted);line-height:1.4}
+.rr-bypass{display:block;text-align:center;margin-top:10px;font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:0;width:100%}
+.rr-bypass:hover{color:var(--text)}
+.rr-entity{margin-top:11px;background:#0c1120;border:1px solid var(--border);border-radius:10px;padding:11px}
+.rr-entity .nm{font-weight:700;display:flex;align-items:center;gap:8px;color:var(--text)}
+.rr-status{font-size:9px;font-weight:700;letter-spacing:.08em;border-radius:5px;padding:2px 6px;color:#b8e2cf;background:#5BA38629}
+.rr-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px}
+.rr-grid2 .k,.rr-addr .k{font-size:9px;letter-spacing:.1em;color:var(--muted)}
+.rr-grid2 .v,.rr-addr .v{font-size:12px;margin-top:2px;color:var(--text)}
+.rr-addr{margin-top:10px}
+.rr-scrapedate{margin-top:9px;font-size:10px;color:var(--muted)}
+</style>
 </head>
 <body>
 
@@ -516,13 +577,23 @@ footer {
 </header>
 
 <main class="map-container" id="map-container">
+  <!-- LEN-301: pinned-company strip (Option B) -->
+  <div class="rr-cohead" id="rr-cohead"><span class="rr-lead">Click any state to check a company.</span></div>
   <svg id="map-svg" class="mode-sos" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet">
     <g id="states-g"></g>
     <g id="borders-g"></g>
     <g id="hover-g"></g>
+    <g id="sel-g"></g>
     <g id="labels-g"></g>
   </svg>
 </main>
+
+<!-- LEN-301: tier key -->
+<div class="rr-key" id="rr-key">
+  <span><span class="rr-dot rr-dot-instant"></span><b>Instant</b> — verified data, right here</span>
+  <span><span class="rr-dot rr-dot-prefill"></span><b>Pre-fill</b> — we open the portal, pre-filled</span>
+  <span><span class="rr-dot rr-dot-site"></span><b>State site</b> — we open the official portal</span>
+</div>
 
 <section class="mobile-search-container" id="mobile-search-container" aria-label="State Search Directory">
   <div class="search-input-wrapper">
@@ -891,10 +962,21 @@ const FIPS = {
   "50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"
 };
 const labelOffsets = {
-  "VT": [-5, -10], "NH": [5, 5], "MA": [15, -2], "RI": [10, 8], 
-  "CT": [5, 10], "NJ": [15, 0], "DE": [20, 2], "DC": [25, 18], 
+  "VT": [-5, -10], "NH": [5, 5], "MA": [15, -2], "RI": [10, 8],
+  "CT": [5, 10], "NJ": [15, 0], "DE": [20, 2], "DC": [25, 18],
   "MD": [-5, -8], "HI": [0, 10], "FL": [10, 0], "MI": [10, 20]
 };
+
+// --- LEN-301 SOS REDESIGN: tier model (single editable source) ---
+// 'instant' = RR has verified inline data (green) · 'prefill' = SOS search accepts a
+// GET deep-link we can pre-fill (lavender) · default 'site' = we open the official portal (blue).
+// Seeded honestly: only FL has a working pre-fill deep-link today; states promote to
+// instant/prefill here as scraped data lands — no other code changes needed.
+const TIERS = { FL: 'prefill' };
+const SEARCH_TEMPLATE = {
+  FL: 'https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm={query}'
+};
+function tierOf(abbr) { return TIERS[abbr] || 'site'; }
 
 let STATES = {};
 
@@ -985,6 +1067,8 @@ const REINSTATEMENT_LINKS = {
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('map-svg').setAttribute('class', 'mode-' + mode);
+  document.body.classList.toggle('rr-reinstatement', mode === 'reinstatement');
+  if (mode !== 'sos' && typeof closeSosPopover === 'function') closeSosPopover();
 
   const link = document.getElementById('mode-toggle-link');
   if (link) {
@@ -1021,7 +1105,7 @@ function handleClick(abbr) {
   if (!s || !s.sos) return;
 
   if (currentMode === 'sos') {
-    window.open(s.sos, '_blank', 'noopener,noreferrer');
+    openSosPopover(abbr);
   } else {
     updateURL(abbr, currentMode);
 
@@ -1092,6 +1176,9 @@ async function initMap() {
       const code = FIPS[String(f.id).padStart(2, '0')];
       if (code) featureByCode[code] = f;
     });
+    // LEN-301: expose projection + features for the SOS popover/selection layer
+    window.rrPath = path;
+    window.rrFeatureByCode = featureByCode;
 
     function handleInteraction(abbr, isHovering) {
       if (!abbr) return;
@@ -1135,7 +1222,7 @@ async function initMap() {
         handleClick(FIPS[String(d.id).padStart(2, '0')]);
       })
       .append('path')
-      .attr('class', 'state-path')
+      .attr('class', d => 'state-path t-' + tierOf(FIPS[String(d.id).padStart(2, '0')]))
       .attr('d', path)
       .attr('id', d => 'path-' + FIPS[String(d.id).padStart(2, '0')])
       .on('mouseenter', (event, d) => handleInteraction(FIPS[String(d.id).padStart(2, '0')], true))
@@ -1247,6 +1334,110 @@ async function loadStatesData() {
 }
 
 loadStatesData();
+</script>
+<!-- LEN-301: SOS popover + pinned-company (Option B) -->
+<script>
+(function(){
+  const EIN_RE=/^\d{2}-?\d{7}$/;
+  let company=null;          // {text,isEIN}
+  let sosSel=null;           // selected abbr while popover open
+  const coheadEl=document.getElementById('rr-cohead');
+
+  function renderHead(){
+    if(!company){ coheadEl.innerHTML='<span class="rr-lead">Click any state to check a company.</span>'; return; }
+    coheadEl.innerHTML='<span class="rr-lead">Checking</span>'+
+      '<span class="rr-pin">'+esc(company.text)+(company.isEIN?'<span class="rr-tag">EIN</span>':'')+'<span class="rr-x" id="rr-unpin">✕</span></span>'+
+      '<button class="rr-change" id="rr-change">change</button>';
+    document.getElementById('rr-unpin').onclick=clearCompany;
+    document.getElementById('rr-change').onclick=clearCompany;
+  }
+  function setCompany(raw){ const t=(raw||'').trim(); if(!t)return; company={text:t,isEIN:EIN_RE.test(t)}; renderHead(); if(sosSel)openSosPopover(sosSel,true); }
+  function clearCompany(){ company=null; renderHead(); if(sosSel)openSosPopover(sosSel,true); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function paintSelected(){
+    if(typeof d3==='undefined')return;
+    d3.selectAll('.state-path').classed('state-selected',false);
+    d3.select('#sel-g').selectAll('*').remove();
+    if(sosSel){
+      d3.select('#path-'+sosSel).classed('state-selected',true);
+      const f=window.rrFeatureByCode&&window.rrFeatureByCode[sosSel];
+      if(f&&window.rrPath) d3.select('#sel-g').append('path').attr('class','state-sel-stroke').attr('d',window.rrPath(f));
+    }
+  }
+
+  window.closeSosPopover=function(clear){
+    const p=document.getElementById('rr-pop'); if(p)p.remove();
+    if(clear!==false){ sosSel=null; paintSelected(); }
+  };
+
+  window.openSosPopover=function(abbr,keepSel){
+    const s=STATES[abbr]; if(!s)return;
+    const cont=document.getElementById('map-container');
+    const svgEl=document.getElementById('map-svg');
+    // Mobile / hidden map: no place to anchor — preserve the original behavior.
+    if(!cont || !svgEl || svgEl.clientWidth===0){ if(s.sos) window.open(s.sos,'_blank','noopener,noreferrer'); return; }
+    if(!keepSel && sosSel===abbr){ window.closeSosPopover(); return; }
+    window.closeSosPopover(false);
+    sosSel=abbr; paintSelected();
+
+    const f=window.rrFeatureByCode&&window.rrFeatureByCode[abbr];
+    const pop=document.createElement('div'); pop.className='rr-pop'; pop.id='rr-pop';
+    if(f&&window.rrPath){
+      const sr=svgEl.getBoundingClientRect(), cr=cont.getBoundingClientRect();
+      const scale=Math.min(sr.width/960,sr.height/600);
+      const offX=sr.left+(sr.width-960*scale)/2, offY=sr.top+(sr.height-600*scale)/2;
+      const c=window.rrPath.centroid(f);
+      const px=offX+c[0]*scale-cr.left, py=offY+c[1]*scale-cr.top;
+      const popW=300, flipH=px>cr.width*0.6;
+      let left=flipH?px-popW-16:px+16; left=Math.max(6,Math.min(left,cr.width-popW-6));
+      pop.style.left=left+'px'; pop.style.top=Math.max(6,py-40)+'px';
+    } else { pop.style.left='12px'; pop.style.top='12px'; }
+    pop.innerHTML=popHTML(abbr);
+    cont.appendChild(pop);
+    pop.querySelector('.rr-close').onclick=()=>window.closeSosPopover();
+    const ci=pop.querySelector('#rr-coEntry');
+    if(ci){ ci.focus(); ci.addEventListener('keydown',e=>{ if(e.key==='Enter') setCompany(ci.value); }); }
+  };
+
+  function entryBlock(name,sos){
+    return '<div class="rr-coentry"><div class="k">CHECK A COMPANY</div>'+
+      '<input id="rr-coEntry" placeholder="Company name or EIN — press Enter" autocomplete="off">'+
+      '<div class="sub">Type once — it stays pinned as you click other states.</div></div>'+
+      (sos?'<a class="rr-bypass" href="'+sos+'" target="_blank" rel="noopener noreferrer">or just open '+name+' SOS →</a>':'');
+  }
+  function popHTML(abbr){
+    const s=STATES[abbr], name=esc(s.name), t=tierOf(abbr), co=company, sos=s.sos||'#';
+    const labels={instant:'INSTANT',prefill:'PRE-FILL',site:'STATE SITE'};
+    const head='<header><span class="rr-st">'+name+'</span><span class="rr-badge '+t+'">● '+labels[t]+'</span><button class="rr-close">✕</button></header>';
+    if(!co){
+      const intro=t==='prefill'?"We'll open "+name+"'s official search with your company pre-filled. Add one to continue."
+        :"We'll open "+name+"'s official business search. Add a company to carry it over.";
+      return head+'<div class="rr-body"><p>'+intro+'</p>'+entryBlock(name,sos)+'</div>';
+    }
+    if(t==='prefill'){
+      const url=(SEARCH_TEMPLATE[abbr]||sos).replace('{query}',encodeURIComponent(co.text));
+      let b='<p>We\'ll open '+name+'\'s official search with your company already filled in.</p><span class="rr-prefill-chip">Pre-filled</span>';
+      b+='<div class="rr-qbox"><div class="k">WE\'LL SEARCH FOR</div><div class="v">'+esc(co.text)+'</div></div>';
+      b+='<a class="rr-cta" href="'+url+'" target="_blank" rel="noopener noreferrer">OPEN '+abbr+' SOS →</a>';
+      b+='<div class="rr-fine">\''+esc(co.text)+'\' will be pre-filled. Verify on the state site.</div>';
+      b+='<a class="rr-bypass" href="'+sos+'" target="_blank" rel="noopener noreferrer">Skip — open '+abbr+' SOS without pre-fill</a>';
+      return head+'<div class="rr-body">'+b+'</div>';
+    }
+    // state site (default)
+    let b='<p>We\'ll open '+name+'\'s official business search. Search by entity '+(co.isEIN?'ID':'name or ID')+' there.</p>';
+    b+='<div class="rr-qbox"><div class="k">'+(co.isEIN?'COPY ENTITY ID':'COPY TO PASTE')+'</div><div class="v">'+esc(co.text)+'</div></div>';
+    b+='<a class="rr-cta" href="'+sos+'" target="_blank" rel="noopener noreferrer">OPEN '+abbr+' SOS →</a>';
+    return head+'<div class="rr-body">'+b+'</div>';
+  }
+
+  document.addEventListener('click',e=>{
+    if(currentMode!=='sos')return;
+    if(!e.target.closest('.rr-pop')&&!e.target.closest('.state-path')&&!e.target.closest('.state-label')) window.closeSosPopover();
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.closeSosPopover(); });
+  renderHead();
+})();
 </script>
 </body>
 </html>
