@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry Route — UX v6 (LEN-301 · prod map + hover-tier + Option B)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="vendor/d3.v7.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --instant:#10b981; --prefill:#f59e0b; --site:#3b82f6;
+  --text:#e2e8f0; --muted:#8b96a5; --line:#232a3a;
+}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text);
+  /* blue glow background, matching production */
+  background:radial-gradient(1200px 820px at 50% -4%,#1f4a86 0%,#0d2748 34%,#071427 68%,#040a16 100%);
+  min-height:100vh}
+.wrap{max-width:1200px;margin:0 auto;padding:26px 20px 50px}
+.mock-banner{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d97706;border:1px solid #d9770655;border-radius:6px;padding:6px 10px;display:inline-block;margin-bottom:16px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.01em;text-align:center}
+.subtitle{text-align:center;font-size:11px;letter-spacing:.32em;color:var(--muted);margin-top:8px;text-transform:uppercase}
+
+/* §10 Option B — pinned company strip (no global input bar) */
+.cohead{max-width:600px;margin:18px auto 0;min-height:34px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.cohead .lead{font-size:13px;color:var(--muted)}
+.pin{display:inline-flex;align-items:center;gap:9px;background:rgba(16,185,129,.16);border:1px solid #10b98166;border-radius:999px;padding:7px 9px 7px 14px;font-size:14px;font-weight:600;color:#9ff0cf}
+.pin .tag{font-size:9px;letter-spacing:.08em;color:#9ff0cf;border:1px solid #10b98166;border-radius:4px;padding:1px 5px}
+.pin .x{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;color:#9ff0cf;font-size:11px;cursor:pointer}
+.pin .x:hover{background:#ffffff22;color:#fff}
+.cohead .change{background:none;border:0;color:var(--muted);font-size:11px;letter-spacing:.06em;cursor:pointer;text-decoration:underline}
+.cohead .change:hover{color:var(--text)}
+
+/* map */
+.map-container{position:relative;width:100%;display:flex;justify-content:center;margin-top:10px}
+#map-svg{width:100%;height:auto;max-width:1180px}
+/* fills only at rest — uniform navy, no stroke (borders live in their own layer) */
+.state-path{fill:#1e293b;stroke:none;cursor:pointer;transition:fill .18s ease, transform .2s cubic-bezier(.34,1.56,.64,1)}
+/* HOVER + SELECTED reveal the tier color — the ONLY time states differ */
+.state-hovered{transform:translateY(-2px)}
+.state-hovered.t-instant,.state-selected.t-instant{fill:var(--instant)!important}
+.state-hovered.t-prefill,.state-selected.t-prefill{fill:var(--prefill)!important}
+.state-hovered.t-site,.state-selected.t-site{fill:var(--site)!important}
+.state-border{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1.5;stroke-linejoin:round;pointer-events:none}
+.state-hover-stroke{fill:none;stroke:rgba(255,255,255,.9);stroke-width:3;stroke-linejoin:round;pointer-events:none}
+.state-label{font-size:11px;font-weight:500;fill:var(--text);text-anchor:middle;dominant-baseline:central;cursor:pointer;pointer-events:auto;transition:all .2s ease}
+.label-hovered{fill:#fff;font-weight:700}
+
+/* legend / key — labels the 3 tier colors */
+.legend{display:flex;gap:24px;justify-content:center;margin-top:14px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.legend b{color:var(--text);font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:0}
+.legend .hint{display:block;text-align:center;width:100%;color:#5e6678;font-size:11px;margin-top:2px}
+
+/* §5/§6/§7 — floating popover */
+.pop{position:absolute;width:300px;background:#101624;border:1px solid #2a3349;border-radius:14px;box-shadow:0 18px 50px #000a;z-index:30;font-size:13px}
+.pop header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.pop header .st{font-weight:700;font-size:14px;flex:1}
+.badge{font-size:9px;letter-spacing:.1em;font-weight:700;border-radius:5px;padding:3px 6px}
+.badge.instant{color:#7CF0BD;background:#10b98122}
+.badge.prefill{color:#FBD38D;background:#f59e0b22}
+.badge.site{color:#9DC1FF;background:#3b82f622}
+.pop .close{background:none;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 4px}
+.pop .close:hover{color:var(--text)}
+.pop .body{padding:13px 14px}
+.pop p{color:#c3ccdb;line-height:1.45}
+.prefill-chip{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.06em;color:#FBD38D;border:1px solid #f59e0b40;border-radius:5px;padding:2px 7px}
+.coentry{margin-top:11px}
+.coentry .k{font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.coentry input{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:9px;color:var(--text);font:inherit;font-size:13px;padding:10px 12px;outline:none}
+.coentry input:focus{border-color:var(--instant)}
+.coentry .sub{font-size:10.5px;color:var(--muted);margin-top:6px}
+.qbox{margin-top:10px;background:#0c1120;border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.qbox .k{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.qbox .v{font-weight:600;margin-top:3px}
+.cta{display:block;width:100%;margin-top:12px;background:#2563EB;border:0;border-radius:9px;color:#fff;font:inherit;font-weight:700;font-size:13px;padding:11px;cursor:pointer}
+.cta:hover{background:#3B82F6}
+.fine{margin-top:8px;font-size:10.5px;color:var(--muted);line-height:1.4}
+.entity{margin-top:11px;background:#0c1120;border:1px solid var(--line);border-radius:10px;padding:11px}
+.entity .nm{font-weight:700;display:flex;align-items:center;gap:8px}
+.status{font-size:9px;font-weight:700;letter-spacing:.08em;border-radius:5px;padding:2px 6px}
+.status.active{color:#7CF0BD;background:#10b98122}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px}
+.grid2 .k,.addr .k{font-size:9px;letter-spacing:.1em;color:var(--muted)}
+.grid2 .v,.addr .v{font-size:12px;margin-top:2px}
+.addr{margin-top:10px}
+.docs{margin-top:12px}
+.docs .k{font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:7px}
+.doc{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #1a2133}
+.doc .nm2{flex:1;min-width:0}.doc .nm2 .t{font-size:12px}.doc .nm2 .m{font-size:10px;color:var(--muted);margin-top:1px}
+.doc.unavail .t{text-decoration:line-through;opacity:.35}
+.docbtn{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:6px;padding:5px 9px;border:0;cursor:pointer}
+.docbtn.view{background:#1e3a6b;color:#9DC1FF}.docbtn.fee{background:#5c450d;color:#FBD38D}
+.scrapedate{margin-top:9px;font-size:10px;color:var(--muted)}
+footer{margin-top:30px;display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);letter-spacing:.06em;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+.disclaimer{text-align:center;font-size:11px;color:var(--muted);margin-top:16px}
+.meta{text-align:center;font-size:10.5px;color:#5e6678;letter-spacing:.04em;margin-top:7px}
+.meta a{color:#5e6678;text-decoration:none}.meta a:hover{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mock-banner">Mockup · LEN-301 v6 · prod map · hover-only tiers · Option B — not production</div>
+  <h1>Registry Route</h1>
+  <div class="subtitle">Secretary of State Routing</div>
+
+  <div class="cohead" id="cohead"><span class="lead">Click any state to check a company.</span></div>
+
+  <div class="map-container" id="map-container">
+    <svg id="map-svg" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet">
+      <g id="states-g"></g>
+      <g id="borders-g"></g>
+      <g id="hover-g"></g>
+      <g id="labels-g"></g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--instant)"></span><b>Instant</b> — verified data, right here</span>
+    <span><span class="dot" style="background:var(--prefill)"></span><b>Pre-fill</b> — we open the portal, pre-filled</span>
+    <span><span class="dot" style="background:var(--site)"></span><b>State site</b> — we open the official portal</span>
+    <span class="hint">Hover a state to see which it is.</span>
+  </div>
+
+  <footer>
+    <span>▶ BROWSE STATES DIRECTORY &amp; REINSTATEMENT INDEX</span>
+    <span>REINSTATEMENT GUIDE →</span>
+  </footer>
+  <div class="disclaimer">Verify entity status directly with state authorities.</div>
+  <div class="meta">© 2026 Registry Route · Powered by LendPaper · <a href="mailto:hello@lendpaper.com">hello@lendpaper.com</a> · <a href="#">About</a> · <a href="#">Privacy</a></div>
+</div>
+
+<script>
+/* ---------- tier data (by abbr) ---------- */
+const INSTANT = new Set(['CA','DE','NY','FL','TX']);
+const PREFILL = new Set(['WA','AZ','CO','GA','IL','MI','NC','VA']);
+function tierOf(a){ return INSTANT.has(a)?'instant':PREFILL.has(a)?'prefill':'site'; }
+const FIPS={"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM","36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"};
+const NAME={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
+const labelOffsets={"VT":[-5,-10],"NH":[5,5],"MA":[15,-2],"RI":[10,8],"CT":[5,10],"NJ":[15,0],"DE":[20,2],"DC":[25,18],"MD":[-5,-8],"HI":[0,10],"FL":[10,0],"MI":[10,20]};
+const abbr=d=>FIPS[String(d.id).padStart(2,'0')];
+
+/* ---------- §10 Option B: one pinned company ---------- */
+const EIN_RE=/^\d{2}-?\d{7}$/;
+let company=null;
+const coheadEl=document.getElementById('cohead');
+function setCompany(raw){const t=raw.trim();if(!t)return;company={text:t,isEIN:EIN_RE.test(t)};renderHead();if(sel)openPop(sel);}
+function clearCompany(){company=null;renderHead();if(sel)openPop(sel);}
+function renderHead(){
+  if(!company){coheadEl.innerHTML='<span class="lead">Click any state to check a company.</span>';return;}
+  coheadEl.innerHTML=`<span class="lead">Checking</span>
+    <span class="pin">${company.text}${company.isEIN?'<span class="tag">EIN</span>':''}<span class="x" id="unpin">✕</span></span>
+    <button class="change" id="changeCo">change</button>`;
+  document.getElementById('unpin').onclick=clearCompany;
+  document.getElementById('changeCo').onclick=clearCompany;
+}
+
+/* ---------- map (production rendering) ---------- */
+let path, sel=null, selFeat=null, featureByAbbr={};
+d3.json('vendor/states-10m.json').then(us=>{
+  const projection=d3.geoAlbersUsa().scale(1200).translate([480,300]);
+  path=d3.geoPath().projection(projection);
+  const features=topojson.feature(us,us.objects.states).features.filter(f=>abbr(f));
+  features.forEach(f=>featureByAbbr[abbr(f)]=f);
+  const gS=d3.select('#states-g'),gB=d3.select('#borders-g'),gH=d3.select('#hover-g'),gL=d3.select('#labels-g');
+
+  gS.selectAll('path').data(features).enter().append('path')
+    .attr('class',d=>'state-path t-'+tierOf(abbr(d)))
+    .attr('id',d=>'path-'+abbr(d))
+    .attr('d',path)
+    .on('mouseenter',(e,d)=>hover(abbr(d),true))
+    .on('mouseleave',(e,d)=>hover(abbr(d),false))
+    .on('click',(e,d)=>{e.stopPropagation();const a=abbr(d);if(sel===a){closePop();return;}openPop(a);});
+
+  gB.selectAll('path').data(features).enter().append('path').attr('class','state-border').attr('d',path);
+
+  gL.selectAll('text').data(features).enter().append('text')
+    .attr('class','state-label').attr('id',d=>'label-'+abbr(d)).text(d=>abbr(d))
+    .attr('x',d=>{const c=path.centroid(d),o=labelOffsets[abbr(d)];return c[0]?c[0]+(o?o[0]:0):-1000;})
+    .attr('y',d=>{const c=path.centroid(d),o=labelOffsets[abbr(d)];return c[1]?c[1]+(o?o[1]:0):-1000;})
+    .on('mouseenter',(e,d)=>hover(abbr(d),true))
+    .on('mouseleave',(e,d)=>hover(abbr(d),false))
+    .on('click',(e,d)=>{e.stopPropagation();const a=abbr(d);if(sel===a){closePop();return;}openPop(a);});
+
+  paintSelected();
+});
+
+function hover(a,on){
+  d3.selectAll('.state-path').classed('state-hovered',false);
+  d3.selectAll('.state-label').classed('label-hovered',false);
+  d3.select('#hover-g').selectAll('.state-hover-stroke').remove();
+  if(on){
+    d3.select('#path-'+a).classed('state-hovered',true);
+    d3.select('#label-'+a).raise().classed('label-hovered',true);
+    const f=featureByAbbr[a];
+    if(f)d3.select('#hover-g').append('path').attr('class','state-hover-stroke').attr('d',path(f));
+  }
+  if(!on)paintSelected();  // restore selected outline when leaving
+}
+function paintSelected(){
+  d3.selectAll('.state-path').classed('state-selected',false);
+  d3.select('#hover-g').selectAll('.state-sel-stroke').remove();
+  if(sel){
+    d3.select('#path-'+sel).classed('state-selected',true);
+    const f=featureByAbbr[sel];
+    if(f)d3.select('#hover-g').append('path').attr('class','state-hover-stroke state-sel-stroke').attr('d',path(f));
+  }
+}
+
+/* ---------- popover ---------- */
+function openPop(a){
+  closePop(false);
+  sel=a; selFeat=featureByAbbr[a]; paintSelected();
+  const cont=document.getElementById('map-container'), svgEl=document.getElementById('map-svg');
+  const sr=svgEl.getBoundingClientRect(), cr=cont.getBoundingClientRect();
+  const scale=Math.min(sr.width/960,sr.height/600);
+  const offX=sr.left+(sr.width-960*scale)/2, offY=sr.top+(sr.height-600*scale)/2;
+  const c=path.centroid(selFeat);
+  const px=offX+c[0]*scale-cr.left, py=offY+c[1]*scale-cr.top;
+  const popW=300, flipH=px>cr.width*0.6;
+  let left=flipH?px-popW-16:px+16; left=Math.max(6,Math.min(left,cr.width-popW-6));
+  const top=Math.max(6,py-40);
+  const pop=document.createElement('div');pop.className='pop';pop.id='pop';
+  pop.style.left=left+'px';pop.style.top=top+'px';
+  pop.innerHTML=popHTML(a);
+  cont.appendChild(pop);
+  pop.querySelector('.close').onclick=()=>closePop();
+  const ci=pop.querySelector('#coEntry');
+  if(ci){ci.focus();ci.addEventListener('keydown',e=>{if(e.key==='Enter')setCompany(ci.value);});}
+}
+function closePop(clear=true){const p=document.getElementById('pop');if(p)p.remove();if(clear){sel=null;selFeat=null;paintSelected();}}
+document.body.addEventListener('click',e=>{if(!e.target.closest('.pop')&&!e.target.closest('.state-path')&&!e.target.closest('.state-label'))closePop();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePop();});
+
+/* ---------- popover content ---------- */
+function entryBlock(){return `<div class="coentry"><div class="k">CHECK A COMPANY</div>
+  <input id="coEntry" placeholder="Company name or EIN — press Enter" autocomplete="off">
+  <div class="sub">Type once — it stays pinned as you click other states.</div></div>`;}
+function popHTML(a){
+  const name=NAME[a], t=tierOf(a), co=company;
+  const labels={instant:'INSTANT',prefill:'PRE-FILL',site:'STATE SITE'};
+  const head=`<header><span class="st">${name}</span><span class="badge ${t}">● ${labels[t]}</span><button class="close">✕</button></header>`;
+  if(!co){
+    const intro=t==='instant'?`Registry Route has verified data for ${name}. Add a company to pull its record instantly.`
+      :t==='prefill'?`We'll open ${name}'s official search with your company pre-filled. Add one to continue.`
+      :`We'll open ${name}'s official business search. Add a company to carry it over.`;
+    return head+`<div class="body"><p>${intro}</p>${entryBlock()}</div>`;
+  }
+  if(t==='instant')return head+`<div class="body"><p>Registry Route already has verified data for ${name} — no need to visit the state site.</p>${entityCard(co,name)}</div>`;
+  if(t==='prefill'){
+    let b=`<p>We'll open ${name}'s official search with your company already filled in.</p><span class="prefill-chip">⚡ Pre-filled</span>`;
+    b+=`<div class="qbox"><div class="k">WE'LL SEARCH FOR</div><div class="v">${co.text}</div></div>`;
+    b+=`<button class="cta">OPEN ${a} SOS →</button><div class="fine">'${co.text}' will be pre-filled. Verify on the state site.</div>`;
+    return head+`<div class="body">${b}</div>`;
+  }
+  let b=`<p>We'll open ${name}'s official business search. Search by entity ${co.isEIN?'ID':'name or ID'} there.</p>`;
+  b+=`<div class="qbox"><div class="k">${co.isEIN?'COPY ENTITY ID':'COPY TO PASTE'}</div><div class="v">${co.text}</div></div>`;
+  b+=`<button class="cta">OPEN ${a} SOS →</button>`;
+  return head+`<div class="body">${b}</div>`;
+}
+function entityCard(co,state){
+  let h=0;for(const ch of co.text)h=(h*31+ch.charCodeAt(0))>>>0;
+  const num=co.isEIN?co.text.replace('-',''):String(2000000+h%7999999);
+  const yr=2009+h%16,types=['LLC','Corporation','LP','Nonprofit Corp'];
+  return `<div class="entity">
+    <div class="nm">${co.isEIN?'Entity for EIN '+co.text:co.text} <span class="status active">● ACTIVE</span></div>
+    <div class="grid2">
+      <div><div class="k">ENTITY TYPE</div><div class="v">${types[h%4]}</div></div>
+      <div><div class="k">FORMED</div><div class="v">Mar ${1+h%28}, ${yr}</div></div>
+      <div><div class="k">ENTITY #</div><div class="v">${num}</div></div>
+      <div><div class="k">REGISTERED AGENT</div><div class="v">Registered Agents Inc.</div></div>
+    </div>
+    <div class="addr"><div class="k">PRINCIPAL ADDRESS</div><div class="v">${100+h%899} Market St, Suite ${h%90+10} · ${state}</div></div>
+    <div class="docs"><div class="k">AVAILABLE DOCUMENTS</div>
+      <div class="doc"><span>📄</span><div class="nm2"><div class="t">Articles of Incorporation</div><div class="m">Filed Mar 15, ${yr} · 3 pages</div></div><button class="docbtn view">VIEW</button></div>
+      <div class="doc"><span>📄</span><div class="nm2"><div class="t">Statement of Information</div><div class="m">Filed Jan 20, 2026 · 1 page</div></div><button class="docbtn view">VIEW</button></div>
+      <div class="doc"><span>📄</span><div class="nm2"><div class="t">Certificate of Good Standing</div><div class="m">On demand · 1 page</div></div><button class="docbtn fee">GET · $5</button></div>
+      <div class="doc unavail"><span>📄</span><div class="nm2"><div class="t">LLC Operating Agreement</div><div class="m">Not filed with state</div></div></div>
+    </div>
+    <div class="scrapedate">Data scraped 2026-05-01 · verify with state authorities</div>
+  </div>`;
+}
+renderHead();
+</script>
+</body>
+</html>

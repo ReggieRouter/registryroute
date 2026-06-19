@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RR · §10 Entry Options — LEN-301</title>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#111a2e; --panel2:#0d1526; --line:#1e2c46;
+    --ink:#e8eef9; --mut:#8aa0c4; --mut2:#5f7596;
+    --green:#0D5C3A; --green-h:#059669; --green-l:#10b981;
+    --blue:#1E3A6B; --blue-h:#2563EB; --blue-l:#3b82f6;
+    --amber:#b45309; --amber-l:#f59e0b;
+    --chip:#13351f; --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 700px at 50% -10%,#13203a 0%,var(--bg) 60%);color:var(--ink);
+    font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:28px 20px 80px}
+  .wrap{max-width:1180px;margin:0 auto}
+  .tag{display:inline-block;border:1px solid var(--amber-l);color:var(--amber-l);border-radius:8px;
+    padding:5px 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+  h1{font-size:30px;margin:14px 0 2px;letter-spacing:-.01em}
+  .sub{color:var(--mut);font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px}
+  .lead{color:var(--mut);max-width:760px;margin:10px 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px 16px 20px;display:flex;flex-direction:column;min-height:520px}
+  .card h2{font-size:18px;margin:2px 0 2px}
+  .opt-no{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);font-weight:700}
+  .pitch{color:var(--mut);font-size:13px;min-height:54px;margin:8px 0 14px}
+  .stage{background:#0a1120;border:1px solid var(--line);border-radius:10px;padding:14px;flex:1;display:flex;flex-direction:column;gap:12px}
+  .barrow{display:flex;gap:8px}
+  input.q{flex:1;background:#0c1424;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:11px 12px;font-size:14px;outline:none}
+  input.q:focus{border-color:var(--green-l);box-shadow:0 0 0 2px rgba(16,185,129,.18)}
+  .hint{font-size:11.5px;color:var(--mut2)}
+  .clr{background:transparent;border:1px solid var(--line);color:var(--mut);border-radius:9px;padding:0 14px;font-size:12px;letter-spacing:.08em;cursor:pointer}
+  .clr:hover{border-color:var(--mut)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;min-height:4px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:#142235;border:1px solid var(--line);
+    color:var(--mut);border-radius:999px;padding:6px 10px 6px 12px;font-size:13px;cursor:pointer;user-select:none}
+  .chip.active{background:var(--green);border-color:var(--green-l);color:#eafff5}
+  .chip .x{opacity:.7;font-size:12px}
+  .chip .ein{font-size:9px;background:rgba(255,255,255,.16);padding:1px 5px;border-radius:5px;letter-spacing:.06em}
+  .states{display:flex;gap:8px;flex-wrap:wrap}
+  .st{flex:1;min-width:84px;text-align:center;border-radius:9px;padding:10px 6px;font-weight:700;font-size:13px;cursor:pointer;
+    border:1px solid transparent;transition:filter .12s}
+  .st small{display:block;font-weight:600;font-size:10px;letter-spacing:.04em;opacity:.85;margin-top:3px}
+  .st:hover{filter:brightness(1.18)}
+  .st.instant{background:var(--green);color:#dafce9}
+  .st.prefill{background:var(--blue);color:#dbe7ff}
+  .st.manual{background:#26344f;color:#cdd9ee}
+  .st.sel{outline:2px solid #fff;outline-offset:1px}
+  .out{background:#0c1526;border:1px dashed var(--line);border-radius:9px;padding:12px;font-size:13px;color:var(--mut);min-height:96px}
+  .out .ttl{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .badge{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 7px;border-radius:6px}
+  .badge.i{background:var(--green);color:#dafce9}.badge.p{background:var(--blue);color:#dbe7ff}.badge.m{background:#26344f;color:#cdd9ee}
+  .out b{color:var(--ink)}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-top:6px;font-size:12px}
+  .kv span{color:var(--mut2)}
+  .cta{display:inline-block;margin-top:10px;background:var(--blue-h);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+  .copybox{margin-top:8px;background:#0a1322;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px}
+  .copybox span{color:var(--mut2);display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+  .verdict{margin-top:14px;font-size:12px;color:var(--mut)}
+  .verdict b{color:var(--green-l)}
+  .pin{display:inline-flex;align-items:center;gap:8px;background:var(--green);border:1px solid var(--green-l);color:#eafff5;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700}
+  .pin .x{opacity:.8;cursor:pointer}
+  .omni-row{display:flex;flex-direction:column;gap:6px}
+  .sugg{background:#0c1424;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .sugg div{padding:8px 11px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;border-top:1px solid var(--line)}
+  .sugg div:first-child{border-top:none}
+  .sugg div:hover{background:#13203a}
+  .sugg .d{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut2);align-self:center}
+  footer{color:var(--mut2);font-size:12px;margin-top:30px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Mockup · LEN-301 · §10 entry options — not production</span>
+  <h1>How do you enter a company?</h1>
+  <div class="sub">Three simplified options · click the states to feel each one</div>
+  <p class="lead">Same map, same tiers (🟢 Instant · 🔵 Pre-fill ⚡ · ⬜ Manual). The only thing that differs is <b>how you tell Registry Route which company to check</b>. Pick the flow that feels most obvious — bias to easiness over features.</p>
+
+  <div class="grid">
+
+    <!-- OPTION A -->
+    <div class="card" data-opt="A">
+      <div class="opt-no">Option A · type-once, persistent chips</div>
+      <h2>Chips under the bar</h2>
+      <div class="pitch">One input. Enter makes a chip. Paste a list → many chips. The green chip is who we check; click a state to check it. (This is the current v4.)</div>
+      <div class="stage">
+        <div class="barrow">
+          <input class="q" placeholder="🏢 Company name or EIN — Enter to add" data-input="A" />
+          <button class="clr" data-clear="A">CLEAR</button>
+        </div>
+        <div class="hint">Press Enter to add · paste a list for several · click a chip to make it active.</div>
+        <div class="chips" data-chips="A"></div>
+        <div class="states" data-states="A">
+          <div class="st instant" data-st="CA">CA<small>Instant</small></div>
+          <div class="st prefill" data-st="FL">FL ⚡<small>Pre-fill</small></div>
+          <div class="st manual" data-st="TX">TX<small>Manual</small></div>
+        </div>
+        <div class="out" data-out="A">Add a company, then click a state.</div>
+      </div>
+      <div class="verdict"><b>Best for:</b> checking one company across many states. Multi-add is a paste.</div>
+    </div>
+
+    <!-- OPTION B -->
+    <div class="card" data-opt="B">
+      <div class="opt-no">Option B · click first, type in place</div>
+      <h2>No global bar</h2>
+      <div class="pitch">Nothing up top. Click a state → the input is right there in the popover. After you type once, it pins so the next state reuses it. Most map-native, zero learning.</div>
+      <div class="stage">
+        <div data-pinwrap="B"></div>
+        <div class="states" data-states="B">
+          <div class="st instant" data-st="CA">CA<small>Instant</small></div>
+          <div class="st prefill" data-st="FL">FL ⚡<small>Pre-fill</small></div>
+          <div class="st manual" data-st="TX">TX<small>Manual</small></div>
+        </div>
+        <div class="out" data-out="B">Click any state to begin.</div>
+      </div>
+      <div class="verdict"><b>Best for:</b> first-timers — there's only ever one thing to do: click a state.</div>
+    </div>
+
+    <!-- OPTION C -->
+    <div class="card" data-opt="C">
+      <div class="opt-no">Option C · one omnibox</div>
+      <h2>“Acme in Texas”</h2>
+      <div class="pitch">A single search that takes company <i>and</i> state together. Type a name, pick the state from suggestions, done — one line, no separate map step required.</div>
+      <div class="stage">
+        <div class="omni-row">
+          <input class="q" placeholder="🔎 Company, then a state — e.g. Acme Texas" data-input="C" />
+          <div class="sugg" data-sugg="C" style="display:none"></div>
+        </div>
+        <div class="hint">Map still clickable below as a shortcut — it just fills the state for you.</div>
+        <div class="states" data-states="C">
+          <div class="st instant" data-st="CA">CA<small>Instant</small></div>
+          <div class="st prefill" data-st="FL">FL ⚡<small>Pre-fill</small></div>
+          <div class="st manual" data-st="TX">TX<small>Manual</small></div>
+        </div>
+        <div class="out" data-out="C">Type a company name to start.</div>
+      </div>
+      <div class="verdict"><b>Best for:</b> power users who know exactly what they want and type fast.</div>
+    </div>
+
+  </div>
+  <footer>RR · registry-route-entry-options.html · representative tiers only (CA / FL / TX) — full state set unchanged.</footer>
+</div>
+
+<script>
+const TIER={CA:'instant',FL:'prefill',TX:'manual'};
+const NAME={CA:'California',FL:'Florida',TX:'Texas'};
+function isEIN(s){return /^\d{2}-?\d{7}$/.test(s.trim());}
+function entityCard(co){
+  return `<div class="ttl"><span class="badge i">● Instant</span> <b>${co}</b> <span style="color:var(--green-l)">● Active</span></div>
+    <div class="kv"><div><span>Type</span> LLC</div><div><span>Formed</span> Mar 2019</div>
+    <div><span>Entity #</span> C4821990</div><div><span>Agent</span> CT Corp</div></div>
+    <div style="margin-top:8px;font-size:11.5px;color:var(--mut2)">📄 Articles · Statement of Info · Good Standing ($5) — verified data, no SOS visit.</div>`;
+}
+function render(state, co, hasEIN){
+  if(!state) return 'Click any state to begin.';
+  const t=TIER[state], nm=NAME[state];
+  if(!co) return `<div class="ttl"><span class="badge ${t[0]}">● ${t}</span> <b>${nm}</b></div><div style="color:var(--mut2)">↑ Enter a company to check it here.</div>`;
+  if(t==='instant') return entityCard(co);
+  if(t==='prefill') return `<div class="ttl"><span class="badge p">● Pre-fill ⚡</span> <b>${nm}</b></div>
+    We'll open ${nm}'s official search with <b>${co}</b> already filled in.
+    <button class="cta">OPEN ${state} SOS →</button>`;
+  return `<div class="ttl"><span class="badge m">● Manual</span> <b>${nm}</b></div>
+    We'll open ${nm}'s business search. ${hasEIN?'Search by entity ID there.':'Search by name there.'}
+    <div class="copybox"><span>${hasEIN?'Copy entity ID':'Copy to paste'}</span>${co}</div>
+    <button class="cta">OPEN ${state} SOS →</button>`;
+}
+
+/* ---------- Option A: chips ---------- */
+(function(){
+  const root=document.querySelector('[data-opt="A"]');
+  const inp=root.querySelector('[data-input="A"]'), chipsEl=root.querySelector('[data-chips="A"]'),
+        out=root.querySelector('[data-out="A"]');
+  let chips=[], active=-1, sel=null;
+  function draw(){
+    chipsEl.innerHTML=chips.map((c,i)=>`<span class="chip ${i===active?'active':''}" data-i="${i}">${c.t}${c.ein?'<span class="ein">EIN</span>':''}<span class="x" data-x="${i}">✕</span></span>`).join('');
+    paint();
+  }
+  function paint(){
+    root.querySelectorAll('[data-st]').forEach(s=>s.classList.toggle('sel',s.dataset.st===sel));
+    const co=active>-1?chips[active]:null;
+    out.innerHTML=render(sel, co?co.t:'', co?co.ein:false);
+  }
+  function add(raw){
+    raw.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean).forEach(t=>chips.push({t,ein:isEIN(t)}));
+    if(active<0&&chips.length)active=0; draw();
+  }
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&inp.value.trim()){add(inp.value);inp.value='';}});
+  inp.addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');if(/[\n,]/.test(t)){e.preventDefault();add(t);inp.value='';}});
+  chipsEl.addEventListener('click',e=>{
+    if(e.target.dataset.x!==undefined){const i=+e.target.dataset.x;chips.splice(i,1);if(active>=chips.length)active=chips.length-1;draw();return;}
+    const c=e.target.closest('[data-i]');if(c){active=+c.dataset.i;paint();}
+  });
+  root.querySelector('[data-states="A"]').addEventListener('click',e=>{const s=e.target.closest('[data-st]');if(s){sel=sel===s.dataset.st?null:s.dataset.st;paint();}});
+  root.querySelector('[data-clear="A"]').addEventListener('click',()=>{chips=[];active=-1;sel=null;inp.value='';draw();});
+})();
+
+/* ---------- Option B: click first, pinned company ---------- */
+(function(){
+  const root=document.querySelector('[data-opt="B"]');
+  const pinwrap=root.querySelector('[data-pinwrap="B"]'), out=root.querySelector('[data-out="B"]');
+  let co=null, ein=false, sel=null;
+  function pin(){
+    pinwrap.innerHTML = co
+      ? `<div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--mut2)">Checking</span><span class="pin">${co}${ein?' · EIN':''}<span class="x" data-unpin>✕</span></span></div>`
+      : '';
+  }
+  function paint(){
+    root.querySelectorAll('[data-st]').forEach(s=>s.classList.toggle('sel',s.dataset.st===sel));
+    if(!sel){out.innerHTML='Click any state to begin.';return;}
+    if(!co){
+      out.innerHTML=`<div class="ttl"><span class="badge ${TIER[sel][0]}">● ${TIER[sel]}</span> <b>${NAME[sel]}</b></div>
+        <div class="barrow"><input class="q" placeholder="🏢 Company or EIN — Enter" data-binp></div>
+        <div class="hint" style="margin-top:6px">Type once — it pins for the next state too.</div>`;
+      const bi=out.querySelector('[data-binp]'); bi.focus();
+      bi.addEventListener('keydown',e=>{if(e.key==='Enter'&&bi.value.trim()){co=bi.value.trim();ein=isEIN(co);pin();paint();}});
+    } else {
+      out.innerHTML=render(sel,co,ein);
+    }
+  }
+  root.querySelector('[data-states="B"]').addEventListener('click',e=>{const s=e.target.closest('[data-st]');if(s){sel=s.dataset.st;paint();}});
+  pinwrap.addEventListener('click',e=>{if(e.target.dataset.unpin!==undefined){co=null;ein=false;pin();paint();}});
+})();
+
+/* ---------- Option C: omnibox ---------- */
+(function(){
+  const root=document.querySelector('[data-opt="C"]');
+  const inp=root.querySelector('[data-input="C"]'), sugg=root.querySelector('[data-sugg="C"]'), out=root.querySelector('[data-out="C"]');
+  let co=null, sel=null, ein=false;
+  function commit(){root.querySelectorAll('[data-st]').forEach(s=>s.classList.toggle('sel',s.dataset.st===sel));out.innerHTML=render(sel,co||'',ein);}
+  function suggest(){
+    const v=inp.value.trim();
+    if(!v){sugg.style.display='none';out.innerHTML='Type a company name to start.';return;}
+    // crude: last token may be a state
+    const states=Object.keys(NAME).filter(k=>v.toLowerCase().includes(NAME[k].toLowerCase())||new RegExp('\\b'+k+'\\b','i').test(v));
+    if(states.length){
+      const st=states[0]; co=v.replace(new RegExp(NAME[st]+'|\\b'+st+'\\b','ig'),'').trim()||'(company)';
+      ein=isEIN(co); sel=st; sugg.style.display='none'; commit(); return;
+    }
+    co=v; ein=isEIN(co);
+    sugg.style.display='block';
+    sugg.innerHTML=Object.keys(NAME).map(k=>`<div data-pick="${k}"><span>${co} — <b style="color:var(--ink)">${NAME[k]}</b></span><span class="d">${TIER[k]}</span></div>`).join('');
+    out.innerHTML='Pick a state to check '+co+'.';
+  }
+  inp.addEventListener('input',suggest);
+  sugg.addEventListener('click',e=>{const d=e.target.closest('[data-pick]');if(d){sel=d.dataset.pick;sugg.style.display='none';commit();}});
+  root.querySelector('[data-states="C"]').addEventListener('click',e=>{const s=e.target.closest('[data-st]');if(s){sel=s.dataset.st;if(co){commit();}else{out.innerHTML='Type a company first, then click — or include the state in the box.';}}});
+})();
+</script>
+</body>
+</html>
