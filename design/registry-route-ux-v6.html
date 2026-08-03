@@ -10,7 +10,8 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --instant:#10b981; --prefill:#f59e0b; --site:#3b82f6;
+  /* cool family: muted sage-green (softened to match the lavender) + lavender + action-blue */
+  --instant:#5BA386; --prefill:#8F7CC2; --site:#3b82f6;
   --text:#e2e8f0; --muted:#8b96a5; --line:#232a3a;
 }
 html,body{height:100%}
@@ -26,9 +27,9 @@ h1{font-size:26px;font-weight:800;letter-spacing:-.01em;text-align:center}
 /* §10 Option B — pinned company strip (no global input bar) */
 .cohead{max-width:600px;margin:18px auto 0;min-height:34px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .cohead .lead{font-size:13px;color:var(--muted)}
-.pin{display:inline-flex;align-items:center;gap:9px;background:rgba(16,185,129,.16);border:1px solid #10b98166;border-radius:999px;padding:7px 9px 7px 14px;font-size:14px;font-weight:600;color:#9ff0cf}
-.pin .tag{font-size:9px;letter-spacing:.08em;color:#9ff0cf;border:1px solid #10b98166;border-radius:4px;padding:1px 5px}
-.pin .x{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;color:#9ff0cf;font-size:11px;cursor:pointer}
+.pin{display:inline-flex;align-items:center;gap:9px;background:rgba(91,163,134,.18);border:1px solid #5BA38677;border-radius:999px;padding:7px 9px 7px 14px;font-size:14px;font-weight:600;color:#b8e2cf}
+.pin .tag{font-size:9px;letter-spacing:.08em;color:#b8e2cf;border:1px solid #5BA38677;border-radius:4px;padding:1px 5px}
+.pin .x{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;color:#b8e2cf;font-size:11px;cursor:pointer}
 .pin .x:hover{background:#ffffff22;color:#fff}
 .cohead .change{background:none;border:0;color:var(--muted);font-size:11px;letter-spacing:.06em;cursor:pointer;text-decoration:underline}
 .cohead .change:hover{color:var(--text)}
@@ -59,14 +60,14 @@ h1{font-size:26px;font-weight:800;letter-spacing:-.01em;text-align:center}
 .pop header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
 .pop header .st{font-weight:700;font-size:14px;flex:1}
 .badge{font-size:9px;letter-spacing:.1em;font-weight:700;border-radius:5px;padding:3px 6px}
-.badge.instant{color:#7CF0BD;background:#10b98122}
-.badge.prefill{color:#FBD38D;background:#f59e0b22}
+.badge.instant{color:#b8e2cf;background:#5BA38629}
+.badge.prefill{color:#c7baea;background:#8F7CC229}
 .badge.site{color:#9DC1FF;background:#3b82f622}
 .pop .close{background:none;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 4px}
 .pop .close:hover{color:var(--text)}
 .pop .body{padding:13px 14px}
 .pop p{color:#c3ccdb;line-height:1.45}
-.prefill-chip{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.06em;color:#FBD38D;border:1px solid #f59e0b40;border-radius:5px;padding:2px 7px}
+.prefill-chip{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.06em;color:#c7baea;border:1px solid #8F7CC255;border-radius:5px;padding:2px 7px}
 .coentry{margin-top:11px}
 .coentry .k{font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
 .coentry input{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:9px;color:var(--text);font:inherit;font-size:13px;padding:10px 12px;outline:none}
@@ -78,10 +79,12 @@ h1{font-size:26px;font-weight:800;letter-spacing:-.01em;text-align:center}
 .cta{display:block;width:100%;margin-top:12px;background:#2563EB;border:0;border-radius:9px;color:#fff;font:inherit;font-weight:700;font-size:13px;padding:11px;cursor:pointer}
 .cta:hover{background:#3B82F6}
 .fine{margin-top:8px;font-size:10.5px;color:var(--muted);line-height:1.4}
+.bypass{display:block;text-align:center;margin-top:10px;font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:0;width:100%}
+.bypass:hover{color:var(--text)}
 .entity{margin-top:11px;background:#0c1120;border:1px solid var(--line);border-radius:10px;padding:11px}
 .entity .nm{font-weight:700;display:flex;align-items:center;gap:8px}
 .status{font-size:9px;font-weight:700;letter-spacing:.08em;border-radius:5px;padding:2px 6px}
-.status.active{color:#7CF0BD;background:#10b98122}
+.status.active{color:#b8e2cf;background:#5BA38629}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px}
 .grid2 .k,.addr .k{font-size:9px;letter-spacing:.1em;color:var(--muted)}
 .grid2 .v,.addr .v{font-size:12px;margin-top:2px}
@@ -92,7 +95,7 @@ h1{font-size:26px;font-weight:800;letter-spacing:-.01em;text-align:center}
 .doc .nm2{flex:1;min-width:0}.doc .nm2 .t{font-size:12px}.doc .nm2 .m{font-size:10px;color:var(--muted);margin-top:1px}
 .doc.unavail .t{text-decoration:line-through;opacity:.35}
 .docbtn{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:6px;padding:5px 9px;border:0;cursor:pointer}
-.docbtn.view{background:#1e3a6b;color:#9DC1FF}.docbtn.fee{background:#5c450d;color:#FBD38D}
+.docbtn.view{background:#1e3a6b;color:#9DC1FF}.docbtn.fee{background:#3a3550;color:#c7baea}
 .scrapedate{margin-top:9px;font-size:10px;color:var(--muted)}
 footer{margin-top:30px;display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);letter-spacing:.06em;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line);padding-top:16px}
 .disclaimer{text-align:center;font-size:11px;color:var(--muted);margin-top:16px}
@@ -250,9 +253,10 @@ function popHTML(a){
   }
   if(t==='instant')return head+`<div class="body"><p>Registry Route already has verified data for ${name} — no need to visit the state site.</p>${entityCard(co,name)}</div>`;
   if(t==='prefill'){
-    let b=`<p>We'll open ${name}'s official search with your company already filled in.</p><span class="prefill-chip">⚡ Pre-filled</span>`;
+    let b=`<p>We'll open ${name}'s official search with your company already filled in.</p><span class="prefill-chip">Pre-filled</span>`;
     b+=`<div class="qbox"><div class="k">WE'LL SEARCH FOR</div><div class="v">${co.text}</div></div>`;
     b+=`<button class="cta">OPEN ${a} SOS →</button><div class="fine">'${co.text}' will be pre-filled. Verify on the state site.</div>`;
+    b+=`<button class="bypass">Skip — open ${a} SOS without pre-fill</button>`;
     return head+`<div class="body">${b}</div>`;
   }
   let b=`<p>We'll open ${name}'s official business search. Search by entity ${co.isEIN?'ID':'name or ID'} there.</p>`;
@@ -260,6 +264,7 @@ function popHTML(a){
   b+=`<button class="cta">OPEN ${a} SOS →</button>`;
   return head+`<div class="body">${b}</div>`;
 }
+// (Instant tier intentionally has no bypass — the data is already here; nothing to skip to.)
 function entityCard(co,state){
   let h=0;for(const ch of co.text)h=(h*31+ch.charCodeAt(0))>>>0;
   const num=co.isEIN?co.text.replace('-',''):String(2000000+h%7999999);
