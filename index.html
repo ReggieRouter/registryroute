@@ -144,11 +144,14 @@ header {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* LEN-2088: single row. Stacking "BY" over the wordmark cost ~20px of header
+   for no gain, and doubled up on mobile where vertical space is scarcest. */
 .brand-cobrand {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
 }
 
 .cobrand-by {
@@ -157,7 +160,6 @@ header {
   font-weight: 600;
   color: #8b96a5;
   letter-spacing: 0.15em;
-  margin-bottom: 4px;
   line-height: 1;
 }
 
@@ -178,23 +180,7 @@ header {
   text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
 }
 
-.brand-subtitle { 
-  font-family: 'Inter', sans-serif; 
-  font-size: 13px; 
-  font-weight: 500;
-  letter-spacing: 0.35em; 
-  color: #8b96a5; 
-  text-transform: uppercase; 
-  margin-bottom: 12px; 
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
-
-.brand-subtitle .highlight-secure {
-  color: #db6b6b; 
-  text-shadow: 0 0 8px rgba(219, 107, 107, 0.2);
-}
-
-.brand-tagline { 
+.brand-tagline {
   font-family: 'Inter', sans-serif; 
   font-size: 14px; 
   font-weight: 600;
@@ -303,7 +289,25 @@ header {
 /* MOBILE SEARCH UI */
 .mobile-search-container { display: none; }
 .search-input-wrapper { position: sticky; top: 0; background: transparent; padding: 0 0 15px 0; z-index: 5; }
-#company-search-wrapper { padding: 0 0 10px 0; }
+/* LEN-2088: state is the required field and now leads; company is optional
+   (it only pre-fills on states with a searchTemplate) so it collapses behind a
+   toggle. setMode() still shows/hides this whole wrapper by mode — the toggle
+   only governs the field inside it, so the two never fight. */
+#company-search-wrapper { padding: 8px 0 0 0; }
+#company-toggle {
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+#company-toggle:hover { color: var(--highlight); }
+#company-toggle[aria-expanded="true"] { color: var(--text); }
+#company-search-field { padding-top: 8px; }
 #company-search {
   width: 100%;
   background: rgba(15, 17, 21, 0.95);
@@ -553,8 +557,7 @@ footer {
 @media (max-width: 600px) {
   html, body { height: auto; overflow-y: auto; display: block; }
   header { padding: 20px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
-  .brand-title { font-size: 36px; } 
-  .brand-subtitle { font-size: 10px; letter-spacing: 0.2em; }
+  .brand-title { font-size: 36px; }
   .brand-tagline { font-size: 11px; letter-spacing: 0.15em; }
   .header-right { 
     align-items: stretch; 
@@ -572,8 +575,6 @@ footer {
   /* NEW MOBILE COBRANDING STYLES */
   .brand-title-wrapper { flex-direction: column; gap: 12px; }
   .brand-divider { width: 48px; height: 1px; }
-  .brand-cobrand { align-items: center; }
-  .cobrand-by { align-self: center; }
   .lendpaper-logo { height: 20px; }
 }
 
@@ -604,8 +605,6 @@ footer {
 
 <header>
   <div class="brand-block">
-    <div class="brand-subtitle">ACCURATE &middot; FAST &middot; VERIFIED &middot; <span class="highlight-secure">SECURE.</span></div>
-    
     <div class="brand-title-wrapper">
       <h1 class="brand-title">Registry Route</h1>
       <div class="brand-divider"></div>
@@ -633,10 +632,13 @@ footer {
 
 <section class="mobile-search-container" id="mobile-search-container" aria-label="State Search Directory">
   <div class="search-input-wrapper">
-    <div id="company-search-wrapper">
-      <input type="text" id="company-search" placeholder="Company name or EIN — pre-fills search on supported states" autocomplete="off">
-    </div>
     <input type="text" id="state-search" placeholder="Type a state (e.g., TX or Texas)..." autocomplete="off">
+    <div id="company-search-wrapper">
+      <button type="button" id="company-toggle" aria-expanded="false" aria-controls="company-search-field">+ Add company name to pre-fill</button>
+      <div id="company-search-field" hidden>
+        <input type="text" id="company-search" placeholder="Company name or EIN" autocomplete="off">
+      </div>
+    </div>
   </div>
   <div id="search-results" class="search-results"></div>
 </section>
@@ -1393,6 +1395,22 @@ async function loadStatesData() {
 // two actions that actually matter — routing to a state portal, and crossing
 // back to LendPaper — were both invisible. Mark sos_portal_click as a key event
 // in GA4 admin; lendpaper_referral_click measures the return path.
+// LEN-2088: reveal the optional company field on demand. Focus moves into the
+// input on open so the click and the typing are one gesture.
+(function wireCompanyToggle() {
+  const btn = document.getElementById('company-toggle');
+  const field = document.getElementById('company-search-field');
+  if (!btn || !field) return;
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    field.hidden = open;
+    btn.textContent = open ? '+ Add company name to pre-fill' : '− Hide company name';
+    if (!open) document.getElementById('company-search')?.focus();
+    else { const i = document.getElementById('company-search'); if (i) i.value = ''; }
+  });
+})();
+
 const RETURN_BAR_DISMISSED = 'rr_return_bar_dismissed';
 
 function trackOutbound(name, params) {
