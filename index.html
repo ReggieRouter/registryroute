@@ -370,6 +370,97 @@ header {
 .action-btn { display: block; width: 100%; text-align: center; padding: 12px; background: var(--highlight); color: #fff; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; transition: background 0.15s; }
 .action-btn:hover { background: #2563eb; }
 
+/* NEXT-STEP OFFER (LEN-2087) — the return path to LendPaper. Sits under the
+   portal button because that is the moment of intent: the entity is identified
+   and the user is about to go pull the record for a live deal. */
+.next-step {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.next-step-label {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.next-step-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: rgba(15, 17, 21, 0.8);
+  transition: border-color 0.15s, background 0.15s;
+}
+.next-step-link:hover { border-color: var(--highlight); background: rgba(59, 130, 246, 0.07); }
+.next-step-copy { font-size: 12.5px; color: var(--text); line-height: 1.45; }
+.next-step-copy b { font-weight: 600; }
+.next-step-copy span { display: block; color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+.next-step-go { font-size: 12.5px; font-weight: 600; color: var(--highlight); white-space: nowrap; }
+
+@media (max-width: 600px) {
+  .next-step-link { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+/* Return-path bar for SOS mode, which has no modal. Hidden until the user has
+   actually routed out to a portal, so it only ever shows to someone mid-deal. */
+.return-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 72px;
+  transform: translate(-50%, 260%);
+  z-index: 60;
+  width: min(560px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(20, 23, 29, 0.97);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  transition: transform 0.28s ease;
+}
+.return-bar.active { transform: translate(-50%, 0); }
+.return-bar-copy { flex: 1; font-size: 12.5px; color: var(--text); line-height: 1.45; }
+.return-bar-copy b { font-weight: 600; }
+.return-bar-copy span { display: block; color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+.return-bar-cta {
+  flex: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--highlight);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.return-bar-cta:hover { background: #2563eb; }
+.return-bar-close {
+  flex: none;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.return-bar-close:hover { color: var(--text); }
+
+@media (max-width: 600px) {
+  .return-bar { flex-wrap: wrap; bottom: 16px; position: fixed; padding-right: 34px; }
+  .return-bar-copy { flex: 1 0 100%; }
+  .return-bar-cta { flex: 1 0 100%; text-align: center; padding: 11px 14px; }
+  .return-bar-close { position: absolute; top: 8px; right: 10px; font-size: 20px; }
+}
+
 /* MODAL FRAMING AND TIMESTAMP */
 .modal-framing {
   font-size: 12.5px;
@@ -520,7 +611,7 @@ footer {
       <div class="brand-divider"></div>
       <div class="brand-cobrand">
         <span class="cobrand-by">BY</span>
-        <a href="https://lendpaper.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://lendpaper.com/?utm_source=registryroute&utm_medium=referral&utm_campaign=cobrand_header" target="_blank" rel="noopener">
           <img src="logo-wordmark-dark.svg" alt="LendPaper" class="lendpaper-logo">
         </a>
       </div>
@@ -561,6 +652,14 @@ footer {
     <div class="modal-instructions" id="modal-instructions"></div>
     <a href="#" target="_blank" class="action-btn" id="modal-btn">Access State Portal</a>
     <div class="modal-footer-timestamp" id="modal-footer-timestamp"></div>
+    <div class="next-step" id="next-step">
+      <div class="next-step-label">Next step</div>
+      <a class="next-step-link" id="next-step-link" target="_blank" rel="noopener"
+         href="https://lendpaper.com/tools/payment-breakdown?utm_source=registryroute&utm_medium=referral&utm_campaign=sos_modal">
+        <span class="next-step-copy"><b>Got the entity. Now run the numbers.</b><span>Build the payment and remittance schedule on LendPaper. Free, no account.</span></span>
+        <span class="next-step-go">Open&nbsp;&rarr;</span>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -574,10 +673,17 @@ footer {
   <a href="#" id="mode-toggle-link" class="directory-bar-link">Reinstatement Guide &#8594;</a>
 </div>
 
+<div class="return-bar" id="return-bar" role="complementary" aria-label="Next step">
+  <div class="return-bar-copy"><b>Got the entity. Now run the numbers.</b><span>Build the payment and remittance schedule on LendPaper. Free, no account.</span></div>
+  <a class="return-bar-cta" id="return-bar-cta" target="_blank" rel="noopener"
+     href="https://lendpaper.com/tools/payment-breakdown?utm_source=registryroute&utm_medium=referral&utm_campaign=sos_return_bar">Open&nbsp;&rarr;</a>
+  <button class="return-bar-close" id="return-bar-close" aria-label="Dismiss">&times;</button>
+</div>
+
 <footer>
   <div class="footer-left" style="max-width: 620px;">
     <p style="opacity:0.85;font-style:italic;">Not a government agency. Just the one that knows where all 50 of them are.</p>
-    <p style="margin-top:6px;opacity:0.5;">Verify entity status directly with state authorities. &nbsp;&middot;&nbsp; Powered by <a href="https://lendpaper.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">LendPaper</a> &nbsp;&middot;&nbsp; <a href="/about" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">About</a> &nbsp;&middot;&nbsp; <a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Privacy</a></p>
+    <p style="margin-top:6px;opacity:0.5;">Verify entity status directly with state authorities. &nbsp;&middot;&nbsp; Powered by <a href="https://lendpaper.com/?utm_source=registryroute&utm_medium=referral&utm_campaign=footer_credit" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">LendPaper</a> &nbsp;&middot;&nbsp; <a href="/about" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">About</a> &nbsp;&middot;&nbsp; <a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Privacy</a></p>
     <p style="margin-top:4px;opacity:0.5;">© 2026 Registry Route &nbsp;&middot;&nbsp; <a href="mailto:hello@lendpaper.com?subject=Registry%20Route%20%7C%20Services%20Question&body=Hi%20Team%2C%20%0A%0AReaching%20out%20regarding%20Registry%20Route%20because%20I%20have%20a%20question%20about%20your%20services.%20Can%20you%20please%20contact%20me%20when%20you%20have%20a%20moment%3F%0A%0AThank%20you%2C" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">hello@lendpaper.com</a></p>
   </div>
   <div class="footer-right">BUILD: 05-26-2026_14:00:EDT</div>
@@ -1051,6 +1157,11 @@ function handleClick(abbr) {
       ? s.searchTemplate.replace('{query}', encodeURIComponent(query))
       : s.sos;
     window.open(url, '_blank', 'noopener,noreferrer');
+    // LEN-2087: SOS mode never opens the modal, so this is the only hook for the
+    // majority path. The portal opens in a new tab and this one stays behind —
+    // surface the next step on the tab they come back to.
+    trackOutbound('sos_portal_click', { state: s.name, mode: 'sos' });
+    revealNextStep();
   } else {
     updateURL(abbr, currentMode);
 
@@ -1277,6 +1388,63 @@ async function loadStatesData() {
     console.error("Failed to load states config", e);
   }
 }
+
+// LEN-2087: outbound instrumentation. The property had no key events, so the
+// two actions that actually matter — routing to a state portal, and crossing
+// back to LendPaper — were both invisible. Mark sos_portal_click as a key event
+// in GA4 admin; lendpaper_referral_click measures the return path.
+const RETURN_BAR_DISMISSED = 'rr_return_bar_dismissed';
+
+function trackOutbound(name, params) {
+  if (typeof gtag === 'function') gtag('event', name, params || {});
+}
+
+// Only ever shown after the visitor has routed out to a state portal — i.e. to
+// someone working a live entity, never to a cold landing.
+function revealNextStep() {
+  const bar = document.getElementById('return-bar');
+  if (!bar || bar.classList.contains('active')) return;
+  try { if (localStorage.getItem(RETURN_BAR_DISMISSED) === '1') return; } catch (e) {}
+  setTimeout(() => bar.classList.add('active'), 600);
+}
+
+(function instrumentOutbound() {
+  function currentState() {
+    const el = document.getElementById('modal-title');
+    return (el && el.textContent) ? el.textContent.trim() : '(unknown)';
+  }
+
+  // Reinstatement mode routes through the modal button rather than handleClick.
+  const portalBtn = document.getElementById('modal-btn');
+  if (portalBtn) {
+    portalBtn.addEventListener('click', () => {
+      trackOutbound('sos_portal_click', { state: currentState(), mode: 'reinstatement' });
+      revealNextStep();
+    });
+  }
+
+  const nextStep = document.getElementById('next-step-link');
+  if (nextStep) {
+    nextStep.addEventListener('click', () => {
+      trackOutbound('lendpaper_referral_click', { state: currentState(), placement: 'sos_modal' });
+    });
+  }
+
+  const barCta = document.getElementById('return-bar-cta');
+  if (barCta) {
+    barCta.addEventListener('click', () => {
+      trackOutbound('lendpaper_referral_click', { placement: 'sos_return_bar' });
+    });
+  }
+
+  const barClose = document.getElementById('return-bar-close');
+  if (barClose) {
+    barClose.addEventListener('click', () => {
+      document.getElementById('return-bar').classList.remove('active');
+      try { localStorage.setItem(RETURN_BAR_DISMISSED, '1'); } catch (e) {}
+    });
+  }
+})();
 
 loadStatesData();
 </script>
