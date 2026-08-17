@@ -1,7 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <rect width="128" height="128" rx="28" ry="28" fill="#f05b5b"/>
-  <text x="64" y="64"
-        text-anchor="middle" dominant-baseline="central"
-        font-family="Helvetica, Arial, sans-serif" font-weight="700"
-        font-size="62" letter-spacing="-2" fill="#ffffff">RR</text>
+  <title>Registry Route</title>
+  <defs>
+    <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#031430"/>
+      <stop offset="1" stop-color="#082554"/>
+    </linearGradient>
+    <clipPath id="sq">
+      <rect width="128" height="128" rx="28" ry="28"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#sq)">
+    <rect width="128" height="128" fill="url(#ocean)"/>
+    <!-- The three ocean waves the site's animated favicon draws, frozen at rest. -->
+    <path d="M0,54 C16,44 32,68 48,58 C64,48 80,70 96,60 C112,50 122,64 128,58 L128,128 L0,128 Z" fill="#10346c" opacity="0.95"/>
+    <path d="M0,70 C18,62 30,84 50,74 C70,64 82,86 100,76 C114,68 122,78 128,74 L128,128 L0,128 Z" fill="#20589e" opacity="0.85"/>
+    <path d="M0,92 C20,84 34,102 54,95 C74,88 88,104 106,97 C118,92 124,98 128,96 L128,128 L0,128 Z" fill="#58a8f0" opacity="0.7"/>
+  </g>
+
+  <!-- Registry Route's mark: the LendPaper paper sheet with an R monogram.
+       Coordinates lifted from the canvas favicon routine in index.html. -->
+  <g transform="translate(20.3,20.3) scale(3.6)"
+     fill="none" stroke="#ffffff" stroke-width="1.9"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4,4 L4,20 L15,20 L20,15 L20,4 Z"/>
+    <path d="M15,20 L15,15 L20,15"/>
+    <path d="M9,9 L9,15"/>
+    <path d="M9,9 L12,9 C13.5,9 13.5,12 12,12 L9,12"/>
+    <path d="M11,12 L13.5,15"/>
+  </g>
 </svg>
