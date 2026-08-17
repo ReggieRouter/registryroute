@@ -1,0 +1,196 @@
+/* Registry Route popup — mirrors the registryroute.com dark palette. Inter is
+   fetched from Google Fonts on the site; an offline package can't do that, so
+   this falls back to the system UI stack. */
+:root {
+  --bg: #0f1115;
+  --panel: rgba(24, 26, 31, 0.9);
+  --panel-hi: rgba(51, 65, 85, 0.35);
+  --border: rgba(46, 51, 61, 0.9);
+  --text: #e2e8f0;
+  --muted: #8b96a5;
+  --blue: #3b82f6;
+  --brand: #f05b5b;
+  --good-text: #10b981;
+  --good-bg: rgba(16, 185, 129, 0.15);
+  --warn-text: #f59e0b;
+  --warn-bg: rgba(245, 158, 11, 0.15);
+  --bad-text: #ef4444;
+  --bad-bg: rgba(239, 68, 68, 0.15);
+  --green: #22c55e;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* The flex/grid rules below out-specify the hidden attribute's UA default, so
+   pin it — the recent row and steps panel are toggled with [hidden]. */
+[hidden] { display: none !important; }
+
+body {
+  width: 380px;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ brand */
+.brand { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+.brand-mark { width: 26px; height: 26px; border-radius: 6px; display: block; }
+.brand-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
+.brand-tagline {
+  font-size: 9.5px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 1px;
+}
+
+/* ------------------------------------------------------------------ query */
+.query-row { position: relative; margin-bottom: 10px; }
+
+#query {
+  width: 100%;
+  padding: 10px 30px 10px 11px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+}
+#query::placeholder { color: var(--muted); }
+#query:focus { outline: none; border-color: var(--blue); }
+
+.icon-btn {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 22px; height: 22px;
+  display: none; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: 5px;
+  color: var(--muted); font-size: 17px; line-height: 1; cursor: pointer;
+}
+.icon-btn.show { display: flex; }
+.icon-btn:hover { color: var(--text); background: var(--panel-hi); }
+
+/* ----------------------------------------------------------------- recent */
+.recent-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.recent-label {
+  font-size: 9px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.7px;
+}
+.recent-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.recent-chip {
+  padding: 3px 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font: inherit; font-size: 11px; font-weight: 600;
+  cursor: pointer;
+}
+.recent-chip:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ----------------------------------------------------------------- detail */
+.detail {
+  padding: 9px 11px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.detail-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.detail-name { display: flex; align-items: center; gap: 7px; min-width: 0; }
+#detail-state {
+  font-size: 13px; font-weight: 700; letter-spacing: -0.1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bolt {
+  flex: none;
+  color: var(--green); font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.detail-actions { display: flex; gap: 4px; flex: none; }
+.ghost-btn {
+  padding: 3px 7px;
+  background: none; border: 1px solid var(--border); border-radius: 5px;
+  color: var(--muted); font: inherit; font-size: 10px; font-weight: 600;
+  cursor: pointer;
+}
+.ghost-btn:hover { color: var(--text); border-color: var(--muted); }
+.ghost-btn.on { color: var(--warn-text); border-color: var(--warn-text); }
+
+.tags { display: flex; gap: 5px; margin-top: 7px; min-height: 18px; flex-wrap: wrap; }
+.tag {
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 9.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.tag.good { color: var(--good-text); background: var(--good-bg); }
+.tag.warn { color: var(--warn-text); background: var(--warn-bg); }
+.tag.bad  { color: var(--bad-text);  background: var(--bad-bg); }
+.tags .hint { color: var(--muted); font-size: 10.5px; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+.steps {
+  margin-top: 9px; padding-top: 9px;
+  border-top: 1px solid var(--border);
+  /* Capped so the tallest state's steps can't push the popup past Chrome's
+     600px ceiling — the panel scrolls instead. */
+  max-height: 96px; overflow-y: auto;
+  color: var(--muted); font-size: 11.5px; line-height: 1.55;
+  white-space: pre-line;
+}
+.steps-title {
+  display: block; margin-bottom: 4px;
+  color: var(--text); font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.7px;
+}
+
+/* ------------------------------------------------------------------- grid */
+.grid-wrap { max-height: 178px; overflow-y: auto; margin-bottom: 10px; }
+.grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+
+.cell {
+  position: relative;
+  padding: 7px 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font: inherit; font-size: 11.5px; font-weight: 700; letter-spacing: 0.3px;
+  cursor: pointer;
+}
+.cell:hover, .cell:focus-visible {
+  outline: none;
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--panel-hi);
+}
+/* Pre-fill-capable states are tinted rather than badged — no status dots, per
+   the house design language. The card spells out "⚡ Pre-fill" on hover. */
+.cell.can-prefill { border-color: rgba(34, 197, 94, 0.5); color: var(--green); }
+.cell.is-default { border-color: var(--warn-text); }
+
+/* --------------------------------------------------------------- go + foot */
+.go {
+  width: 100%;
+  padding: 10px;
+  background: var(--blue);
+  border: 0; border-radius: 8px;
+  color: #fff; font: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer;
+}
+.go:hover:not(:disabled) { background: #2563eb; }
+.go:disabled { background: var(--panel); color: var(--muted); cursor: default; }
+
+.foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-top: 10px;
+  font-size: 10px; color: var(--muted);
+}
+.foot a { color: var(--muted); text-decoration: none; font-weight: 600; }
+.foot a:hover { color: var(--brand); }
+.foot-note { opacity: 0.75; }
+
+/* --------------------------------------------------------------- scrollbar */
+.grid-wrap::-webkit-scrollbar, .steps::-webkit-scrollbar { width: 8px; }
+.grid-wrap::-webkit-scrollbar-thumb, .steps::-webkit-scrollbar-thumb {
+  background: var(--panel-hi); border-radius: 4px;
+}
