@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Registry Route</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="brand">
+    <img class="brand-mark" src="../icons/icon-32.png" alt="">
+    <div class="brand-text">
+      <div class="brand-title">Registry Route</div>
+      <div class="brand-tagline">Secretary of State routing</div>
+    </div>
+  </header>
+
+  <div class="query-row">
+    <input id="query" type="text" autocomplete="off" spellcheck="false"
+           placeholder="Company name or EIN" aria-label="Company name or EIN">
+    <button id="query-clear" class="icon-btn" type="button" title="Clear" aria-label="Clear">&times;</button>
+  </div>
+
+  <div id="recent-row" class="recent-row" hidden>
+    <span class="recent-label">Recent</span>
+    <div id="recent-chips" class="recent-chips"></div>
+  </div>
+
+  <div id="detail" class="detail" aria-live="polite">
+    <div class="detail-head">
+      <div class="detail-name">
+        <span id="detail-state">Pick a state</span>
+        <span id="detail-bolt" class="bolt" hidden title="Company name is pre-filled for this state">⚡ Pre-fill</span>
+      </div>
+      <div class="detail-actions">
+        <button id="set-default" class="ghost-btn" type="button" hidden>☆ Default</button>
+        <button id="steps-toggle" class="ghost-btn" type="button" hidden aria-expanded="false">Steps ▾</button>
+      </div>
+    </div>
+    <div id="detail-tags" class="tags"></div>
+    <div id="steps" class="steps" hidden></div>
+  </div>
+
+  <div class="grid-wrap">
+    <div id="grid" class="grid" role="group" aria-label="States"></div>
+  </div>
+
+  <button id="go" class="go" type="button" disabled>Open SOS search</button>
+
+  <footer class="foot">
+    <a id="site-link" href="https://www.registryroute.com" target="_blank" rel="noopener noreferrer">registryroute.com</a>
+    <span class="foot-note">Runs offline · nothing is sent anywhere</span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
