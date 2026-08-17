@@ -1,4 +1,4 @@
-// Registry Route popup — company name + state picker over the bundled
+// Registry Route popup — company name + filterable state list over the bundled
 // states.json. No network, no host permissions: every lookup is just a
 // chrome.tabs.create against the state's own SOS URL.
 
@@ -7,24 +7,14 @@ const MAX_RECENT = 3;
 const els = {
   query: document.getElementById('query'),
   clear: document.getElementById('query-clear'),
-  recentRow: document.getElementById('recent-row'),
-  recentChips: document.getElementById('recent-chips'),
-  detailState: document.getElementById('detail-state'),
-  detailBolt: document.getElementById('detail-bolt'),
-  detailTags: document.getElementById('detail-tags'),
-  setDefault: document.getElementById('set-default'),
-  stepsToggle: document.getElementById('steps-toggle'),
-  steps: document.getElementById('steps'),
-  grid: document.getElementById('grid'),
-  go: document.getElementById('go'),
+  filter: document.getElementById('filter'),
+  list: document.getElementById('list'),
+  empty: document.getElementById('empty'),
 };
 
 let STATES = {};
-let armed = null;        // the state the Open button and Enter key act on
-let shown = null;        // the state the detail card is currently displaying
 let defaultState = null;
 let recent = [];
-let stepsOpen = false;   // while open, hover stops re-writing the detail card
 
 /* ------------------------------------------------------------------ helpers */
 
@@ -47,104 +37,141 @@ function timeframeClass(timeframe = '') {
   return 'good';
 }
 
+// Default first, then most-recent, then alphabetical — so the states you
+// actually use sit at the top of the list instead of wherever the alphabet
+// happens to put them.
+function ordered() {
+  const pinned = [];
+  if (defaultState && STATES[defaultState]) pinned.push(defaultState);
+  for (const a of recent) if (STATES[a] && !pinned.includes(a)) pinned.push(a);
+
+  const rest = Object.keys(STATES)
+    .filter((a) => !pinned.includes(a))
+    .sort((a, b) => STATES[a].name.localeCompare(STATES[b].name));
+
+  return pinned.concat(rest);
+}
+
 /* -------------------------------------------------------------------- render */
 
-function renderDetail(abbr) {
-  shown = STATES[abbr] ? abbr : null;
+function render() {
+  const q = els.filter.value.trim().toLowerCase();
+  const matches = ordered().filter((abbr) =>
+    !q || STATES[abbr].name.toLowerCase().includes(q) || abbr.toLowerCase().includes(q)
+  );
 
-  if (!shown) {
-    els.detailState.textContent = 'Pick a state';
-    els.detailBolt.hidden = true;
-    els.detailTags.innerHTML = '<span class="hint">Click any state to open its business search.</span>';
-    els.setDefault.hidden = true;
-    els.stepsToggle.hidden = true;
-    return;
-  }
+  els.list.textContent = '';
+  els.empty.hidden = matches.length > 0;
 
-  const s = STATES[shown];
-  els.detailState.textContent = s.name;
-  els.detailBolt.hidden = !canPrefill(shown);
-
-  const tags = [
-    `<span class="tag ${timeframeClass(s.timeframe)}">${s.timeframe}</span>`,
-    `<span class="tag ${s.isOnline ? 'good' : 'bad'}">${s.isOnline ? 'Online Portal' : 'Mail-In Required'}</span>`,
-  ];
-  if (els.query.value.trim() && !canPrefill(shown)) {
-    tags.push('<span class="hint">Name gets copied — paste it into the portal</span>');
-  }
-  els.detailTags.innerHTML = tags.join('');
-
-  els.setDefault.hidden = false;
-  els.setDefault.textContent = shown === defaultState ? '★ Default' : '☆ Default';
-  els.setDefault.classList.toggle('on', shown === defaultState);
-
-  els.stepsToggle.hidden = !s.instructions;
-  if (stepsOpen && s.instructions) {
-    els.steps.innerHTML = `<span class="steps-title">If it's not in good standing</span>${s.instructions}`;
-    els.steps.hidden = false;
-  } else {
-    els.steps.hidden = true;
+  for (const abbr of matches) {
+    els.list.appendChild(cardFor(abbr));
   }
 }
 
-function renderRecent() {
-  const usable = recent.filter((a) => STATES[a]);
-  els.recentRow.hidden = usable.length === 0;
-  els.recentChips.textContent = '';
+function cardFor(abbr) {
+  const s = STATES[abbr];
 
-  for (const abbr of usable) {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'recent-chip';
-    chip.textContent = STATES[abbr].name;
-    chip.title = `Open ${STATES[abbr].name} SOS search`;
-    chip.addEventListener('click', () => open(abbr));
-    chip.addEventListener('mouseenter', () => preview(abbr));
-    chip.addEventListener('mouseleave', () => preview(armed));
-    els.recentChips.appendChild(chip);
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'card' + (abbr === defaultState ? ' is-default' : '');
+  card.setAttribute('role', 'listitem');
+
+  const top = document.createElement('div');
+  top.className = 'card-top';
+
+  const name = document.createElement('span');
+  name.className = 'card-name';
+  name.textContent = s.name;
+  if (canPrefill(abbr)) {
+    const bolt = document.createElement('span');
+    bolt.className = 'bolt';
+    bolt.textContent = '⚡ Pre-fill';
+    bolt.title = 'The company name goes straight into this state’s search';
+    name.appendChild(bolt);
   }
-}
 
-function renderGrid() {
-  els.grid.textContent = '';
-  const abbrs = Object.keys(STATES).sort();
+  const abbrEl = document.createElement('span');
+  abbrEl.className = 'card-abbr';
+  abbrEl.textContent = abbr;
 
-  for (const abbr of abbrs) {
-    const cell = document.createElement('button');
-    cell.type = 'button';
-    cell.className = 'cell';
-    cell.textContent = abbr;
-    cell.title = STATES[abbr].name + (canPrefill(abbr) ? ' — pre-fills the company name' : '');
-    if (canPrefill(abbr)) cell.classList.add('can-prefill');
-    if (abbr === defaultState) cell.classList.add('is-default');
+  top.append(name, abbrEl);
 
-    cell.addEventListener('click', () => open(abbr));
-    cell.addEventListener('mouseenter', () => preview(abbr));
-    cell.addEventListener('mouseleave', () => preview(armed));
-    cell.addEventListener('focus', () => preview(abbr));
-    els.grid.appendChild(cell);
-  }
-}
+  const bottom = document.createElement('div');
+  bottom.className = 'card-bottom';
 
-function renderGo() {
-  const ready = Boolean(armed && STATES[armed]);
-  els.go.disabled = !ready;
-  els.go.textContent = ready
-    ? `Open ${STATES[armed].name} SOS search`
-    : 'Open SOS search';
-}
+  const view = document.createElement('span');
+  view.className = 'view-sos';
+  view.textContent = '➜ View SOS';
 
-// Hover shows a state without arming it; with the steps panel open the card
-// stays put so reading isn't interrupted by stray mouse movement.
-function preview(abbr) {
-  if (stepsOpen) return;
-  renderDetail(abbr || armed);
-}
+  const meta = document.createElement('div');
+  meta.className = 'meta';
 
-function arm(abbr) {
-  armed = abbr;
-  renderDetail(armed);
-  renderGo();
+  const time = document.createElement('span');
+  time.className = 'tag ' + timeframeClass(s.timeframe);
+  time.textContent = s.timeframe;
+  time.title = 'Typical reinstatement turnaround';
+
+  const method = document.createElement('span');
+  method.className = 'tag ' + (s.isOnline ? 'good' : 'bad');
+  method.textContent = s.isOnline ? 'Online' : 'Mail-in';
+
+  const pin = document.createElement('span');
+  pin.className = 'pin' + (abbr === defaultState ? ' on' : '');
+  pin.textContent = abbr === defaultState ? '★' : '☆';
+  pin.title = abbr === defaultState ? 'Remove as default state' : 'Make this the default state';
+  pin.setAttribute('role', 'button');
+  pin.tabIndex = 0;
+
+  const togglePin = async (e) => {
+    // The pin lives inside the card, so stop the click opening the portal.
+    e.stopPropagation();
+    e.preventDefault();
+    defaultState = defaultState === abbr ? null : abbr;
+    await chrome.storage.sync.set({ defaultState });
+    render();
+  };
+  pin.addEventListener('click', togglePin);
+  pin.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') togglePin(e);
+  });
+
+  // Reinstatement instructions live behind a disclosure so the card stays a
+  // one-line decision, but the detail is one click away and still offline.
+  const more = document.createElement('span');
+  more.className = 'more';
+  more.textContent = '⌄';
+  more.title = 'Reinstatement steps';
+  more.setAttribute('role', 'button');
+  more.tabIndex = 0;
+
+  const steps = document.createElement('div');
+  steps.className = 'steps';
+  steps.hidden = true;
+  const stepsTitle = document.createElement('span');
+  stepsTitle.className = 'steps-title';
+  stepsTitle.textContent = "If it's not in good standing";
+  const stepsBody = document.createElement('span');
+  stepsBody.textContent = s.instructions || 'No reinstatement steps on file.';
+  steps.append(stepsTitle, stepsBody);
+
+  const toggleSteps = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    steps.hidden = !steps.hidden;
+    more.textContent = steps.hidden ? '⌄' : '⌃';
+    more.classList.toggle('on', !steps.hidden);
+  };
+  more.addEventListener('click', toggleSteps);
+  more.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') toggleSteps(e);
+  });
+
+  meta.append(time, method, pin, more);
+  bottom.append(view, meta);
+  card.append(top, bottom, steps);
+
+  card.addEventListener('click', () => open(abbr));
+  return card;
 }
 
 /* -------------------------------------------------------------------- action */
@@ -174,6 +201,11 @@ async function open(abbr) {
   window.close();
 }
 
+function openFirstVisible() {
+  const first = els.list.querySelector('.card');
+  if (first) first.click();
+}
+
 /* ---------------------------------------------------------------------- init */
 
 async function init() {
@@ -192,52 +224,31 @@ async function init() {
   els.query.value = local.lastQuery || '';
   els.clear.classList.toggle('show', Boolean(els.query.value));
 
-  renderGrid();
-  renderRecent();
-  arm(defaultState || recent[0] || null);
-
+  render();
   els.query.focus();
   els.query.select();
 }
 
 els.query.addEventListener('input', () => {
   els.clear.classList.toggle('show', Boolean(els.query.value));
-  renderDetail(armed);
 });
-
 els.query.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && armed) open(armed);
+  if (e.key === 'Enter') openFirstVisible();
 });
 
 els.clear.addEventListener('click', () => {
   els.query.value = '';
   els.clear.classList.remove('show');
-  renderDetail(armed);
   els.query.focus();
 });
 
-els.go.addEventListener('click', () => { if (armed) open(armed); });
-
-els.setDefault.addEventListener('click', async () => {
-  // The card may be previewing a hovered state, so act on what's shown.
-  const target = shown;
-  if (!target) return;
-
-  defaultState = defaultState === target ? null : target;
-  await chrome.storage.sync.set({ defaultState });
-  renderGrid();
-  arm(defaultState || target);
-});
-
-els.stepsToggle.addEventListener('click', () => {
-  const target = shown;
-  stepsOpen = !stepsOpen;
-  els.stepsToggle.textContent = stepsOpen ? 'Steps ▴' : 'Steps ▾';
-  els.stepsToggle.setAttribute('aria-expanded', String(stepsOpen));
-  renderDetail(target || armed);
+els.filter.addEventListener('input', render);
+els.filter.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') openFirstVisible();
 });
 
 init().catch((err) => {
   console.error('[RR] popup init failed', err);
-  els.detailTags.innerHTML = '<span class="hint">Could not load state data.</span>';
+  els.empty.hidden = false;
+  els.empty.textContent = 'Could not load state data.';
 });

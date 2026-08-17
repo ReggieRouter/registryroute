@@ -47,10 +47,10 @@ Built by the team behind registryroute.com — a free directory used by lenders 
 
 - **Icon**: already in the package (`icons/icon-128.png`) — uploads automatically with the zip.
 - **Screenshots** (1280×800 or 640×400, 1–5 images, PNG or JPEG) — capture these after loading unpacked:
-  1. Popup open with a company name typed in and Florida's card showing the "⚡ Pre-fill" badge.
-  2. Popup showing the state grid with a few tinted (pre-fill-capable) states visible.
+  1. Popup open with a company name typed in and Florida pinned at the top of the list, showing the "⚡ Pre-fill" badge.
+  2. The state filter in use — type "tex" and capture the list narrowed to Texas.
   3. The right-click context menu open over a highlighted business name, showing the Registry Route submenu.
-  4. The Steps panel expanded on a state's card, showing reinstatement instructions.
+  4. A card's reinstatement steps expanded via the ⌄ disclosure.
 - No promo tile or marquee image needed — those are optional and only matter for featured placement.
 
 ## Privacy practices tab

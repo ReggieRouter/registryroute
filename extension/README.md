@@ -6,21 +6,24 @@ toolbar and on the right-click menu. Source of truth for LEN-2111.
 ## What it does
 
 - **Toolbar popup** — type a company name (or EIN), click a state, and the state's
-  official SOS business search opens in a new tab.
+  official SOS business search opens in a new tab. Styled to match
+  registryroute.com: the same ocean gradient, wordmark and state cards.
+- **Filter** — type a state name or abbreviation to narrow the list. Your default
+  state and last three used float to the top.
 - **Pre-fill** where the state allows it. `states.json` carries a `searchTemplate`
   for FL, WA and WI today; those states get the company name straight in the URL
-  and are marked with a green dot in the grid / a ⚡ badge on the card. Every other
-  state opens its portal landing page and the company name goes to the clipboard,
-  one paste away.
+  and carry a ⚡ Pre-fill badge. Every other state opens its portal landing page
+  and the company name goes to the clipboard, one paste away.
 - **Right-click lookup** — select a business name on any page → *Registry Route* →
   pick a state. The default state and the last three used sit at the top of that
   menu; the full 51 (50 states + DC) are under *All states*.
 - **Reinstatement steps** — each state's timeframe, online/mail-in status and
   reinstatement instructions, offline, from the same data the site uses.
-- **Default state** — the ☆ button on the detail card pins one state; it leads the
-  grid, the context menu and the Open button.
-- **Keyboard** — `Alt+Shift+R` opens the popup, `Enter` in the name field runs the
-  default state.
+- **Default state** — the ☆ on any card pins that state; it then leads both the
+  list and the right-click menu.
+- **Keyboard** — `Alt+Shift+R` opens the popup. `Enter` in either field runs the
+  state at the top of the list: your default when unfiltered, otherwise the first
+  match for what you typed.
 
 ## Privacy / permissions
 
