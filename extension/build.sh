@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Package the Registry Route extension for the Chrome Web Store.
-# Always re-copies states.json from the repo root so a stale SOS URL can't ship.
+# Always re-syncs states.json from origin/main so a stale SOS URL can't ship.
+# Do NOT change this to read the local working tree — see LEN-2160 / LEN-348.
 set -euo pipefail
 
 cd "$(dirname "$0")"
