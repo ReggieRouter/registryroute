@@ -10,35 +10,88 @@ Everything below is copy/paste-ready for the [developer dashboard](https://chrom
 
 **Extension name**
 ```
-Registry Route — Secretary of State Lookup
+Secretary of State Business Search — 51 States | Registry Route
 ```
+⚠️ This is the SEO-optimized name from `STORE-LISTING-V2.md` §2, and it's what's actually packed into `manifest.json` — the brand-first name this file showed until now was stale. Keep the brand, it's just moved to the end so the keyword head wins cold search.
 
 **Summary** (132 char max)
 ```
-Jump straight to any state's Secretary of State business search. Type a name, pick a state, or right-click any name on a page.
+Type a name, pick a state, done. Official Secretary of State business entity search for all 50 states plus DC. Free, no account.
 ```
+⚠️ Also pulled from `manifest.json`'s live `description` field — 128 characters. Paste this exactly rather than re-typing a paraphrase, so the store listing says the same thing as the package a reviewer actually opens.
 
 **Description**
 ```
-Registry Route routes you to the right Secretary of State business search — instantly.
+Stop hunting for the right Secretary of State website.
 
-WHAT IT DOES
-• Click any state on the map — its official SOS business search opens in a new tab.
-• Pre-fills the search for states that support it (Florida, Washington, Wisconsin today) — no retyping.
-• Right-click any selected business name on any page → Registry Route → pick a state.
-• Every state's reinstatement timeframe, online/mail-in status, and step-by-step instructions, right in the popup.
-• Pin a default state, and your last three states stay one click away.
-• Spots the business name on the page you're already on and offers it — you decide whether to use it.
+Type a company name. Pick a state. The official business entity search opens, ready to go.
 
-BUILT FOR SPEED
-• Alt+Shift+R opens the popup from anywhere.
-• Works completely offline — all 50 states plus DC are bundled in. Nothing to load, nothing to wait for.
+That's the whole tool. Three seconds instead of three minutes.
 
-PRIVACY
-Registry Route sends nothing, anywhere. No analytics, no tracking, no network requests, no account. The only data it touches is what you type, and it never leaves your browser.
+────────────────────────
 
-Built by the team behind registryroute.com — a free directory used by lenders and brokers to verify business entities across all 50 states.
+WHAT YOU GET
+
+✓ All 50 states plus Washington DC — every official Secretary of State business entity search, verified and current.
+✓ Right-click any business name on any page → look it up in any state. No copying, no pasting, no tab-hunting.
+✓ Alt+Shift+R from anywhere. Type three letters of a state and hit enter.
+✓ Pre-filled searches on supported states (Florida, Washington, Wisconsin today, more coming) — the name is already in the box when the page loads.
+✓ Pin your default state. Your last three stay one click away.
+
+────────────────────────
+
+THE PART NOBODY ELSE HAS
+
+Every state's reinstatement path is built in.
+
+Found a suspended or administratively dissolved entity? The popup already shows you:
+• How long reinstatement takes in that state
+• Whether it can be done online or has to go by mail
+• The actual step-by-step filing sequence
+
+All 51 jurisdictions. No second tab. No calling the state.
+
+────────────────────────
+
+WHO USES IT
+
+Underwriters verifying entity status before funding.
+Brokers and ISOs checking good standing mid-call.
+Collections and legal teams tracing corporate records.
+Compliance and KYB teams running entity checks at volume.
+Accountants and registered agents chasing filing status.
+Anyone who has ever bookmarked a state portal and found it dead six months later.
+
+────────────────────────
+
+FREE. AND IT STAYS FREE.
+
+No subscription. No plan to pick after install. No trial that expires.
+No account, no email, no login.
+
+────────────────────────
+
+SENDS NOTHING, ANYWHERE
+
+No analytics. No tracking. No network requests at all.
+All 51 states ship inside the extension, so it works offline.
+The only data it touches is what you type, and that never leaves your browser.
+
+────────────────────────
+
+COVERAGE
+
+Alabama, Alaska, Arizona, Arkansas, California, Colorado, Connecticut, Delaware, District of Columbia, Florida, Georgia, Hawaii, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, Nevada, New Hampshire, New Jersey, New Mexico, New York, North Carolina, North Dakota, Ohio, Oklahoma, Oregon, Pennsylvania, Rhode Island, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin, Wyoming.
+
+Also called: business entity search, corporation lookup, LLC lookup, company registration search, entity status check, good standing check, corporate records search, SOS search.
+
+────────────────────────
+
+Built by the team behind registryroute.com — a free routing directory used by lenders and brokers to verify business entities across all 50 states.
+
+Broken link? hello@lendpaper.com — we fix them same week.
 ```
+⚠️ This is `STORE-LISTING-V2.md` §4 — the keyword-dense version built to outrank the incumbents, not the shorter draft this file had until now. One correction on the way in: the source doc's closing line used `support@registryroute.com`, which the site retired site-wide in commit `996d9ad` for `hello@lendpaper.com`. Fixed here. (`privacy.html` on the live site still has the old address — separate issue, not part of this submission.)
 
 **Category**: Productivity
 
