@@ -6,39 +6,53 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header class="brand">
-    <div class="brand-kicker">Accurate &middot; Fast &middot; Verified &middot; <span class="secure">Secure.</span></div>
-    <div class="brand-title-row">
-      <h1 class="brand-title">Registry Route</h1>
-      <div class="brand-divider"></div>
-      <div class="brand-cobrand">
-        <span class="cobrand-by">BY</span>
-        <img src="lendpaper-wordmark.svg" alt="LendPaper" class="cobrand-logo">
+  <header class="bar">
+    <div class="brand">
+      <img src="../icons/icon-32.png" alt="" class="brand-mark">
+      <div>
+        <div class="brand-title">Registry Route</div>
+        <div class="brand-tagline">Secretary of State routing</div>
       </div>
     </div>
-    <div class="brand-tagline">Secretary of State routing</div>
+
+    <div class="bar-fields">
+      <div class="field">
+        <input id="query" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Company name or EIN — pre-fills where supported"
+               aria-label="Company name or EIN">
+        <button id="query-clear" class="clear" type="button" title="Clear" aria-label="Clear">&times;</button>
+      </div>
+      <div class="field field-jump">
+        <input id="jump" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Jump to a state…" aria-label="Jump to a state"
+               role="combobox" aria-expanded="false" aria-controls="map-svg">
+      </div>
+    </div>
   </header>
 
-  <div class="field">
-    <input id="query" type="text" autocomplete="off" spellcheck="false"
-           placeholder="Company name or EIN — pre-fills where supported"
-           aria-label="Company name or EIN">
-    <button id="query-clear" class="clear" type="button" title="Clear" aria-label="Clear">&times;</button>
+  <div id="found" class="found" hidden>
+    <span class="found-label">On this page</span>
+    <button id="found-name" class="found-name" type="button" title="Use this name"></button>
+    <button id="found-dismiss" class="found-dismiss" type="button" aria-label="Dismiss">&times;</button>
   </div>
 
-  <div class="field">
-    <input id="filter" type="text" autocomplete="off" spellcheck="false"
-           placeholder="Type a state (e.g., TX or Texas)…" aria-label="Filter states">
-  </div>
-
-  <div id="list" class="list" role="list"></div>
-  <p id="empty" class="empty" hidden>No state matches that.</p>
+  <main class="stage">
+    <svg id="map-svg" role="group" aria-label="United States — pick a state">
+      <g id="states-g"></g>
+      <g id="borders-g" aria-hidden="true"></g>
+      <g id="hover-g" aria-hidden="true"></g>
+      <g id="labels-g" aria-hidden="true"></g>
+    </svg>
+    <div id="callouts" class="callouts" role="group" aria-label="Smaller states"></div>
+    <div id="card" class="card" hidden aria-live="polite"></div>
+  </main>
 
   <footer class="foot">
     <a href="https://www.registryroute.com" target="_blank" rel="noopener noreferrer">registryroute.com</a>
-    <span>Runs offline &middot; nothing is sent anywhere</span>
+    <span id="foot-status">Runs offline &middot; nothing is sent anywhere</span>
   </footer>
 
+  <script src="us-map.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

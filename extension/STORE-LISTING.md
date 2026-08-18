@@ -67,6 +67,8 @@ Registry Route helps users quickly navigate to the correct state Secretary of St
 | `contextMenus` | Adds a right-click menu item so users can look up a selected business name in a chosen state's SOS search without opening the popup first. |
 | `storage` | Stores the user's default state, three most-recently-used states, and last search text locally, so repeat lookups don't require re-entering the same information. Never leaves the device. |
 | `offscreen` | Used solely to copy the typed company name to the clipboard (via a background offscreen document, since service workers have no clipboard access) when the target state's portal can't accept the name directly in the URL. |
+| `activeTab` | When the user opens the popup, the extension looks at that one tab for a business name (their text selection, a schema.org Organization name, or a heading carrying an entity suffix) and offers it as a dismissible suggestion. Access is granted only for the tab the user invoked the extension on, only for that invocation. |
+| `scripting` | Runs that single extraction function in the active tab. No content scripts are registered, so nothing runs on any page the user has not explicitly invoked the extension on. |
 
 **Are you using remote code?** No.
 
@@ -75,7 +77,9 @@ Registry Route helps users quickly navigate to the correct state Secretary of St
 This item does not collect this type of data.
 ```
 
-**Certify data usage compliance**: Yes — check the box. It's accurate; nothing is collected or transmitted.
+**Certify data usage compliance**: Yes — check the box.
+
+⚠️ **Read this before ticking "does not collect".** As of v1.1.0 the extension *reads* the active tab (via `activeTab`) to suggest a business name. Chrome defines "collect" as **transmitting data off the user's device**, and this extension transmits nothing, anywhere — there is no server, no analytics and no network call at runtime. The only thing persisted is the user's own query, in `chrome.storage.local`, on their machine. So "does not collect" is accurate for every category. Do not skip the reviewer note below, though — reading a page and not collecting it is a distinction worth stating plainly rather than leaving a reviewer to infer.
 
 **Privacy policy URL**
 ```
@@ -92,7 +96,11 @@ Note: this page also covers registryroute.com's own analytics (GA4, website only
 ## Reviewer notes (optional field, if Chrome shows one)
 
 ```
-This extension makes zero network requests. All data (states.json, ~51 entries of public Secretary of State URLs and instructions) ships inside the package. Permissions used: contextMenus (right-click menu), storage (local-only preferences), offscreen (clipboard write from the service worker, per Chrome's documented pattern — service workers have no DOM).
+This extension makes zero network requests at runtime. All data ships inside the package: states.json (~51 entries of public Secretary of State URLs and reinstatement instructions) and us-map.js (pre-computed US map geometry, so no mapping library is loaded).
+
+Permissions: contextMenus (right-click menu), storage (local-only preferences), offscreen (clipboard write from the service worker, per Chrome's documented pattern — service workers have no DOM), and activeTab + scripting.
+
+On activeTab/scripting: when the user opens the popup, one function runs in the active tab to look for a business name — the user's text selection, a schema.org Organization name, or a heading/title containing an entity suffix such as LLC or Inc. The result is shown as a dismissible suggestion chip and is never filled in automatically. There are no registered content scripts and no host permissions, so nothing runs on any page unless the user explicitly opens the popup there. Nothing read from the page is transmitted anywhere.
 ```
 
 ## After submit
