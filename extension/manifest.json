@@ -3,7 +3,7 @@
   "name": "Registry Route — Secretary of State Lookup",
   "short_name": "Registry Route",
   "version": "1.0.0",
-  "description": "Jump straight to any state's Secretary of State business search. Type a company name and pick a state, or right-click a name on any page.",
+  "description": "Jump straight to any state's Secretary of State business search. Type a name, pick a state, or right-click a name on any page.",
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "Registry Route — Secretary of State lookup"
