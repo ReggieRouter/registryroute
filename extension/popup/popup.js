@@ -1,25 +1,45 @@
-// Registry Route popup — company name + filterable state list over the bundled
-// states.json. No network, no host permissions: every lookup is just a
-// chrome.tabs.create against the state's own SOS URL.
+// Registry Route popup — the interactive US map, offline.
+//
+// The map geometry is pre-computed at build time (tools/gen-map.html) and shipped
+// as us-map.js, so there is no mapping library, no network call and no spinner
+// here. Every lookup is a chrome.tabs.create against the state's own SOS URL.
 
 const MAX_RECENT = 3;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// Small states are unhittable on the map at this size, so they get a callout
+// column instead. Ordered north to south so the column reads geographically
+// rather than by the raw size threshold that selected them.
+const CALLOUT_ORDER = ['VT', 'NH', 'MA', 'CT', 'RI', 'NJ', 'DE', 'MD', 'DC'];
 
 const els = {
   query: document.getElementById('query'),
   clear: document.getElementById('query-clear'),
-  filter: document.getElementById('filter'),
-  list: document.getElementById('list'),
-  empty: document.getElementById('empty'),
+  jump: document.getElementById('jump'),
+  found: document.getElementById('found'),
+  foundName: document.getElementById('found-name'),
+  foundDismiss: document.getElementById('found-dismiss'),
+  svg: document.getElementById('map-svg'),
+  statesG: document.getElementById('states-g'),
+  bordersG: document.getElementById('borders-g'),
+  hoverG: document.getElementById('hover-g'),
+  labelsG: document.getElementById('labels-g'),
+  callouts: document.getElementById('callouts'),
+  card: document.getElementById('card'),
+  status: document.getElementById('foot-status'),
 };
 
 let STATES = {};
+let MAP = window.RR_MAP || { paths: {}, labels: {}, callouts: [], width: 740, height: 433 };
 let defaultState = null;
 let recent = [];
+let shown = null;      // state the hover card is describing
+let cardSticky = false; // true while the pointer is inside the card
 
 /* ------------------------------------------------------------------ helpers */
 
-// Only states carrying a searchTemplate in states.json can take the company
-// name in the URL (FL, WA, WI today). The rest get the portal landing page.
+// Only states carrying a searchTemplate in states.json can take the company name
+// in the URL (FL, WA, WI today). The rest get the portal landing page.
 const canPrefill = (abbr) => Boolean(STATES[abbr]?.searchTemplate);
 
 function urlFor(abbr, query) {
@@ -37,142 +57,194 @@ function timeframeClass(timeframe = '') {
   return 'good';
 }
 
-// Default first, then most-recent, then alphabetical — so the states you
-// actually use sit at the top of the list instead of wherever the alphabet
-// happens to put them.
-function ordered() {
-  const pinned = [];
-  if (defaultState && STATES[defaultState]) pinned.push(defaultState);
-  for (const a of recent) if (STATES[a] && !pinned.includes(a)) pinned.push(a);
-
-  const rest = Object.keys(STATES)
-    .filter((a) => !pinned.includes(a))
-    .sort((a, b) => STATES[a].name.localeCompare(STATES[b].name));
-
-  return pinned.concat(rest);
-}
-
 /* -------------------------------------------------------------------- render */
 
-function render() {
-  const q = els.filter.value.trim().toLowerCase();
-  const matches = ordered().filter((abbr) =>
-    !q || STATES[abbr].name.toLowerCase().includes(q) || abbr.toLowerCase().includes(q)
-  );
+function buildMap() {
+  els.svg.setAttribute('viewBox', `0 0 ${MAP.width} ${MAP.height}`);
 
-  els.list.textContent = '';
-  els.empty.hidden = matches.length > 0;
+  const abbrs = Object.keys(MAP.paths).sort();
 
-  for (const abbr of matches) {
-    els.list.appendChild(cardFor(abbr));
+  for (const abbr of abbrs) {
+    const s = STATES[abbr];
+    if (!s) continue;
+
+    // Fill layer — clickable, focusable, no stroke.
+    const fill = document.createElementNS(SVG_NS, 'path');
+    fill.setAttribute('d', MAP.paths[abbr]);
+    fill.setAttribute('class', 'state-path');
+    fill.setAttribute('id', 'path-' + abbr);
+    fill.setAttribute('role', 'button');
+    fill.setAttribute('tabindex', '0');
+    fill.setAttribute('aria-label', `${s.name} — open Secretary of State search`);
+    fill.addEventListener('mouseenter', (e) => showCard(abbr, e));
+    fill.addEventListener('mouseleave', hideCardSoon);
+    fill.addEventListener('focus', () => showCard(abbr, null));
+    fill.addEventListener('blur', hideCardSoon);
+    fill.addEventListener('click', () => open(abbr));
+    fill.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(abbr); }
+    });
+    els.statesG.appendChild(fill);
+
+    // Border layer — stroke only, drawn above every fill.
+    const border = document.createElementNS(SVG_NS, 'path');
+    border.setAttribute('d', MAP.paths[abbr]);
+    border.setAttribute('class', 'state-border');
+    els.bordersG.appendChild(border);
+
+    // Label — skipped for states that get a callout box, since there is no room.
+    if (!MAP.callouts.includes(abbr) && MAP.labels[abbr]) {
+      const [x, y] = MAP.labels[abbr];
+      const label = document.createElementNS(SVG_NS, 'text');
+      label.setAttribute('x', x);
+      label.setAttribute('y', y);
+      label.setAttribute('id', 'label-' + abbr);
+      label.setAttribute('class', 'state-label' + (canPrefill(abbr) ? ' state-prefill' : ''));
+      label.textContent = abbr;
+      els.labelsG.appendChild(label);
+    }
   }
 }
 
-function cardFor(abbr) {
-  const s = STATES[abbr];
+function buildCallouts() {
+  const set = new Set(MAP.callouts);
+  const ordered = CALLOUT_ORDER.filter((a) => set.has(a))
+    .concat(MAP.callouts.filter((a) => !CALLOUT_ORDER.includes(a)));
 
-  const card = document.createElement('button');
-  card.type = 'button';
-  card.className = 'card' + (abbr === defaultState ? ' is-default' : '');
-  card.setAttribute('role', 'listitem');
+  for (const abbr of ordered) {
+    const s = STATES[abbr];
+    if (!s) continue;
 
-  const top = document.createElement('div');
-  top.className = 'card-top';
-
-  const name = document.createElement('span');
-  name.className = 'card-name';
-  name.textContent = s.name;
-  if (canPrefill(abbr)) {
-    const bolt = document.createElement('span');
-    bolt.className = 'bolt';
-    bolt.textContent = '⚡ Pre-fill';
-    bolt.title = 'The company name goes straight into this state’s search';
-    name.appendChild(bolt);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'callout' + (canPrefill(abbr) ? ' can-prefill' : '');
+    btn.id = 'callout-' + abbr;
+    btn.textContent = abbr;
+    btn.setAttribute('aria-label', `${s.name} — open Secretary of State search`);
+    btn.addEventListener('mouseenter', (e) => showCard(abbr, e));
+    btn.addEventListener('mouseleave', hideCardSoon);
+    btn.addEventListener('focus', () => showCard(abbr, null));
+    btn.addEventListener('blur', hideCardSoon);
+    btn.addEventListener('click', () => open(abbr));
+    els.callouts.appendChild(btn);
   }
+}
 
-  const abbrEl = document.createElement('span');
-  abbrEl.className = 'card-abbr';
-  abbrEl.textContent = abbr;
+function markDefault() {
+  document.querySelectorAll('.state-default').forEach((el) => el.classList.remove('state-default'));
+  document.querySelectorAll('.callout.is-default').forEach((el) => el.classList.remove('is-default'));
+  if (!defaultState) return;
+  document.getElementById('path-' + defaultState)?.classList.add('state-default');
+  document.getElementById('callout-' + defaultState)?.classList.add('is-default');
+}
 
-  top.append(name, abbrEl);
+/* ---------------------------------------------------------------- hover card */
 
-  const bottom = document.createElement('div');
-  bottom.className = 'card-bottom';
+function highlight(abbr) {
+  document.querySelectorAll('.state-hovered').forEach((el) => el.classList.remove('state-hovered'));
+  document.querySelectorAll('.label-hovered').forEach((el) => el.classList.remove('label-hovered'));
+  els.hoverG.textContent = '';
+  if (!abbr) return;
 
-  const view = document.createElement('span');
-  view.className = 'view-sos';
-  view.textContent = '➜ View SOS';
+  document.getElementById('path-' + abbr)?.classList.add('state-hovered');
+  document.getElementById('label-' + abbr)?.classList.add('label-hovered');
 
-  const meta = document.createElement('div');
-  meta.className = 'meta';
+  // Outline goes in its own layer above fills and borders so nothing clips it.
+  // Do NOT add a transform here or in CSS — see the note in popup.css.
+  if (MAP.paths[abbr]) {
+    const outline = document.createElementNS(SVG_NS, 'path');
+    outline.setAttribute('d', MAP.paths[abbr]);
+    outline.setAttribute('class', 'state-hover-stroke');
+    els.hoverG.appendChild(outline);
+  }
+}
 
-  const time = document.createElement('span');
-  time.className = 'tag ' + timeframeClass(s.timeframe);
-  time.textContent = s.timeframe;
-  time.title = 'Typical reinstatement turnaround';
+function showCard(abbr, event) {
+  const s = STATES[abbr];
+  if (!s) return;
+  shown = abbr;
+  highlight(abbr);
 
-  const method = document.createElement('span');
-  method.className = 'tag ' + (s.isOnline ? 'good' : 'bad');
-  method.textContent = s.isOnline ? 'Online' : 'Mail-in';
+  const pinned = abbr === defaultState;
+  const tags = [
+    `<span class="tag ${timeframeClass(s.timeframe)}">${s.timeframe}</span>`,
+    `<span class="tag ${s.isOnline ? 'good' : 'bad'}">${s.isOnline ? 'Online portal' : 'Mail-in'}</span>`,
+  ];
+  if (canPrefill(abbr)) tags.push('<span class="tag bolt">⚡ Pre-fill</span>');
 
-  const pin = document.createElement('span');
-  pin.className = 'pin' + (abbr === defaultState ? ' on' : '');
-  pin.textContent = abbr === defaultState ? '★' : '☆';
-  pin.title = abbr === defaultState ? 'Remove as default state' : 'Make this the default state';
-  pin.setAttribute('role', 'button');
-  pin.tabIndex = 0;
+  const hint = els.query.value.trim() && !canPrefill(abbr)
+    ? '<div class="card-hint">Name gets copied — paste it into the portal</div>'
+    : '';
 
-  const togglePin = async (e) => {
-    // The pin lives inside the card, so stop the click opening the portal.
+  els.card.innerHTML = `
+    <div class="card-head">
+      <span class="card-name">${s.name}</span>
+      <button class="card-pin${pinned ? ' on' : ''}" type="button"
+              title="${pinned ? 'Remove as default state' : 'Make this the default state'}">
+        ${pinned ? '★' : '☆'}
+      </button>
+    </div>
+    <div class="card-tags">${tags.join('')}</div>
+    ${hint}
+    ${s.instructions ? `<div class="card-steps"><span class="card-steps-title">If it's not in good standing</span>${s.instructions}</div>` : ''}
+  `;
+
+  els.card.querySelector('.card-pin').addEventListener('click', async (e) => {
     e.stopPropagation();
-    e.preventDefault();
     defaultState = defaultState === abbr ? null : abbr;
     await chrome.storage.sync.set({ defaultState });
-    render();
-  };
-  pin.addEventListener('click', togglePin);
-  pin.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') togglePin(e);
+    markDefault();
+    showCard(abbr, event);
   });
 
-  // Reinstatement instructions live behind a disclosure so the card stays a
-  // one-line decision, but the detail is one click away and still offline.
-  const more = document.createElement('span');
-  more.className = 'more';
-  more.textContent = '⌄';
-  more.title = 'Reinstatement steps';
-  more.setAttribute('role', 'button');
-  more.tabIndex = 0;
-
-  const steps = document.createElement('div');
-  steps.className = 'steps';
-  steps.hidden = true;
-  const stepsTitle = document.createElement('span');
-  stepsTitle.className = 'steps-title';
-  stepsTitle.textContent = "If it's not in good standing";
-  const stepsBody = document.createElement('span');
-  stepsBody.textContent = s.instructions || 'No reinstatement steps on file.';
-  steps.append(stepsTitle, stepsBody);
-
-  const toggleSteps = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    steps.hidden = !steps.hidden;
-    more.textContent = steps.hidden ? '⌄' : '⌃';
-    more.classList.toggle('on', !steps.hidden);
-  };
-  more.addEventListener('click', toggleSteps);
-  more.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') toggleSteps(e);
-  });
-
-  meta.append(time, method, pin, more);
-  bottom.append(view, meta);
-  card.append(top, bottom, steps);
-
-  card.addEventListener('click', () => open(abbr));
-  return card;
+  els.card.hidden = false;
+  els.card.classList.add('interactive');
+  positionCard(event);
 }
+
+// Keep the card inside the popup — it has nowhere to overflow to — and flip it
+// away from the pointer's quadrant so it doesn't sit on top of the very state
+// being pointed at.
+function positionCard(event) {
+  const stage = document.querySelector('.stage').getBoundingClientRect();
+  const card = els.card.getBoundingClientRect();
+  const GAP = 16;
+
+  let x, y;
+  if (event && event.clientX) {
+    const px = event.clientX - stage.left;
+    const py = event.clientY - stage.top;
+    x = px > stage.width / 2 ? px - card.width - GAP : px + GAP;
+    y = py > stage.height / 2 ? py - card.height - GAP : py + GAP;
+  } else {
+    // Keyboard or jump-input focus: park it bottom-left, clear of the map's
+    // populated east side.
+    x = 0;
+    y = stage.height - card.height;
+  }
+
+  x = Math.max(0, Math.min(x, stage.width - card.width));
+  y = Math.max(0, Math.min(y, stage.height - card.height));
+
+  els.card.style.left = x + 'px';
+  els.card.style.top = y + 'px';
+}
+
+let hideTimer = null;
+function hideCardSoon() {
+  clearTimeout(hideTimer);
+  // Brief grace period so the pointer can travel into the card to click the pin
+  // or scroll the steps without it vanishing underneath.
+  hideTimer = setTimeout(() => {
+    if (cardSticky) return;
+    els.card.hidden = true;
+    highlight(null);
+    shown = null;
+  }, 160);
+}
+
+els.card.addEventListener('mouseenter', () => { cardSticky = true; clearTimeout(hideTimer); });
+els.card.addEventListener('mouseleave', () => { cardSticky = false; hideCardSoon(); });
 
 /* -------------------------------------------------------------------- action */
 
@@ -201,9 +273,77 @@ async function open(abbr) {
   window.close();
 }
 
-function openFirstVisible() {
-  const first = els.list.querySelector('.card');
-  if (first) first.click();
+/* ---------------------------------------------------------------- jump input */
+
+function matchState(text) {
+  const q = text.trim().toLowerCase();
+  if (!q) return null;
+  const abbrs = Object.keys(STATES);
+  return abbrs.find((a) => a.toLowerCase() === q)
+    || abbrs.find((a) => STATES[a].name.toLowerCase() === q)
+    || abbrs.find((a) => STATES[a].name.toLowerCase().startsWith(q))
+    || abbrs.find((a) => STATES[a].name.toLowerCase().includes(q))
+    || null;
+}
+
+/* ------------------------------------------------------- page-name detection */
+
+// Runs in the page via activeTab, only when the user opens the popup. Returns a
+// best-guess business name or null. Deliberately conservative — the result is
+// offered as a dismissible chip, never auto-filled.
+function extractBusinessName() {
+  const SUFFIX = /\b(LLC|L\.L\.C\.|Inc|Inc\.|Corp|Corp\.|Corporation|Company|Co\.|LP|L\.P\.|LLP|Ltd|Ltd\.|PLLC)\b/i;
+  const clean = (s) => (s || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+
+  const sel = clean(window.getSelection()?.toString());
+  if (sel && sel.length > 2 && sel.length < 120) return sel;
+
+  for (const node of document.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      const raw = JSON.parse(node.textContent);
+      const items = Array.isArray(raw) ? raw : [raw, ...(raw['@graph'] || [])];
+      for (const item of items) {
+        const type = String(item?.['@type'] || '');
+        if (/Organization|LocalBusiness|Corporation/i.test(type) && item.name) {
+          return clean(item.name);
+        }
+      }
+    } catch (e) { /* malformed JSON-LD is common; ignore */ }
+  }
+
+  for (const el of document.querySelectorAll('h1, h2')) {
+    const t = clean(el.textContent);
+    if (t && SUFFIX.test(t) && t.length < 120) return t;
+  }
+
+  const title = clean(document.title);
+  if (title && SUFFIX.test(title)) return title;
+
+  return null;
+}
+
+async function detectFromPage() {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return null;
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: extractBusinessName,
+    });
+    return result?.result || null;
+  } catch (err) {
+    // chrome:// pages, the Web Store, PDFs and other restricted surfaces reject
+    // injection. That is expected, not an error worth surfacing.
+    return null;
+  }
+}
+
+function offerFound(name) {
+  if (!name) return;
+  if (els.query.value.trim().toLowerCase() === name.toLowerCase()) return;
+  els.foundName.textContent = name;
+  els.foundName.title = `Use “${name}”`;
+  els.found.hidden = false;
 }
 
 /* ---------------------------------------------------------------------- init */
@@ -219,21 +359,32 @@ async function init() {
   defaultState = states[sync.defaultState] ? sync.defaultState : null;
   recent = (sync.recent || []).filter((a) => states[a]);
 
-  // A right-click lookup stashes what was selected, so the popup opens ready
-  // to run the same name against another state.
+  // A right-click lookup stashes what was selected, so the popup opens ready to
+  // run the same name against another state.
   els.query.value = local.lastQuery || '';
   els.clear.classList.toggle('show', Boolean(els.query.value));
 
-  render();
+  buildMap();
+  buildCallouts();
+  markDefault();
+
+  if (defaultState) {
+    els.status.textContent = `Runs offline · default ${STATES[defaultState].name}`;
+  }
+
   els.query.focus();
   els.query.select();
+
+  // Page detection is best-effort and must never delay the map appearing.
+  detectFromPage().then(offerFound);
 }
 
 els.query.addEventListener('input', () => {
   els.clear.classList.toggle('show', Boolean(els.query.value));
+  if (shown) showCard(shown, null);
 });
 els.query.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') openFirstVisible();
+  if (e.key === 'Enter' && defaultState) open(defaultState);
 });
 
 els.clear.addEventListener('click', () => {
@@ -242,13 +393,27 @@ els.clear.addEventListener('click', () => {
   els.query.focus();
 });
 
-els.filter.addEventListener('input', render);
-els.filter.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') openFirstVisible();
+els.jump.addEventListener('input', () => {
+  const abbr = matchState(els.jump.value);
+  els.jump.setAttribute('aria-expanded', abbr ? 'true' : 'false');
+  if (abbr) showCard(abbr, null);
+  else { els.card.hidden = true; highlight(null); shown = null; }
 });
+els.jump.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const abbr = matchState(els.jump.value);
+  if (abbr) open(abbr);
+});
+
+els.foundName.addEventListener('click', () => {
+  els.query.value = els.foundName.textContent;
+  els.clear.classList.add('show');
+  els.found.hidden = true;
+  els.query.focus();
+});
+els.foundDismiss.addEventListener('click', () => { els.found.hidden = true; });
 
 init().catch((err) => {
   console.error('[RR] popup init failed', err);
-  els.empty.hidden = false;
-  els.empty.textContent = 'Could not load state data.';
+  els.status.textContent = 'Could not load state data.';
 });

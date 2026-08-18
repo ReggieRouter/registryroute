@@ -12,7 +12,7 @@ Everything in a fenced block is copy/paste-ready.
 |---|---|---|
 | Proof of Good Standing | Name contains **zero** of the words people type. Unfindable by search — it lives on paid/referral traffic. | Subscription. "Install first, then choose your plan." |
 | Secretary of State Tools | Gets "secretary of state" but misses *business search, entity, lookup, LLC, UCC, 50 states*. | "Designed for teams avoiding costly APIs/custom development" is a procurement sentence, not a pain sentence. "This niche tool solves one key problem effectively" is self-deprecating. |
-| Both | Map-click only. No keyboard, no right-click, no pre-fill. | Describe the *interface*, never the *minute saved*. |
+| Both | Map-click only. No keyboard, no right-click, no pre-fill, no page detection. | Describe the *interface*, never the *minute saved*. |
 
 Registry Route's current listing loses on one thing only: **the name is brand-first.** "Registry Route — Secretary of State Lookup" puts an unknown brand in the highest-weighted field. With near-zero installs, brand-first is the wrong order.
 
@@ -177,6 +177,10 @@ Each page ends with the same CTA: install the extension. No email gate.
 ---
 
 ## 8. Honest-claim guardrails
+
+⚠️ **Updated for v1.1.0.** The extension now has a map too, so "we have a map and they don't" was never the argument and still isn't. The differentiator is that the map is *not the only way in*: Registry Route also has keyboard access, right-click lookup, pre-fill and page detection. Positioning should read "everything their map does, plus the three routes their map can't offer" — not "our map is nicer".
+
+Also new in v1.1.0: the extension reads the active tab (`activeTab`) to suggest a business name. Copy must not say "cannot read any page" any more. It can say, accurately: *reads nothing until you open it, sends nothing anywhere, ever.*
 
 Do not write these until they are true:
 
