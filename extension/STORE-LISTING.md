@@ -4,7 +4,7 @@ Everything below is copy/paste-ready for the [developer dashboard](https://chrom
 
 ## Package to upload
 
-`extension/dist/registry-route-1.0.0.zip` (rebuild first if `states.json` changed: `./build.sh`)
+`extension/dist/registry-route-1.1.0.zip` — run `./build.sh` to produce it (it re-syncs `states.json` from `origin/main` first).
 
 ## Store listing tab
 
@@ -23,11 +23,12 @@ Jump straight to any state's Secretary of State business search. Type a name, pi
 Registry Route routes you to the right Secretary of State business search — instantly.
 
 WHAT IT DOES
-• Type a company name, click a state — its official SOS business search opens in a new tab.
+• Click any state on the map — its official SOS business search opens in a new tab.
 • Pre-fills the search for states that support it (Florida, Washington, Wisconsin today) — no retyping.
 • Right-click any selected business name on any page → Registry Route → pick a state.
 • Every state's reinstatement timeframe, online/mail-in status, and step-by-step instructions, right in the popup.
 • Pin a default state, and your last three states stay one click away.
+• Spots the business name on the page you're already on and offers it — you decide whether to use it.
 
 BUILT FOR SPEED
 • Alt+Shift+R opens the popup from anywhere.
@@ -46,11 +47,12 @@ Built by the team behind registryroute.com — a free directory used by lenders 
 ## Graphics
 
 - **Icon**: already in the package (`icons/icon-128.png`) — uploads automatically with the zip.
-- **Screenshots** (1280×800 or 640×400, 1–5 images, PNG or JPEG) — capture these after loading unpacked:
-  1. Popup open with a company name typed in and Florida pinned at the top of the list, showing the "⚡ Pre-fill" badge.
-  2. The state filter in use — type "tex" and capture the list narrowed to Texas.
-  3. The right-click context menu open over a highlighted business name, showing the Registry Route submenu.
-  4. A card's reinstatement steps expanded via the ⌄ disclosure.
+- **Screenshots** (1280×800, PNG) — already rendered and committed in `extension/screenshots/`, upload in this order:
+  1. `1-map-overview.png` — the map with a company name typed in.
+  2. `2-state-detail.png` — hovering California, showing timeframe, portal type and reinstatement steps.
+  3. `3-small-states.png` — the callout column for the states too small to click.
+  4. `4-right-click-lookup-ILLUSTRATED.png` — the right-click menu (illustrated; native context menus can't be screen-captured).
+  5. `5-page-detection.png` — the "on this page" suggestion chip.
 - No promo tile or marquee image needed — those are optional and only matter for featured placement.
 
 ## Privacy practices tab
