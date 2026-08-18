@@ -5,5 +5,11 @@
 _local-archive/
 .DS_Store
 
-# Chrome extension build output
+# Chrome extension build output — build.sh writes dist/, and the unpacked
+# registry-route-<version>/ tree is what gets dragged into chrome://extensions.
 extension/dist/
+extension/registry-route-*/
+*.zip
+
+# Python bytecode
+__pycache__/

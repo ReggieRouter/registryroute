@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Registry Route — Secretary of State Lookup",
+  "name": "Secretary of State Business Search — 51 States | Registry Route",
   "short_name": "Registry Route",
-  "version": "1.0.0",
-  "description": "Jump straight to any state's Secretary of State business search. Type a name, pick a state, or right-click a name on any page.",
+  "version": "1.0.1",
+  "description": "Type a name, pick a state, done. Official Secretary of State business entity search for all 50 states plus DC. Free, no account.",
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "Registry Route — Secretary of State lookup"
